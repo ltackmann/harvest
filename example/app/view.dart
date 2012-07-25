@@ -1,4 +1,4 @@
-// Copyright (c) 2012 Solvr, Inc. all rights reserved.  
+// Copyright (c) 2012 Solvr, Inc. All rights reserved.
 //
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
@@ -76,18 +76,28 @@ class _InventoryView implements InventoryView {
   showDetails(InventoryItemDetails details) {
     Element elm = new Element.html(""" 
     <section>
-      <h2>Details:</h2>
+      <h2>Item Details:</h2>
       Id: ${details.id}<br/>
       Name: ${details.name}<br/>
       Count: ${details.currentCount}<br/><br/>
       
       <a href="#" id='rename'>Rename</a> <br/>
-      <a href="#" id='deactivate'>Deactivate</a> <br/>
-      <a href="#" id='check_in'>CheckIn</a> <br/>
+      <a href="#" id='check_in'>Check out</a> <br/>
+      <a href="#" id='check_out'>Check out</a> <br/>
       <a href="#" id='remove'>Remove</a> <br/>
       <a href="#" id='back'>Back</a> <br/>
      </section>
      """);
+    // rename handler
+    elm.query("#rename").on.click.add((Event e) {
+    });
+    
+    elm.query("#deactivate").on.click.add((Event e) => presenter.showItems());
+    
+    elm.query("#check_in").on.click.add((Event e) => presenter.showItems());
+    
+    elm.query("#remove").on.click.add((Event e) => presenter.removeItem(details.id));
+    
     elm.query("#back").on.click.add((Event e) => presenter.showItems());
     
     _show(elm);

@@ -1,4 +1,4 @@
-// Copyright (c) 2012 Solvr, Inc. all rights reserved.  
+// Copyright (c) 2012 Solvr, Inc. All rights reserved.
 //
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
@@ -47,7 +47,7 @@ class InventoryPresenter {
     showItems();
   }
 
-  remove(Guid id) {
+  removeItem(Guid id) {
     //var details = _viewModelFacade.getInventoryItemDetails(id);
     //_view.showDetails(details);
   }
