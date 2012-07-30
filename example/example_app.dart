@@ -16,11 +16,11 @@
 main() {
   var messageBus = new MessageBus();
   
-  // command handling and domain models
+  // create repository for domain models and set up command handler 
   var inventoryItemRepository = new MemoryDomainRepository("InventoryItem", (Guid id) => new InventoryItem.fromId(id));
   var commandHandler = new InventoryCommandHandler(messageBus, inventoryItemRepository);
   
-  // event handling and view models 
+  // create respositories for view models and set up event handler
   var itemListRepository = new MemoryModelRepository<InventoryItemListEntry>("InventoryItemListEntry");
   var itemDetailsRepository = new MemoryModelRepository<InventoryItemDetails>("InventoryItemDetails");
   var eventHandler = new InventoryEventHandler(messageBus, itemListRepository, itemDetailsRepository);
