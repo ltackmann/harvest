@@ -6,7 +6,7 @@
 /**
  * Memory backed domain repository that stores and retrieves domain objects by their events
  */
-class MemoryDomainRepository<T> implements DomainRepository<T> {
+class MemoryDomainRepository<T extends AggregateRoot> implements DomainRepository<T> {
   static Map<String, MemoryDomainRepository> _cache;
   static EventStore _store;
   final Logger _logger;

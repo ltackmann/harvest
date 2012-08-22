@@ -6,7 +6,7 @@
 /**
  * Repository for working with domain objects
  */
-interface DomainRepository<T> {
+interface DomainRepository<T extends AggregateRoot> {
   save(AggregateRoot aggregate, [int expectedVersion]);
   
   T load(Guid id);
