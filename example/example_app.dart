@@ -8,7 +8,7 @@
 
 #import("app/lib.dart");
 #import("../lib.dart");
-#import("../src/stores/memory/lib.dart");
+#import("../lib/stores/memory/lib.dart");
 
 // we load the view here so "app/lib.dart" does not need to reference dart:html
 #source("app/view.dart");
