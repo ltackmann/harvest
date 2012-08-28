@@ -12,18 +12,18 @@ class InventoryPresenter {
   
   go() => showItems();
 
-  showItems() {
-    var inventoryItems = _viewModelFacade.getInventoryItems();
-    _view.showItems(inventoryItems);
-  }
-
-  showDetails(Guid id) {
-    var details = _viewModelFacade.getInventoryItemDetails(id);
-    _view.showDetails(details);
-  }
-
-  addItem(String name) {
+  createItem(String name) {
     _messageBus.fire(new CreateInventoryItem(new Guid(), name));
+    showItems();
+  }
+  
+  checkInItems(Guid id, int number, int version) {
+    _messageBus.fire(new CheckInItemsToInventory(id, number, version));
+    showItems();
+  }
+  
+  deactivateItem(Guid id, int version) {
+    _messageBus.fire(new DeactivateInventoryItem(id, version));
     showItems();
   }
 
@@ -32,29 +32,19 @@ class InventoryPresenter {
     showItems();
   }
 
-  deactivate(Guid id, int version) {
-    _messageBus.fire(new DeactivateInventoryItem(id, version));
-    showItems();
-  }
-
-  checkIn(Guid id) {
-     //var details = _viewModelFacade.getInventoryItemDetails(id);
-     //_view.showDetails(checkIn);
-  }
-
-  checkInNumber(Guid id, int number, int version) {
-    _messageBus.fire(new CheckInItemsToInventory(id, number, version));
-    showItems();
-  }
-
-  removeItem(Guid id) {
-    //var details = _viewModelFacade.getInventoryItemDetails(id);
-    //_view.showDetails(details);
-  }
-
-  removeNumber(Guid id, int number, int version) {
+  removeItems(Guid id, int number, int version) {
     _messageBus.fire(new RemoveItemsFromInventory(id, number, version));
     showItems();
+  }
+  
+  showItems() {
+    var inventoryItems = _viewModelFacade.getInventoryItems();
+    _view.showItems(inventoryItems);
+  }
+
+  showDetails(Guid id) {
+    var details = _viewModelFacade.getInventoryItemDetails(id);
+    _view.showDetails(details);
   }
   
   final Logger _logger;

@@ -4,11 +4,12 @@
 // specified in the LICENSE file
 
 #import("dart:html");
-#import("package:log4dart/lib.dart");
+
+#import("package:log4dart/log4dart.dart");
+#import("../dartstore.dart");
+#import("../memory_store.dart");
 
 #import("app/lib.dart");
-#import("../lib.dart");
-#import("../lib/stores/memory/lib.dart");
 
 // we load the view here so "app/lib.dart" does not need to reference dart:html
 #source("app/view.dart");

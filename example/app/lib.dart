@@ -5,9 +5,9 @@
 
 #library("dartstore:example");
 
-#import("package:log4dart/lib.dart");
+#import("package:log4dart/log4dart.dart");
 
-#import("../../lib.dart");
+#import("../../dartstore.dart");
 
 #source("command_handler.dart");
 #source("commands.dart");

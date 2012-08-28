@@ -1,0 +1,8 @@
+dependencies:
+  log4dart:
+    git: git://github.com/Solvr/log4dart.git
+  dart-gap:
+    git: git://github.com/Solvr/dart-gap.git  
+  unittest:
+    sdk: unittest
+

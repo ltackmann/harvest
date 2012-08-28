@@ -1,0 +1,6 @@
+dependencies:
+  log4dart:
+    git: git://github.com/Solvr/log4dart.git
+  dart-store:
+    git: git://github.com/Solvr/dart-store.git
+

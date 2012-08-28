@@ -6,6 +6,10 @@
 class InventoryCommandHandler {
   InventoryCommandHandler(this._messageBus, this._domainRepository) {
     _messageBus.on[CreateInventoryItem.TYPE].add(_onCreateInventoryItem);
+    _messageBus.on[DeactivateInventoryItem.TYPE].add(_onDeactivateInventoryItem);
+    _messageBus.on[RemoveItemsFromInventory.TYPE].add(_onRemoveItemsFromInventory);
+    _messageBus.on[CheckInItemsToInventory.TYPE].add(_onCheckInItemsToInventory);
+    _messageBus.on[RenameInventoryItem.TYPE].add(_onRenameInventoryItem);
   }
  
   _onCreateInventoryItem(CreateInventoryItem message) {
@@ -13,34 +17,29 @@ class InventoryCommandHandler {
     _domainRepository.save(item);
   }
 
-  /*
-  private readonly IRepository<InventoryItem> _repository;
-
-  public void Handle(DeactivateInventoryItem message)
-  {
-      var item = _repository.GetById(message.InventoryItemId);
-      item.Deactivate();
-      _repository.Save(item, message.OriginalVersion);
+  _onDeactivateInventoryItem(DeactivateInventoryItem message) {
+    var item = _domainRepository.load(message.inventoryItemId);
+    item.deactivate();
+    _domainRepository.save(item, message.originalVersion);
   }
-  public void Handle(RemoveItemsFromInventory message)
-  {
-      var item = _repository.GetById(message.InventoryItemId);
-      item.Remove(message.Count);
-      _repository.Save(item, message.OriginalVersion);
+  
+  _onRemoveItemsFromInventory(RemoveItemsFromInventory message) {
+    var item = _domainRepository.load(message.inventoryItemId);
+    item.remove(message.count);
+    _domainRepository.save(item, message.originalVersion);
   }
-  public void Handle(CheckInItemsToInventory message)
-  {
-      var item = _repository.GetById(message.InventoryItemId);
-      item.CheckIn(message.Count);
-      _repository.Save(item, message.OriginalVersion);
+  
+  _onCheckInItemsToInventory(CheckInItemsToInventory message) {
+    var item = _domainRepository.load(message.inventoryItemId);
+    item.checkIn(message.count);
+    _domainRepository.save(item, message.originalVersion);
   }
-  public void Handle(RenameInventoryItem message)
-  {
-      var item = _repository.GetById(message.InventoryItemId);
-      item.ChangeName(message.NewName);
-      _repository.Save(item, message.OriginalVersion);
+  
+  _onRenameInventoryItem(RenameInventoryItem message) {
+    var item = _domainRepository.load(message.inventoryItemId);
+    item.name = message.newName;
+    _domainRepository.save(item, message.originalVersion);
   }
-  */
   
   final DomainRepository<InventoryItem> _domainRepository;
   final MessageBus _messageBus;

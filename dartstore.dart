@@ -5,7 +5,7 @@
 
 #library("dartstore");
 
-#import("package:log4dart/lib.dart");
+#import("package:log4dart/log4dart.dart");
 
 #source("lib/serializer/event_serializer_factory.dart");
 #source("lib/serializer/map_serializer.dart");

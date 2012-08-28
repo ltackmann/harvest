@@ -6,32 +6,6 @@
 class _InventoryView implements InventoryView {
   _InventoryView(this._container);
   
-  // bind model.id/model.version in onSubmit
-  showChangeNameView(onSubmit(String name)) {
-    Element elm = new Element.html(""" 
-      <p>Name: <input type="text"/> </p>
-      <button name="submit">Submit</button>
-    """);
-    elm.query("button").on.click.add((MouseEvent event) {
-      InputElement input = elm.query("input");
-      onSubmit(input.value);
-    });
-    _show(elm);
-  }
-  
-  // bind model.id/model.version in onSubmit
-  showCheckIn(onSubmit(int number)) {
-    Element elm = new Element.html(""" 
-      <p>Number: <input type="number"/> </p>
-      <button name="submit">Submit</button>
-    """);
-    elm.query("button").on.click.add((MouseEvent event) {
-      InputElement input = elm.query("input");
-      onSubmit(Math.parseInt(input.value));
-    });
-    _show(elm);
-  }
-  
   showItems(List<InventoryItemListEntry> items){
     Element elm = new Element.html("""
     <section> 
@@ -44,7 +18,7 @@ class _InventoryView implements InventoryView {
     
     elm.query("a").on.click.add((Event e) {
       InputElement nameInput = elm.query('input');
-      presenter.addItem(nameInput.value);
+      presenter.createItem(nameInput.value);
       nameInput.value = '';
     });
     
@@ -61,7 +35,60 @@ class _InventoryView implements InventoryView {
     _show(elm);
   }
   
-  showRemove(onSubmit(Guid id, int count)) {
+  showDetails(InventoryItemDetails details) {
+    Element elm = new Element.html(""" 
+    <section>
+      <h2>Item Details:</h2>
+      Id: ${details.id}<br/>
+      Name: ${details.name}<br/>
+      Count: ${details.currentCount}<br/><br/>
+      
+      <a href="#" id='rename'>Rename item</a> <br/>
+      <a href="#" id='check_items_in'>Check number in</a> <br/>
+      <a href="#" id='remove_items'>Check number out</a> <br/>
+      <a href="#" id='deactivate'>Remove item</a> <br/>
+      <a href="#" id='back'>Back</a> <br/>
+     </section>
+     """);
+    // rename handler
+    elm.query("#rename").on.click.add((Event e) {
+      _changeItemName((String newName) {
+        presenter.renameItem(details.id, newName, details.version);
+      });
+    });
+    
+    elm.query("#check_items_in").on.click.add((Event e) {
+      _checkInItems((int count) {
+        presenter.removeItems(details.id, count, details.version);
+      });
+    });
+    
+    elm.query("#deactivate").on.click.add((Event e) => presenter.deactivateItem(details.id, details.version));
+    
+    elm.query("#remove_items").on.click.add((Event e) {
+      _removeItems((int count) {
+        presenter.removeItems(details.id, count, details.version);
+      });
+    });
+    
+    elm.query("#back").on.click.add((Event e) => presenter.showItems());
+    
+    _show(elm);
+  }
+  
+  _changeItemName(onSubmit(String name)) {
+    Element elm = new Element.html(""" 
+      <p>Name: <input type="text"/> </p>
+      <button name="submit">Submit</button>
+    """);
+    elm.query("button").on.click.add((MouseEvent event) {
+      InputElement input = elm.query("input");
+      onSubmit(input.value);
+    });
+    _show(elm);
+  }
+  
+  _checkInItems(onSubmit(int number)) {
     Element elm = new Element.html(""" 
       <p>Number: <input type="number"/> </p>
       <button name="submit">Submit</button>
@@ -73,33 +100,15 @@ class _InventoryView implements InventoryView {
     _show(elm);
   }
   
-  showDetails(InventoryItemDetails details) {
+  _removeItems(onSubmit(int count)) {
     Element elm = new Element.html(""" 
-    <section>
-      <h2>Item Details:</h2>
-      Id: ${details.id}<br/>
-      Name: ${details.name}<br/>
-      Count: ${details.currentCount}<br/><br/>
-      
-      <a href="#" id='rename'>Rename</a> <br/>
-      <a href="#" id='check_in'>Check out</a> <br/>
-      <a href="#" id='check_out'>Check out</a> <br/>
-      <a href="#" id='remove'>Remove</a> <br/>
-      <a href="#" id='back'>Back</a> <br/>
-     </section>
-     """);
-    // rename handler
-    elm.query("#rename").on.click.add((Event e) {
+      <p>Number: <input type="number"/> </p>
+      <button name="submit">Submit</button>
+    """);
+    elm.query("button").on.click.add((MouseEvent event) {
+      InputElement input = elm.query("input");
+      onSubmit(Math.parseInt(input.value));
     });
-    
-    elm.query("#deactivate").on.click.add((Event e) => presenter.showItems());
-    
-    elm.query("#check_in").on.click.add((Event e) => presenter.showItems());
-    
-    elm.query("#remove").on.click.add((Event e) => presenter.removeItem(details.id));
-    
-    elm.query("#back").on.click.add((Event e) => presenter.showItems());
-    
     _show(elm);
   }
   
