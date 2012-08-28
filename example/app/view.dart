@@ -9,7 +9,7 @@ class _InventoryView implements InventoryView {
   showItems(List<InventoryItemListEntry> items){
     Element elm = new Element.html("""
     <section> 
-      <h2>All items:</h2>
+      <h2>Item list</h2>
       <ul></ul>
       <input type='text'></input>
       <a href="#">Add item</a>
@@ -76,6 +76,12 @@ class _InventoryView implements InventoryView {
     _show(elm);
   }
   
+  recordMessage(String messageType, String messageName, Date time) {
+    var elm = new Element.html("<li>$messageType $messageName date: ${time.toString()}");
+    var widget = _container.query("#message_log ul");
+    widget.nodes.add(elm);
+  }
+  
   _changeItemName(onSubmit(String name)) {
     Element elm = new Element.html("""
     <section> 
@@ -119,8 +125,9 @@ class _InventoryView implements InventoryView {
   }
   
   _show(Element elm) {
-    _container.nodes.clear();
-    _container.nodes.add(elm);
+    var app = _container.query("#app");
+    app.nodes.clear();
+    app.nodes.add(elm);
   }
   
   InventoryPresenter presenter;

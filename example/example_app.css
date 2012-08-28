@@ -1,0 +1,16 @@
+#container {
+	display: -webkit-flexbox;
+	width: 500px;
+}
+
+#container > section {
+	border: 1px solid gray;
+	border-radius: 6px;
+	background-color: rgba(224, 224, 224, 0.8);
+	padding: 6px;
+}
+
+#app {
+	margin-bottom: 10px;
+}
+

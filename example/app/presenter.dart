@@ -8,6 +8,12 @@ class InventoryPresenter {
     : _logger = LoggerFactory.getLogger("InventoryPresenter") 
   {
     _view.presenter = this;
+    // show the events fired
+    _messageBus.onAll.add((Message message) {
+      var messageType = (message is Command) ? "Command" : "Event";
+      var messageName = message.type;
+      _view.recordMessage(messageType, messageName, new Date.now());
+    });
   }
   
   go() => showItems();
@@ -59,4 +65,6 @@ interface InventoryView {
   showItems(List<InventoryItemListEntry> items);
   
   showDetails(InventoryItemDetails details);
+  
+  recordMessage(String messageType, String messageName, Date time);
 }
