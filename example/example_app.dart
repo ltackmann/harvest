@@ -3,7 +3,10 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+#library("dartstore:example_app");
+
 #import("dart:html");
+#import("dart:math");
 
 #import("package:log4dart/log4dart.dart");
 #import("../dartstore.dart");

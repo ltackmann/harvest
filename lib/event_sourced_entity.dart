@@ -9,8 +9,6 @@
  * first.
  */
 class EventSourcedEntity {
-  ChangeHandler applyChange;
-  
   EventSourcedEntity(AggregateRoot root) {
     root.addEventSourcedEntity(this);
   }
@@ -19,6 +17,8 @@ class EventSourcedEntity {
    * Implemented in each concrete entity, responsible for extracting data from events and applying it itself
    */
   abstract apply(DomainEvent event);
+  
+  ChangeHandler applyChange;
 }
 
 typedef ChangeHandler(DomainEvent event); 

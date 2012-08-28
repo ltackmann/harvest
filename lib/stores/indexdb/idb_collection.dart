@@ -10,14 +10,12 @@ interface IDBCollection {
 }
 
 class _IDBCollection implements IDBCollection {
-  final IDBDatabase _db;
-  final String _collection;
   _IDBCollection(this._db, this._collection);
   
   Future<Dynamic> addItem(var key, var item) {
     Completer<Dynamic> completer = new Completer<Dynamic>();
     
-    IDBRequest request = _open(IDBTransaction.READ_WRITE).put(item, key);
+    var request = _open(IDBTransaction.READ_WRITE).put(item, key);
     request.on.success.add((e) => completer.complete(e));
     request.on.success.add((e) => completer.completeException(e));
   
@@ -25,7 +23,7 @@ class _IDBCollection implements IDBCollection {
   }
   
   forEach(f) {
-    IDBRequest request = _open(IDBTransaction.READ_ONLY).openCursor();
+    var request = _open(IDBTransaction.READ_ONLY).openCursor();
     request.on.success.add((e) {
       var cursor = e.target.result;
       if (cursor != null) {
@@ -39,7 +37,10 @@ class _IDBCollection implements IDBCollection {
   }
   
   IDBObjectStore _open(mode) {
-    IDBTransaction txn = _db.transaction(_collection, mode);
+    var txn = _db.transaction(_collection, mode);
     return txn.objectStore(_collection);
   }
+  
+  final IDBDatabase _db;
+  final String _collection;
 }

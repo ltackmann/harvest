@@ -4,7 +4,6 @@
 // specified in the LICENSE file
 
 class MessageBus {
-  final HandlerMap _handlerMap;
   static MessageBus _instance;
   
   factory MessageBus() {
@@ -17,7 +16,7 @@ class MessageBus {
   
   MessageBus._internal(): _handlerMap = new HandlerMap();
   
-  HandlerMap get on() {
+  HandlerMap get on {
     return _handlerMap;
   }
   
@@ -32,6 +31,8 @@ class MessageBus {
       }
     });
   }
+  
+  final HandlerMap _handlerMap;
 }
 
 

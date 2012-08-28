@@ -9,8 +9,6 @@
 class MemoryDomainRepository<T extends AggregateRoot> implements DomainRepository<T> {
   static Map<String, MemoryDomainRepository> _cache;
   static EventStore _store;
-  final Logger _logger;
-  DomainBuilder _builder;
   
   /**
    * @type is the class name of T and builder is a DomainBuilder for T 
@@ -48,6 +46,9 @@ class MemoryDomainRepository<T extends AggregateRoot> implements DomainRepositor
     obj.loadFromHistory(events);
     return obj;
   }
+  
+  final Logger _logger;
+  DomainBuilder _builder;
 }
 
 

@@ -4,44 +4,49 @@
 // specified in the LICENSE file
 
 class DeactivateInventoryItem extends Command {
-  static final String TYPE = "DeactivateInventoryItem";
-  final Guid inventoryItemId;
-	final int originalVersion;
-
+  static final TYPE = "DeactivateInventoryItem";
+  
   DeactivateInventoryItem(this.inventoryItemId, this.originalVersion): super(TYPE); 
+  
+  final Guid inventoryItemId;
+  final int originalVersion;
 }
 
 class CreateInventoryItem extends Command {
-  static final String TYPE = "CreateInventoryItem";
-	final Guid inventoryItemId;
-	final String name;
-	
+  static final TYPE = "CreateInventoryItem";
+  
   CreateInventoryItem(this.inventoryItemId, this.name): super(TYPE); 
+  
+  final Guid inventoryItemId;
+  final String name;
 }
 	
 class RenameInventoryItem extends Command {
-  static final String TYPE = "RenameInventoryItem";
-	final Guid inventoryItemId;
-	final String newName;
-	final int originalVersion;
-
+  static final TYPE = "RenameInventoryItem";
+  
   RenameInventoryItem(this.inventoryItemId, this.newName, this.originalVersion): super(TYPE); 
+  
+  final Guid inventoryItemId;
+  final String newName;
+  final int originalVersion;
 }
 
 class CheckInItemsToInventory extends Command {
-  static final String TYPE = "CheckInItemsToInventory";
-  final Guid inventoryItemId;
+  static final TYPE = "CheckInItemsToInventory";
+  
+	CheckInItemsToInventory(this.inventoryItemId, this.count, this.originalVersion): super(TYPE); 
+
+	final Guid inventoryItemId;
 	final int count;
 	final int originalVersion;
-
-	CheckInItemsToInventory(this.inventoryItemId, this.count, this.originalVersion): super(TYPE); 
 }
 	
 class RemoveItemsFromInventory extends Command {
-  static final String TYPE = "RemoveItemsFromInventory";
-  final Guid inventoryItemId;
-  final int count;
-	final int originalVersion;
+  static final TYPE = "RemoveItemsFromInventory";
 
   RemoveItemsFromInventory(this.inventoryItemId, this.count, this.originalVersion): super(TYPE); 
+  
+  final Guid inventoryItemId;
+  final int count;
+  final int originalVersion;
 }

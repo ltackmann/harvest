@@ -4,40 +4,45 @@
 // specified in the LICENSE file
 
 class InventoryItemDeactivated extends DomainEvent {
-  static final String TYPE = "InventoryItemDeactivated";
-  final Guid id;
+  static final TYPE = "InventoryItemDeactivated";
 
   InventoryItemDeactivated(this.id): super(TYPE);
+  
+  final Guid id;
 }
 
 class InventoryItemCreated extends DomainEvent {
-  static final String TYPE = "InventoryItemCreated";
-  final Guid id;
-  final String name;
+  static final TYPE = "InventoryItemCreated";
   
   InventoryItemCreated(this.id, this.name): super(TYPE); 
+  
+  final Guid id;
+  final String name;
 }
 
 class InventoryItemRenamed extends DomainEvent {
-  static final String TYPE = "InventoryItemRenamed";
+  static final TYPE = "InventoryItemRenamed";
+ 
+  InventoryItemRenamed(this.id, this.newName): super(TYPE);
+  
   final Guid id;
   final String newName;
-  
-  InventoryItemRenamed(this.id, this.newName): super(TYPE);
 }
 
 class ItemsCheckedInToInventory extends DomainEvent {
-  static final String TYPE = "ItemsCheckedInToInventory";
-  final Guid id;
-  final int count;
+  static final TYPE = "ItemsCheckedInToInventory";
 
   ItemsCheckedInToInventory(this.id, this.count): super(TYPE);
+  
+  final Guid id;
+  final int count;
 }
 
 class ItemsRemovedFromInventory extends DomainEvent {
-  static final String TYPE = "ItemsRemovedFromInventory";
+  static final TYPE = "ItemsRemovedFromInventory";
+  
+  ItemsRemovedFromInventory(this.id, this.count): super(TYPE); 
+  
   final Guid id;
   final int count;
-
-  ItemsRemovedFromInventory(this.id, this.count): super(TYPE); 
 }

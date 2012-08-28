@@ -3,9 +3,10 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-#library("dartstore:test");
+#library("dartstore:tests");
 
-#import("dart:html");
+#import("../dartstore.dart");
 
-#import("../lib.dart");
-
+main() {
+  print("hello");
+}

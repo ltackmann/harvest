@@ -7,17 +7,12 @@
  * The root of an object tree (aggregate). 
  */
 class AggregateRoot {
-  final List<EventSourcedEntity> _entities;
-  final List<DomainEvent> _changes;
-  final Logger _logger;
-  int _version;
-  
   AggregateRoot()
     : _changes = new List<DomainEvent>(),
       _entities = new List<EventSourcedEntity>(),
       _logger = LoggerFactory.getLogger("cqrs4dart.AggregateRoot");
  
-  int get version() => _version;
+  int get version => _version;
   
   Guid id;
   
@@ -53,9 +48,9 @@ class AggregateRoot {
   /**
    * List of events applied to this aggregate that are not persisted in the event store
    */
-    List<DomainEvent> get uncommittedChanges() => _changes;
+  List<DomainEvent> get uncommittedChanges => _changes;
  
-    bool get hasUncommittedChanges() => _changes.length > 0;
+  bool get hasUncommittedChanges => _changes.length > 0;
 
     /**
    * Mark all events as persisted, usually called by event stores when events are saved
@@ -75,4 +70,9 @@ class AggregateRoot {
   operator ==(AggregateRoot other) => other.id == id; 
   
   String toString() => "aggregate $id";
+  
+  final List<EventSourcedEntity> _entities;
+  final List<DomainEvent> _changes;
+  final Logger _logger;
+  int _version;
 }

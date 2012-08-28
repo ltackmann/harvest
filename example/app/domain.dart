@@ -39,7 +39,7 @@ class InventoryItem extends AggregateRoot {
   }
 
   deactivate() {
-    Expect.isFalse(_activated);
+    Expect.isTrue(_activated);
     applyChange(new InventoryItemDeactivated(id));
   }
   

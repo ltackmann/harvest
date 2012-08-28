@@ -4,12 +4,13 @@
 // specified in the LICENSE file
 
 /**
- * Eventstore implementation backed by DartGap (PhoneGap)
+ * Eventstore implementation backed by PhoneGap 
  */ 
-#library("dartstore:dartgap-store");
+#library("dartstore:phonegap");
 
 #import("package:log4dart/log4dart.dart");
 #import("package:dart-gap/dartgap.dart");
 
 #import("dartstore.dart");
 
+#source("lib/stores/phonegap/data_mapper.dart");

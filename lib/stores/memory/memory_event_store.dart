@@ -7,10 +7,6 @@
  * Memory backed event store, mostly suitable for test use
  */
 class MemoryEventStore implements EventStore {
-  final Map<Guid, List<DomainEventDescriptor>> _store;
-  final MessageBus _messageBus;
-  final Logger _logger;
-
   MemoryEventStore():
     _logger = LoggerFactory.getLogger("cqrs4dart.MemoryEventStore"),
     _store = new LinkedHashMap<Guid, List<DomainEventDescriptor>>(), 
@@ -47,5 +43,9 @@ class MemoryEventStore implements EventStore {
     Expect.isTrue(eventDescriptors.length > 0);
     return eventDescriptors.map((DomainEventDescriptor desc) => desc.eventData);
   }
+  
+  final Map<Guid, List<DomainEventDescriptor>> _store;
+  final MessageBus _messageBus;
+  final Logger _logger;
 }
 

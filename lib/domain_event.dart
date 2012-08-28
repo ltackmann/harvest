@@ -11,7 +11,7 @@
  * Since these events are persisted its best they be constructed from primitive serializable types
  */
 class DomainEvent extends Message {
-  int version;
-  
   DomainEvent(String type): super(type);
+  
+  int version;
 }

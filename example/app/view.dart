@@ -12,7 +12,7 @@ class _InventoryView implements InventoryView {
       <h2>All items:</h2>
       <ul></ul>
       <input type='text'></input>
-      <a href="#">Add</a>
+      <a href="#">Add item</a>
     </section>
     """);
     
@@ -44,8 +44,8 @@ class _InventoryView implements InventoryView {
       Count: ${details.currentCount}<br/><br/>
       
       <a href="#" id='rename'>Rename item</a> <br/>
-      <a href="#" id='check_items_in'>Check number in</a> <br/>
-      <a href="#" id='remove_items'>Check number out</a> <br/>
+      <a href="#" id='check_items_in'>Check items in</a> <br/>
+      <a href="#" id='remove_items'>Check items out</a> <br/>
       <a href="#" id='deactivate'>Remove item</a> <br/>
       <a href="#" id='back'>Back</a> <br/>
      </section>
@@ -59,7 +59,7 @@ class _InventoryView implements InventoryView {
     
     elm.query("#check_items_in").on.click.add((Event e) {
       _checkInItems((int count) {
-        presenter.removeItems(details.id, count, details.version);
+        presenter.checkInItems(details.id, count, details.version);
       });
     });
     
@@ -77,9 +77,11 @@ class _InventoryView implements InventoryView {
   }
   
   _changeItemName(onSubmit(String name)) {
-    Element elm = new Element.html(""" 
+    Element elm = new Element.html("""
+    <section> 
       <p>Name: <input type="text"/> </p>
       <button name="submit">Submit</button>
+    </section>
     """);
     elm.query("button").on.click.add((MouseEvent event) {
       InputElement input = elm.query("input");
@@ -90,24 +92,28 @@ class _InventoryView implements InventoryView {
   
   _checkInItems(onSubmit(int number)) {
     Element elm = new Element.html(""" 
+    <section> 
       <p>Number: <input type="number"/> </p>
       <button name="submit">Submit</button>
+    </section>
     """);
     elm.query("button").on.click.add((MouseEvent event) {
       InputElement input = elm.query("input");
-      onSubmit(Math.parseInt(input.value));
+      onSubmit(parseInt(input.value));
     });
     _show(elm);
   }
   
   _removeItems(onSubmit(int count)) {
-    Element elm = new Element.html(""" 
+    Element elm = new Element.html("""
+    <section> 
       <p>Number: <input type="number"/> </p>
       <button name="submit">Submit</button>
+    </section>
     """);
     elm.query("button").on.click.add((MouseEvent event) {
       InputElement input = elm.query("input");
-      onSubmit(Math.parseInt(input.value));
+      onSubmit(parseInt(input.value));
     });
     _show(elm);
   }

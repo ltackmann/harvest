@@ -19,7 +19,7 @@ class InventoryPresenter {
   
   checkInItems(Guid id, int number, int version) {
     _messageBus.fire(new CheckInItemsToInventory(id, number, version));
-    showItems();
+    showDetails(id);
   }
   
   deactivateItem(Guid id, int version) {
@@ -29,12 +29,12 @@ class InventoryPresenter {
 
   renameItem(Guid id, String name, int version) {
     _messageBus.fire(new RenameInventoryItem(id, name, version));
-    showItems();
+    showDetails(id);
   }
 
   removeItems(Guid id, int number, int version) {
     _messageBus.fire(new RemoveItemsFromInventory(id, number, version));
-    showItems();
+    showDetails(id);
   }
   
   showItems() {

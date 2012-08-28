@@ -5,16 +5,13 @@
 
 class IDBConnection {
   static IDBDatabase _connection;
-  final Logger _logger;
-  final String dbName;
-  final String version;
   
   IDBConnection(this.dbName, this.version): _logger = LoggerFactory.getLogger("cqrs4dart.IDBConnection");
 
   Future<IDBCollection> open(String collection) {
     Completer<IDBCollection> completer = new Completer<IDBCollection>();
     
-    IDBRequest request = window.webkitIndexedDB.open(dbName);
+    var request = window.webkitIndexedDB.open(dbName);
     request.on.success.add((connected) {
       _logger.debug("opened DB $dbName");
       IDBDatabase db = connected.target.result;
@@ -34,5 +31,9 @@ class IDBConnection {
     
     return completer.future;
   }
+  
+  final Logger _logger;
+  final String dbName;
+  final String version;
 }
 

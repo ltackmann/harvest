@@ -9,8 +9,9 @@
  * This is useful for ensuring the application works as expected. 
  */
 class DeadEvent extends Message {
-  static final String TYPE = "DeadEvent";
-  final Message deadMessage;
+  static final TYPE = "DeadEvent";
   
   DeadEvent(this.deadMessage): super(TYPE);
+  
+  final Message deadMessage;
 }

@@ -10,7 +10,7 @@ interface ModelRepository<T> {
   /**
    * Get all instances of T
    */
-  List<T> get all();
+  List<T> get all;
   
   T getById(Guid id);
   
@@ -33,5 +33,5 @@ interface ModelRepository<T> {
  * be saved in the model repository.
  */
 interface IdModel {
-  Guid get id();
+  Guid get id;
 }

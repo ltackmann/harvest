@@ -6,7 +6,7 @@
 /**
  * Eventstore implementation backed by IndexDB (HTML5)
  */ 
-#library("dartstore:indexdb-store");
+#library("dartstore:indexdb");
 
 #import("dart:html");
 

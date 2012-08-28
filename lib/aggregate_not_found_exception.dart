@@ -4,9 +4,9 @@
 // specified in the LICENSE file
 
 class AggregateNotFoundException implements Exception {
-  final Guid aggregateId;
-  
   const AggregateNotFoundException(this.aggregateId);
   
   String toString() => "No aggregate for id: $aggregateId";
+  
+  final Guid aggregateId;
 }

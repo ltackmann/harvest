@@ -8,9 +8,6 @@
  */
 class MemoryModelRepository<T extends IdModel> implements ModelRepository<T> {
   static Map<String, MemoryModelRepository> _cache;
-  final Map<Guid,T> _store;
-  final Logger _logger;
-  final String _type;
   
   /**
    * Type is the class name of T and is used to ensure that only one repository exists for each T
@@ -32,7 +29,7 @@ class MemoryModelRepository<T extends IdModel> implements ModelRepository<T> {
       _store = new Map<Guid, T>(),
       _type = type;
   
-  List<T> get all() => new List.from(_store.getValues());    
+  List<T> get all => new List.from(_store.getValues());    
   
   T getById(Guid id) => _store[id];
 
@@ -54,6 +51,10 @@ class MemoryModelRepository<T extends IdModel> implements ModelRepository<T> {
   removeById(Guid id) => _store.remove(id);
   
   save(T instance) => _store[instance.id] = instance;
+  
+  final Map<Guid,T> _store;
+  final Logger _logger;
+  final String _type;
 }
 
 

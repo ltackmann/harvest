@@ -6,7 +6,7 @@
 /**
  * Eventstore implementation backed by memory (HashMap)
  */ 
-#library("dartstore:memory-store");
+#library("dartstore:memory");
 
 #import("package:log4dart/log4dart.dart");
 

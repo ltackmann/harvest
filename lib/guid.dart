@@ -12,8 +12,8 @@ class Guid implements Hashable {
   final String value;
   
   factory Guid() {
-    int now = new Date.now().millisecondsSinceEpoch;
-    String guid = "${now}-${(Math.random() * now).toInt()}";
+    var now = new Date.now().millisecondsSinceEpoch;
+    var guid = "${now}-${((new Random()).nextDouble() * now).toInt()}";
     return new Guid.fromValue(guid);
   }
   

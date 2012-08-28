@@ -7,9 +7,6 @@
  * IndexDB backed event store
  */
 class IDBEventStore implements EventStore {
-  final IDBConnection _connection;
-  final Logger _logger;
-  
   // Chrome only for now, see bug http://code.google.com/p/chromium/issues/detail?id=108223
   // [String version = "1", String storeName = "event-store"]
   IDBEventStore(this._connection): _logger = LoggerFactory.getLogger("cqrs4dart.IDBEventStore") {
@@ -23,6 +20,9 @@ class IDBEventStore implements EventStore {
   List<DomainEvent> getEventsForAggregate(Guid aggregateId) {
     throw "TODO";
   }
+  
+  final IDBConnection _connection;
+  final Logger _logger;
 }
 
 
