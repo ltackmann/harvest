@@ -25,7 +25,7 @@ class MessageBus {
   /**
    * Add a handler that will recieve all events
    */ 
-  List<MessageHandler> get onAll => _catchAllHandlers;
+  List<MessageHandler> get onAny => _catchAllHandlers;
   
   fire(Message message) {
     if(_handlerMap.noHandlersFor(message.type) && message.type != DeadEvent.TYPE) {
