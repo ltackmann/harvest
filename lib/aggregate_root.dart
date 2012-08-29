@@ -10,7 +10,7 @@ class AggregateRoot {
   AggregateRoot()
     : _changes = new List<DomainEvent>(),
       _entities = new List<EventSourcedEntity>(),
-      _logger = LoggerFactory.getLogger("cqrs4dart.AggregateRoot");
+      _logger = LoggerFactory.getLogger("dartstore.AggregateRoot");
  
   int get version => _version;
   

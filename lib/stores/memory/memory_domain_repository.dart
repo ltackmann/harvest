@@ -4,10 +4,10 @@
 // specified in the LICENSE file
 
 /**
- * Memory backed domain repository that stores and retrieves domain objects by their events
+ * Memory backed domain repository 
  */
-class MemoryDomainRepository<T extends AggregateRoot> implements DomainRepository<T> {
-  static Map<String, MemoryDomainRepository> _cache;
+class MemoryDomainRepository<T extends AggregateRoot> extends DomainRepository<T> {
+  static Map<String, DomainRepository> _cache;
   static EventStore _store;
   
   /**
@@ -20,7 +20,7 @@ class MemoryDomainRepository<T extends AggregateRoot> implements DomainRepositor
       _store = new MemoryEventStore();
     }
     if(_cache == null) {
-      _cache = new Map<String, MemoryDomainRepository>();
+      _cache = new Map<String, DomainRepository>();
     }
     if(!_cache.containsKey(type)) {
       _cache[type] = new MemoryDomainRepository._internal(type, builder);
@@ -28,30 +28,5 @@ class MemoryDomainRepository<T extends AggregateRoot> implements DomainRepositor
     return _cache[type];
   }
 
-  MemoryDomainRepository._internal(String type, this._builder)
-    : _logger = LoggerFactory.getLogger("cqrs4dart.${type}DomainRepository");
-  
-  save(AggregateRoot aggregate, [int expectedVersion = -1]) {
-    if(aggregate.hasUncommittedChanges) {
-      _logger.debug("saving aggregate ${aggregate.id} with ${aggregate.uncommittedChanges.length} new events");
-      _store.saveEvents(aggregate.id, aggregate.uncommittedChanges, expectedVersion);
-      aggregate.markChangesAsCommitted();
-    }
-  }
-
-  T load(Guid id) {
-    var obj = _builder(id);
-    var events = _store.getEventsForAggregate(id);
-    _logger.debug("loading aggregate ${id} from ${events.length} total events");
-    obj.loadFromHistory(events);
-    return obj;
-  }
-  
-  final Logger _logger;
-  DomainBuilder _builder;
+  MemoryDomainRepository._internal(String type, DomainBuilder builder): super(type, builder, _store);
 }
-
-
-
-
-

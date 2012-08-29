@@ -18,27 +18,31 @@ class InventoryCommandHandler {
   }
 
   _onDeactivateInventoryItem(DeactivateInventoryItem message) {
-    var item = _domainRepository.load(message.inventoryItemId);
-    item.deactivate();
-    _domainRepository.save(item, message.originalVersion);
+    _domainRepository.load(message.inventoryItemId).then((InventoryItem item) {
+      item.deactivate();
+      _domainRepository.save(item, message.originalVersion);
+    });
   }
   
   _onRemoveItemsFromInventory(RemoveItemsFromInventory message) {
-    var item = _domainRepository.load(message.inventoryItemId);
-    item.remove(message.count);
-    _domainRepository.save(item, message.originalVersion);
+    _domainRepository.load(message.inventoryItemId).then((InventoryItem item) {
+      item.remove(message.count);
+      _domainRepository.save(item, message.originalVersion);
+    });
   }
   
   _onCheckInItemsToInventory(CheckInItemsToInventory message) {
-    var item = _domainRepository.load(message.inventoryItemId);
-    item.checkIn(message.count);
-    _domainRepository.save(item, message.originalVersion);
+    _domainRepository.load(message.inventoryItemId).then((InventoryItem item) {
+      item.checkIn(message.count);
+      _domainRepository.save(item, message.originalVersion);
+    });
   }
   
   _onRenameInventoryItem(RenameInventoryItem message) {
-    var item = _domainRepository.load(message.inventoryItemId);
-    item.name = message.newName;
-    _domainRepository.save(item, message.originalVersion);
+    _domainRepository.load(message.inventoryItemId).then((InventoryItem item) {
+      item.name = message.newName;
+      _domainRepository.save(item, message.originalVersion);
+    });
   }
   
   final DomainRepository<InventoryItem> _domainRepository;

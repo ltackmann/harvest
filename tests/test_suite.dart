@@ -9,6 +9,7 @@
 
 #import("../dartstore.dart");
 #import("../memory_store.dart");
+#import("../file_store.dart");
 #import("../example/app/lib.dart");
 
 #source("lib/eventstore_state.dart");
@@ -17,10 +18,10 @@
 
 main() {
   // test memory backed event store
-  var memoryItemListRepository = new MemoryModelRepository<InventoryItemListEntry>("InventoryItemListEntry");
-  var memoryItemDetailsRepository = new MemoryModelRepository<InventoryItemDetails>("InventoryItemDetails");
-  new EventStoreTester(memoryItemListRepository, memoryItemDetailsRepository);
+  var memoryInventoryItemRepository = new MemoryDomainRepository("InventoryItem", (Guid id) => new InventoryItem.fromId(id));
+  new EventStoreTester(memoryInventoryItemRepository);
   
   // test file backed event store
-  
+  var fileInventoryItemRepository = new FileDomainRepository.reset("InventoryItem", (Guid id) => new InventoryItem.fromId(id), "/tmp/eventstore");
+  new EventStoreTester(fileInventoryItemRepository);
 }

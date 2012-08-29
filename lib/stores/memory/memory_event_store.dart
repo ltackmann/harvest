@@ -4,22 +4,24 @@
 // specified in the LICENSE file
 
 /**
- * Memory backed event store, mostly suitable for test use
+ * Memory backed event store
  */
 class MemoryEventStore implements EventStore {
   MemoryEventStore():
-    _logger = LoggerFactory.getLogger("cqrs4dart.MemoryEventStore"),
-    _store = new LinkedHashMap<Guid, List<DomainEventDescriptor>>(), 
+    _logger = LoggerFactory.getLogger("dartstore.MemoryEventStore"),
+    _store = new Map<Guid, List<DomainEventDescriptor>>(), 
     _messageBus = new MessageBus();
   
-  void saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion) {
+  Future<int> saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion) {
+    var completer = new Completer<int>();
+    
     if(!_store.containsKey(aggregateId)) {
       _store[aggregateId] = new List<DomainEventDescriptor>();
     } 
     List<DomainEventDescriptor> eventDescriptors = _store[aggregateId];
     
     if(expectedVersion != -1 && eventDescriptors.last().version != expectedVersion) {
-      throw new ConcurrencyException();
+      completer.completeException(new ConcurrencyException());
     }
     var v = expectedVersion;
     for(DomainEvent event in events) {
@@ -33,15 +35,23 @@ class MemoryEventStore implements EventStore {
     for(DomainEvent event in events) {
       _messageBus.fire(event);
     }
+    completer.complete(events.length);
+    
+    return completer.future; 
   }
   
-  List<DomainEvent> getEventsForAggregate(Guid aggregateId) {
+  Future<List<DomainEvent>> getEventsForAggregate(Guid aggregateId) {
+    var completer = new Completer<List<DomainEvent>>();
+    
     if(!_store.containsKey(aggregateId)) {
-      throw new AggregateNotFoundException(aggregateId);
+      completer.completeException(new AggregateNotFoundException(aggregateId));
     } 
     var eventDescriptors = _store[aggregateId];
     Expect.isTrue(eventDescriptors.length > 0);
-    return eventDescriptors.map((DomainEventDescriptor desc) => desc.eventData);
+    List<DomainEvent> events = eventDescriptors.map((DomainEventDescriptor desc) => desc.eventData);
+    completer.complete(events);
+    
+    return completer.future; 
   }
   
   final Map<Guid, List<DomainEventDescriptor>> _store;

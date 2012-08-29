@@ -14,4 +14,5 @@
 
 #import("dartstore.dart");
 
+#source("lib/stores/file/file_domain_repository.dart");
 #source("lib/stores/file/file_event_store.dart");

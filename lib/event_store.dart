@@ -7,7 +7,13 @@
  * Interface implemented by event stores
  */ 
 interface EventStore {
-  void saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion);
+  /**
+   * Saves events for aggregate, returns number of events saved
+   */  
+  Future<int> saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion);
   
-  List<DomainEvent> getEventsForAggregate(Guid aggregateId);
+  /**
+   * Get events for aggregate
+   */ 
+  Future<List<DomainEvent>> getEventsForAggregate(Guid aggregateId);
 }

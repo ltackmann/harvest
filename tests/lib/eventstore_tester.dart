@@ -7,7 +7,7 @@
  * Test class used for asserting the robustness of eventstore implementations
  */ 
 class EventStoreTester {
-  EventStoreTester(this._itemListRepository, this._itemDetailsRepository)
+  EventStoreTester(this._inventoryItemRepository)
       : _events = new List<DomainEvent>(),
         _messageBus = new MessageBus()
   {
@@ -24,15 +24,16 @@ class EventStoreTester {
   _setupEventStore() {
     _events.clear();
     // create repository for domain models and set up command handler 
-    var inventoryItemRepository = new MemoryDomainRepository("InventoryItem", (Guid id) => new InventoryItem.fromId(id));
-    var commandHandler = new InventoryCommandHandler(_messageBus, inventoryItemRepository);
+    var commandHandler = new InventoryCommandHandler(_messageBus, _inventoryItemRepository);
     
     // create respositories for view models and set up event handler
-    var eventHandler = new InventoryEventHandler(_messageBus, _itemListRepository, _itemDetailsRepository);
+    var itemListRepository = new MemoryModelRepository<InventoryItemListEntry>("InventoryItemListEntry");
+    var itemDetailsRepository = new MemoryModelRepository<InventoryItemDetails>("InventoryItemDetails");
+    var eventHandler = new InventoryEventHandler(_messageBus, itemListRepository, itemDetailsRepository);
     
     // wire up frontend
     _view = new InventoryViewMock();
-    var viewModelFacade = new ViewModelFacade(_itemListRepository, _itemDetailsRepository);
+    var viewModelFacade = new ViewModelFacade(itemListRepository, itemDetailsRepository);
     _presenter = new InventoryPresenter(_messageBus, _view, viewModelFacade);
   }
   
@@ -117,8 +118,7 @@ class EventStoreTester {
     }
   }
   
-  ModelRepository<InventoryItemListEntry> _itemListRepository;
-  ModelRepository<InventoryItemDetails> _itemDetailsRepository;
+  DomainRepository _inventoryItemRepository;
   InventoryPresenter _presenter;
   InventoryViewMock _view;
   final List<DomainEvent> _events;
