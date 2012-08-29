@@ -14,43 +14,42 @@ class FileDomainRepository<T extends AggregateRoot> extends DomainRepository<T> 
    * Creates a file backed domain repository in folder [directory]. Creates folder if it
    * does not exists.
    */
-  factory FileDomainRepository(String type, DomainBuilder builder, String directoryPath) {
+  factory FileDomainRepository(String type, AggregateBuilder aggregateBuilder, DomainEventBuilder domainEventBuilder, String directoryPath) {
     var directory = new Directory(directoryPath);
     if(!directory.existsSync()) {
       directory.createSync();
     }
-    return new FileDomainRepository.directory(type, builder, directory);
+    return new FileDomainRepository.directory(type, aggregateBuilder, domainEventBuilder, directory);
   }
   
   /**
    * Creates a file backed domain repository in folder [directoryPath]. Creates folder if it
    * does not exists, empties it if it does.
    */
-  factory FileDomainRepository.reset(String type, DomainBuilder builder, String directoryPath) {
+  factory FileDomainRepository.reset(String type, AggregateBuilder aggregateBuilder, DomainEventBuilder domainEventBuilder, String directoryPath) {
     var directory = new Directory(directoryPath);
     if(directory.existsSync()) {
       directory.deleteRecursivelySync();
     }
-    return new FileDomainRepository(type, builder, directoryPath);
+    return new FileDomainRepository(type, aggregateBuilder, domainEventBuilder, directoryPath);
   }
   
   /**
    * Creates a file backed domain repository in existing folder [directory]. 
    */
-  factory FileDomainRepository.directory(String type, DomainBuilder builder, Directory directory) {
+  factory FileDomainRepository.directory(String type, AggregateBuilder aggregateBuilder, DomainEventBuilder domainEventBuilder, Directory directory) {
     Expect.isTrue(directory.existsSync());
     if(_store == null) {
-      _store = new FileEventStore(directory);
+      _store = new FileEventStore(directory, domainEventBuilder);
     }
     if(_cache == null) {
       _cache = new Map<String, DomainRepository>();
     }
     if(!_cache.containsKey(type)) {
-      _cache[type] = new FileDomainRepository._internal(type, builder);
+      _cache[type] = new FileDomainRepository._internal(type, aggregateBuilder);
     }
     return _cache[type];
   }
-  
 
-  FileDomainRepository._internal(String type, DomainBuilder builder): super(type, builder, _store);
+  FileDomainRepository._internal(String type, AggregateBuilder aggregateBuilder): super(type, aggregateBuilder, _store);
 }

@@ -13,6 +13,7 @@
 #source("lib/serializer/map_serializer.dart");
 #source("lib/serializer/serializer.dart");
 
+#source("lib/aggregate_builder.dart");
 #source("lib/aggregate_not_found_exception.dart");
 #source("lib/aggregate_root.dart");
 #source("lib/application_command.dart");
@@ -21,6 +22,7 @@
 #source("lib/concurrency_exception.dart");
 #source("lib/dead_event.dart");
 #source("lib/domain_event.dart");
+#source("lib/domain_event_builder.dart");
 #source("lib/domain_event_descriptor.dart");
 #source("lib/domain_repository.dart");
 #source("lib/event_sourced_entity.dart");

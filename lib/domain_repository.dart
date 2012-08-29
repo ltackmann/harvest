@@ -4,7 +4,7 @@
 // specified in the LICENSE file
 
 /**
- * Repository that stores and retrieves domain objects by their events
+ * Repository that stores and retrieves domain objects (aggregates) by their events
  */
 abstract class DomainRepository<T extends AggregateRoot>  {
   DomainRepository(String type, this._builder, this._store)
@@ -27,6 +27,9 @@ abstract class DomainRepository<T extends AggregateRoot>  {
     return completer.future;
   }
 
+  /**
+   * Load aggregate by its id
+   */ 
   Future<T> load(Guid id) {
     var completer = new Completer<T>();
     _store.getEventsForAggregate(id).then((List<DomainEvent> events) {
@@ -39,12 +42,6 @@ abstract class DomainRepository<T extends AggregateRoot>  {
   }
   
   final Logger _logger;
-  final DomainBuilder _builder;
+  final AggregateBuilder _builder;
   final EventStore _store;
 }
-
-
-/**
- * A domain builder is a function that returns a bare aggregate root for the supplied id 
- */ 
-typedef AggregateRoot DomainBuilder(Guid aggregateId);

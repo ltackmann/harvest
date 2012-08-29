@@ -9,6 +9,9 @@
 #library("dartstore:file");
 
 #import("dart:io");
+#import("dart:json");
+#import("dart:math");
+#import("dart:mirrors");
 
 #import("package:log4dart/log4dart.dart");
 

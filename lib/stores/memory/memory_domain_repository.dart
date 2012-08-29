@@ -15,7 +15,7 @@ class MemoryDomainRepository<T extends AggregateRoot> extends DomainRepository<T
    *
    * TODO remove these arguments once you can use reflection to get the same info
    */
-  factory MemoryDomainRepository(String type, DomainBuilder builder) {
+  factory MemoryDomainRepository(String type, AggregateBuilder builder) {
     if(_store == null) {
       _store = new MemoryEventStore();
     }
@@ -28,5 +28,5 @@ class MemoryDomainRepository<T extends AggregateRoot> extends DomainRepository<T
     return _cache[type];
   }
 
-  MemoryDomainRepository._internal(String type, DomainBuilder builder): super(type, builder, _store);
+  MemoryDomainRepository._internal(String type, AggregateBuilder builder): super(type, builder, _store);
 }
