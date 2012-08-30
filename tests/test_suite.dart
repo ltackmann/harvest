@@ -18,10 +18,20 @@
 
 main() {
   // test memory backed event store
+  /*
   var memoryInventoryItemRepository = new MemoryDomainRepository("InventoryItem", (Guid id) => new InventoryItem.fromId(id));
   new EventStoreTester(memoryInventoryItemRepository);
+  */
   
   // test file backed event store
-  var fileInventoryItemRepository = new FileDomainRepository.reset("InventoryItem", (Guid id) => new InventoryItem.fromId(id), "/tmp/eventstore");
+  var domainEventFactory = new DomainEventFactory();
+  domainEventFactory.builder["InventoryItemDeactivated"] = () => new InventoryItemDeactivated.init();
+  domainEventFactory.builder["InventoryItemCreated"] = () => new InventoryItemCreated.init();
+  domainEventFactory.builder["InventoryItemRenamed"] = () => new  InventoryItemRenamed.init();
+  domainEventFactory.builder["ItemsCheckedInToInventory"] = () => new   ItemsCheckedInToInventory.init();
+  domainEventFactory.builder["ItemsRemovedFromInventory"] = () => new  ItemsRemovedFromInventory.init();
+  
+  var fileInventoryItemRepository = new FileDomainRepository.reset("InventoryItem", (Guid id) => new InventoryItem.fromId(id), domainEventFactory, "/tmp/eventstore");
   new EventStoreTester(fileInventoryItemRepository);
+  
 }

@@ -4,7 +4,9 @@
 // specified in the LICENSE file
 
 class DomainEventDescriptor {
-  DomainEventDescriptor(this.id, this.eventData, this.version);
+  DomainEventDescriptor(this.id, this.eventData) {
+    version = eventData.version;
+  }
   
   DomainEvent eventData;
   Guid id;

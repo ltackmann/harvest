@@ -23,11 +23,10 @@ class MemoryEventStore implements EventStore {
     if(expectedVersion != -1 && eventDescriptors.last().version != expectedVersion) {
       completer.completeException(new ConcurrencyException());
     }
-    var v = expectedVersion;
     for(DomainEvent event in events) {
-      v++;
-      event.version = v;
-      eventDescriptors.add(new DomainEventDescriptor(aggregateId, event, v));
+      expectedVersion++;
+      event.version = expectedVersion;
+      eventDescriptors.add(new DomainEventDescriptor(aggregateId, event));
       _logger.debug("saving event ${event.type} for aggregate ${aggregateId}");
     }
     _store[aggregateId] = eventDescriptors;

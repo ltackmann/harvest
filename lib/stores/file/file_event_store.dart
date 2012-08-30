@@ -10,10 +10,11 @@ class FileEventStore implements EventStore {
   /**
    * Store events in files in the [_storeFolder] directory. Each aggregate gets its own file.  
    */ 
-  FileEventStore(this._storeFolder, this._builder):
+  FileEventStore(this._storeFolder, DomainEventFactory eventFactory):
     _logger = LoggerFactory.getLogger("dartstore.FileEventStore"),
     _store = new Map<Guid, File>(), 
-    _messageBus = new MessageBus();
+    _messageBus = new MessageBus(),
+    _jsonSerializer = new JsonSerializer(eventFactory);
   
   Future<int> saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion) {
     var completer = new Completer<int>();
@@ -52,49 +53,50 @@ class FileEventStore implements EventStore {
     return completer.future;
   }
   
-  List<DomainEventDescriptor> _parseJsonEventLog(List<Map> jsonEventlog) {
-    var eventDescriptors = new List<DomainEventDescriptor>();
-    if(!jsonEventlog.isEmpty()) {
-      jsonEventlog.forEach((Map jsonDescriptor) {
-        var eventData = _parseJsonDomainEvent(jsonDescriptor["eventData"]);
-        var id = new Guid.fromValue(jsonDescriptor["id"]);
-        var version = parseInt(jsonDescriptor["version"]);
-        eventDescriptors.add(new DomainEventDescriptor(id, eventData, version));
-      });
-    }
-    return eventDescriptors;
-  }
-  
-  DomainEvent _parseJsonDomainEvent(Map jsonEventData) {
-    var type
-  }
-  
   _saveEventsFor(Guid aggregateId, List<DomainEvent> events, int expectedVersion, Completer<int> completer, File aggregateFile, Map json) {
     if(!json.containsKey("eventlog")) {
       completer.completeException(new IllegalArgumentException("malformed json in file ${aggregateFile.fullPathSync()}"));
     } 
+    var eventDescriptors = _jsonSerializer.loadJsonEventDescriptors(json["eventData"]);
     
-    var eventDescriptors = _parseJsonEventLog(json[_EVENTLOG_KEY]);
-      
-      if(expectedVersion != -1 && eventDescriptors.last().version != expectedVersion) {
-        completer.completeException(new ConcurrencyException());
-      }
-      var v = expectedVersion;
-      for(DomainEvent event in events) {
-        v++;
-        event.version = v;
-        eventDescriptors.add(new DomainEventDescriptor(aggregateId, event, v));
-        _logger.debug("saving event ${event.type} for aggregate ${aggregateId}");
-      }
-      _store[aggregateId] = eventDescriptors;
-      
+    // TODO duplicated code begin
+    if(expectedVersion != -1 && eventDescriptors.last().version != expectedVersion) {
+      completer.completeException(new ConcurrencyException());
+    }
+    for(DomainEvent event in events) {
+      expectedVersion++;
+      event.version = expectedVersion;
+      eventDescriptors.add(new DomainEventDescriptor(aggregateId, event));
+      _logger.debug("saving event ${event.type} for aggregate ${aggregateId}");
+    }
+    // TODO duplicated code end
+    
+    var jsonEventDescriptors = _jsonSerializer.writeJsonEventDescriptors(eventDescriptors);
+    _storeJsonFile(aggregateFile, jsonEventDescriptors).then((f) {
+      // TODO duplicated code begin
       for(DomainEvent event in events) {
         _messageBus.fire(event);
       }
       completer.complete(events.length);
+      // TODO duplicated code end
+    });
+  }
+  
+  Future<File> _storeJsonFile(File file, Map json) {
+    var completer = new Completer<File>();
+    var text = JSON.stringify(json);
+    file.open(FileMode.WRITE).then((output) {
+      output.writeString(text).then((r) {
+        // TODO remove these        
+        r.flushSync();
+        completer.complete(file);
+      });
+    });
+    return completer.future;
   }
   
   Future<List<DomainEvent>> getEventsForAggregate(Guid aggregateId) {
+    /*
     var completer = new Completer<List<DomainEvent>>();
     
     if(!_store.containsKey(aggregateId)) {
@@ -106,12 +108,13 @@ class FileEventStore implements EventStore {
     completer.complete(events);
     
     return completer.future; 
+    */
   }
   
   final Map<Guid, File> _store;
   final Directory _storeFolder;
   final MessageBus _messageBus;
   final Logger _logger;
-  final DomainBuilder _builder;
+  final JsonSerializer _jsonSerializer;
 }
 

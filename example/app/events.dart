@@ -6,43 +6,53 @@
 class InventoryItemDeactivated extends DomainEvent {
   static final TYPE = "InventoryItemDeactivated";
 
+  InventoryItemDeactivated.init(): super(TYPE);
+  
   InventoryItemDeactivated(this.id): super(TYPE);
   
-  final Guid id;
+  Guid id;
 }
 
 class InventoryItemCreated extends DomainEvent {
   static final TYPE = "InventoryItemCreated";
   
+  InventoryItemCreated.init(): super(TYPE);
+  
   InventoryItemCreated(this.id, this.name): super(TYPE); 
   
-  final Guid id;
-  final String name;
+  Guid id;
+  String name;
 }
 
 class InventoryItemRenamed extends DomainEvent {
   static final TYPE = "InventoryItemRenamed";
  
+  InventoryItemRenamed.init(): super(TYPE);
+  
   InventoryItemRenamed(this.id, this.newName): super(TYPE);
   
-  final Guid id;
-  final String newName;
+  Guid id;
+  String newName;
 }
 
 class ItemsCheckedInToInventory extends DomainEvent {
   static final TYPE = "ItemsCheckedInToInventory";
 
+  ItemsCheckedInToInventory.init(): super(TYPE); 
+  
   ItemsCheckedInToInventory(this.id, this.count): super(TYPE);
   
-  final Guid id;
-  final int count;
+  Guid id;
+  int count;
 }
 
 class ItemsRemovedFromInventory extends DomainEvent {
   static final TYPE = "ItemsRemovedFromInventory";
   
-  ItemsRemovedFromInventory(this.id, this.count): super(TYPE); 
+  ItemsRemovedFromInventory.init(): super(TYPE); 
   
-  final Guid id;
-  final int count;
+  ItemsRemovedFromInventory(this.id, this.count): super(TYPE);  
+  
+  Guid id;
+  int count;
 }

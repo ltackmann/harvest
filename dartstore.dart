@@ -5,14 +5,13 @@
 
 #library("dartstore");
 
+#import("dart:json");
 #import("dart:math");
+#import("dart:mirrors");
 
 #import("package:log4dart/log4dart.dart");
 
-#source("lib/serializer/event_serializer_factory.dart");
-#source("lib/serializer/map_serializer.dart");
-#source("lib/serializer/serializer.dart");
-
+#source("lib/serializers/json_serializer.dart");
 #source("lib/aggregate_builder.dart");
 #source("lib/aggregate_not_found_exception.dart");
 #source("lib/aggregate_root.dart");
@@ -23,6 +22,7 @@
 #source("lib/dead_event.dart");
 #source("lib/domain_event.dart");
 #source("lib/domain_event_builder.dart");
+#source("lib/domain_event_factory.dart");
 #source("lib/domain_event_descriptor.dart");
 #source("lib/domain_repository.dart");
 #source("lib/event_sourced_entity.dart");

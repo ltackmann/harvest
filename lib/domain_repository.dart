@@ -11,16 +11,16 @@ abstract class DomainRepository<T extends AggregateRoot>  {
     : _logger = LoggerFactory.getLogger("dartstore.${type}DomainRepository");
   
   /**
-   * Save aggregate, return [true] when the aggregate had events that could be store
-   * otherwise [false].
+   * Save aggregate, return [true] when the aggregate had unsaved data otherwise [false].
    */ 
   Future<bool> save(AggregateRoot aggregate, [int expectedVersion = -1]) {
     var completer = new Completer<bool>();
     if(aggregate.hasUncommittedChanges) {
       _logger.debug("saving aggregate ${aggregate.id} with ${aggregate.uncommittedChanges.length} new events");
-      _store.saveEvents(aggregate.id, aggregate.uncommittedChanges, expectedVersion);
-      aggregate.markChangesAsCommitted();
-      completer.complete(true);
+      _store.saveEvents(aggregate.id, aggregate.uncommittedChanges, expectedVersion).then((r) {
+        aggregate.markChangesAsCommitted();
+        completer.complete(true);
+      });
     } else {
       completer.complete(false);
     }
