@@ -28,11 +28,11 @@ class JsonSerializer {
     return event;
   }
   
-  Map _writeJsonDomainEvent(DomainEvent event) {
+  Map writeJsonEventDescriptors(List<DomainEventDescriptor> eventDescriptors) {
     
   }
   
-  Map writeJsonEventDescriptors(List<DomainEventDescriptor> eventDescriptors) {
+  Map _writeJsonDomainEvent(DomainEvent event) {
     
   }
   

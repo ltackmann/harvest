@@ -11,4 +11,16 @@
  */
 class Command extends Message {
   Command(String type): super(type);
+
+  completeSuccess() {
+    if(_successHandler != null) {
+      _successHandler();
+    }
+  }
+  
+  onSuccess(CommandCompleter onSuccess) => _successHandler = onSuccess; 
+      
+  CommandCompleter _successHandler;
 }
+
+typedef CommandCompleter();

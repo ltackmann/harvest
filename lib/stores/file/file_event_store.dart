@@ -24,11 +24,13 @@ class FileEventStore implements EventStore {
       var aggregateFile = new File(aggregteFilePath);
       aggregateFile.exists().then((bool exists) {
         if(exists) {
+          _logger.debug("aggregate file ${aggregateFile.fullPathSync()} existed");
           _store[aggregateId] = aggregateFile;
           _readJsonFile(aggregateFile).then((Map json) {
             _saveEventsFor(aggregateId, events, expectedVersion, completer, aggregateFile, json);
           });
         } else {
+          _logger.debug("aggregate file did exists, creating it");
           aggregateFile.create().then((File file) {
             _store[aggregateId] = file;
             _saveEventsFor(aggregateId, events, expectedVersion, completer, file, {"eventlog":[]});

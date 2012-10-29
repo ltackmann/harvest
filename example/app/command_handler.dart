@@ -12,36 +12,36 @@ class InventoryCommandHandler {
     _messageBus.on[RenameInventoryItem.TYPE].add(_onRenameInventoryItem);
   }
  
-  _onCreateInventoryItem(CreateInventoryItem message) {
-    var item = new InventoryItem(message.inventoryItemId, message.name);
-    _domainRepository.save(item);
+  _onCreateInventoryItem(CreateInventoryItem command) {
+    var item = new InventoryItem(command.inventoryItemId, command.name);
+    _domainRepository.save(item).then((v) => command.completeSuccess());
   }
 
-  _onDeactivateInventoryItem(DeactivateInventoryItem message) {
-    _domainRepository.load(message.inventoryItemId).then((InventoryItem item) {
+  _onDeactivateInventoryItem(DeactivateInventoryItem command) {
+    _domainRepository.load(command.inventoryItemId).then((InventoryItem item) {
       item.deactivate();
-      _domainRepository.save(item, message.originalVersion);
+      _domainRepository.save(item, command.originalVersion).then((v) => command.completeSuccess());
     });
   }
   
-  _onRemoveItemsFromInventory(RemoveItemsFromInventory message) {
-    _domainRepository.load(message.inventoryItemId).then((InventoryItem item) {
-      item.remove(message.count);
-      _domainRepository.save(item, message.originalVersion);
+  _onRemoveItemsFromInventory(RemoveItemsFromInventory command) {
+    _domainRepository.load(command.inventoryItemId).then((InventoryItem item) {
+      item.remove(command.count);
+      _domainRepository.save(item, command.originalVersion).then((v) => command.completeSuccess());
     });
   }
   
-  _onCheckInItemsToInventory(CheckInItemsToInventory message) {
-    _domainRepository.load(message.inventoryItemId).then((InventoryItem item) {
-      item.checkIn(message.count);
-      _domainRepository.save(item, message.originalVersion);
+  _onCheckInItemsToInventory(CheckInItemsToInventory command) {
+    _domainRepository.load(command.inventoryItemId).then((InventoryItem item) {
+      item.checkIn(command.count);
+      _domainRepository.save(item, command.originalVersion).then((v) => command.completeSuccess());
     });
   }
   
-  _onRenameInventoryItem(RenameInventoryItem message) {
-    _domainRepository.load(message.inventoryItemId).then((InventoryItem item) {
-      item.name = message.newName;
-      _domainRepository.save(item, message.originalVersion);
+  _onRenameInventoryItem(RenameInventoryItem command) {
+    _domainRepository.load(command.inventoryItemId).then((InventoryItem item) {
+      item.name = command.newName;
+      _domainRepository.save(item, command.originalVersion).then((v) => command.completeSuccess());
     });
   }
   

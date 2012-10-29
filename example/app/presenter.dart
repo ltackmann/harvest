@@ -19,28 +19,33 @@ class InventoryPresenter {
   go() => showItems();
 
   createItem(String name) {
-    _messageBus.fire(new CreateInventoryItem(new Guid(), name));
-    showItems();
+    var cmd = new CreateInventoryItem(new Guid(), name);
+    cmd.onSuccess(showItems());
+    _messageBus.fire(cmd);
   }
   
   checkInItems(Guid id, int number, int version) {
-    _messageBus.fire(new CheckInItemsToInventory(id, number, version));
-    showDetails(id);
+    var cmd = new CheckInItemsToInventory(id, number, version);
+    cmd.onSuccess(showDetails(id));
+    _messageBus.fire(cmd);
   }
   
   deactivateItem(Guid id, int version) {
-    _messageBus.fire(new DeactivateInventoryItem(id, version));
-    showItems();
+    var cmd = new DeactivateInventoryItem(id, version);
+    cmd.onSuccess(showItems());
+    _messageBus.fire(cmd);
   }
 
   renameItem(Guid id, String name, int version) {
-    _messageBus.fire(new RenameInventoryItem(id, name, version));
-    showDetails(id);
+    var cmd = new RenameInventoryItem(id, name, version);
+    cmd.onSuccess(showDetails(id));
+    _messageBus.fire(cmd);
   }
 
   removeItems(Guid id, int number, int version) {
-    _messageBus.fire(new RemoveItemsFromInventory(id, number, version));
-    showDetails(id);
+    var cmd = new RemoveItemsFromInventory(id, number, version);
+    cmd.onSuccess(showDetails(id));
+    _messageBus.fire(cmd);
   }
   
   showItems() {

@@ -33,5 +33,4 @@ main() {
   
   var fileInventoryItemRepository = new FileDomainRepository.reset("InventoryItem", (Guid id) => new InventoryItem.fromId(id), domainEventFactory, "/tmp/eventstore");
   new EventStoreTester(fileInventoryItemRepository);
-  
 }
