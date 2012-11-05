@@ -6,16 +6,16 @@
 /**
  * Eventstore implementation backed by IndexDB (HTML5)
  */ 
-#library("dartstore:indexdb");
+library dart_store_indexdb;
 
-#import("dart:html");
+import "dart:html";
 
-#import("package:log4dart/log4dart.dart");
+import "package:log4dart/log4dart.dart";
 
-#import("dartstore.dart");
+import "dart_store.dart";
 
-#source("lib/stores/indexdb/idb_collection.dart");
-#source("lib/stores/indexdb/idb_connection.dart");
-#source("lib/stores/indexdb/idb_event_store.dart");
+part "src/stores/indexdb/idb_collection.dart";
+part "src/stores/indexdb/idb_connection.dart";
+part "src/stores/indexdb/idb_event_store.dart";
 
 IDBConnection idbConnection(String name, String version) => new IDBConnection(name, version);

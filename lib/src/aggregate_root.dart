@@ -6,7 +6,7 @@
 /**
  * The root of an object tree (aggregate). 
  */
-class AggregateRoot {
+abstract class AggregateRoot {
   AggregateRoot()
     : _changes = new List<DomainEvent>(),
       _entities = new List<EventSourcedEntity>(),
@@ -38,7 +38,7 @@ class AggregateRoot {
   /**
    * Implemented in each concrete aggregate, responsible for extracting data from events and applying it itself
    */
-  abstract apply(DomainEvent event);
+  apply(DomainEvent event);
 
   /**
    * Apply a new event to this aggregate

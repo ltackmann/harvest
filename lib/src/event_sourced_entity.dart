@@ -8,7 +8,7 @@
  * extending this class. Note that when events are replayed the root will recieve them 
  * first.
  */
-class EventSourcedEntity {
+abstract class EventSourcedEntity {
   EventSourcedEntity(AggregateRoot root) {
     root.addEventSourcedEntity(this);
   }
@@ -16,7 +16,7 @@ class EventSourcedEntity {
   /**
    * Implemented in each concrete entity, responsible for extracting data from events and applying it itself
    */
-  abstract apply(DomainEvent event);
+  apply(DomainEvent event);
   
   ChangeHandler applyChange;
 }
