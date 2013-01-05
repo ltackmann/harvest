@@ -3,6 +3,6 @@ authors: Lars Tackmann <lars@solvr.io>
 homepage: https://github.com/Solvr/dartstore
 dependencies:
   log4dart: any
-  #dart-gap:
+  dart-gap: 
+    git: file:///Users/lt/Projects/dart/dart-gap
   unittest: { sdk: unittest }
-
