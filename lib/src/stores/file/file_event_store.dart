@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store_file;
+
 /**
  * File backed event store
  */
@@ -12,11 +14,11 @@ class FileEventStore implements EventStore {
    */ 
   FileEventStore(this._storeFolder, DomainEventFactory eventFactory):
     _logger = LoggerFactory.getLogger("dartstore.FileEventStore"),
-    _store = new Map<Guid, File>(), 
+    _store = new Map<Uuid, File>(), 
     _messageBus = new MessageBus(),
     _jsonSerializer = new JsonSerializer(eventFactory);
   
-  Future<int> saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion) {
+  Future<int> saveEvents(Uuid aggregateId, List<DomainEvent> events, int expectedVersion) {
     var completer = new Completer<int>();
     
     if(!_store.containsKey(aggregateId)) {
@@ -49,21 +51,21 @@ class FileEventStore implements EventStore {
   
   Future<Map> _readJsonFile(File file) {
     var completer = new Completer<Map>();
-    file.readAsText().then((String text) {
+    file.readAsString().then((String text) {
       completer.complete(JSON.parse(text));
     });
     return completer.future;
   }
   
-  _saveEventsFor(Guid aggregateId, List<DomainEvent> events, int expectedVersion, Completer<int> completer, File aggregateFile, Map json) {
+  _saveEventsFor(Uuid aggregateId, List<DomainEvent> events, int expectedVersion, Completer<int> completer, File aggregateFile, Map json) {
     if(!json.containsKey("eventlog")) {
-      completer.completeException(new IllegalArgumentException("malformed json in file ${aggregateFile.fullPathSync()}"));
+      completer.completeError(new ArgumentError("malformed json in file ${aggregateFile.fullPathSync()}"));
     } 
     var eventDescriptors = _jsonSerializer.loadJsonEventDescriptors(json["eventData"]);
     
     // TODO duplicated code begin
-    if(expectedVersion != -1 && eventDescriptors.last().version != expectedVersion) {
-      completer.completeException(new ConcurrencyException());
+    if(expectedVersion != -1 && eventDescriptors.last.version != expectedVersion) {
+      completer.completeError(new ConcurrencyError());
     }
     for(DomainEvent event in events) {
       expectedVersion++;
@@ -97,7 +99,7 @@ class FileEventStore implements EventStore {
     return completer.future;
   }
   
-  Future<List<DomainEvent>> getEventsForAggregate(Guid aggregateId) {
+  Future<List<DomainEvent>> getEventsForAggregate(Uuid aggregateId) {
     /*
     var completer = new Completer<List<DomainEvent>>();
     
@@ -113,7 +115,7 @@ class FileEventStore implements EventStore {
     */
   }
   
-  final Map<Guid, File> _store;
+  final Map<Uuid, File> _store;
   final Directory _storeFolder;
   final MessageBus _messageBus;
   final Logger _logger;

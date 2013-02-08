@@ -3,19 +3,18 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-#library("dartstore:example_app");
+library dart_store_example_app;
 
-#import("dart:html");
-#import("dart:math");
+import "dart:html";
+import "dart:math";
 
-#import("package:log4dart/log4dart.dart");
-#import("../dartstore.dart");
-#import("../memory_store.dart");
+import "package:log4dart/log4dart.dart";
+import "../lib/dart_store.dart";
 
-#import("app/lib.dart");
+import "app/lib.dart";
 
 // we load the view here so "app/lib.dart" does not need to reference dart:html
-#source("app/view.dart");
+part "app/view.dart";
 
 main() {
   var messageBus = new MessageBus();

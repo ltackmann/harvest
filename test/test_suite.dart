@@ -3,18 +3,16 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-#library("dartstore:tests");
+library dart_store_tests;
 
-#import("package:unittest/unittest.dart");
+import "package:unittest/unittest.dart";
 
-#import("../dartstore.dart");
-#import("../memory_store.dart");
-#import("../file_store.dart");
-#import("../example/app/lib.dart");
+import "../lib/dart_store.dart";
+import "../example/app/lib.dart";
 
-#source("lib/eventstore_state.dart");
-#source("lib/eventstore_tester.dart");
-#source("lib/view_mock.dart");
+part "lib/eventstore_state.dart";
+part "lib/eventstore_tester.dart";
+part "lib/view_mock.dart";
 
 main() {
   // test memory backed event store
@@ -24,7 +22,7 @@ main() {
   */
   
   // test file backed event store
-  /*
+  /* TODO re-enable
   var domainEventFactory = new DomainEventFactory();
   domainEventFactory.builder["InventoryItemDeactivated"] = () => new InventoryItemDeactivated.init();
   domainEventFactory.builder["InventoryItemCreated"] = () => new InventoryItemCreated.init();

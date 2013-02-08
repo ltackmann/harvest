@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store_example;
+
 class InventoryEventHandler {
   InventoryEventHandler(this._messageBus, this._itemListRepository, this._itemDetailsRepository) {
     _messageBus.on[InventoryItemCreated.TYPE].add(_onInventoryItemCreated);

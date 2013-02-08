@@ -27,7 +27,7 @@ class MemoryModelRepository<T extends IdModel> implements ModelRepository<T> {
   }
   
   MemoryModelRepository._internal(String type)
-    : _logger = LoggerFactory.getLogger("dartstre.${type}ModelRepository"),
+    : _logger = LoggerFactory.getLogger("dartstore.${type}ModelRepository"),
       _store = new Map<Uuid, T>(),
       _type = type;
   

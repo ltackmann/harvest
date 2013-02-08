@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store_example;
+
 class InventoryCommandHandler {
   InventoryCommandHandler(this._messageBus, this._domainRepository) {
     _messageBus.on[CreateInventoryItem.TYPE].add(_onCreateInventoryItem);

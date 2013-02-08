@@ -9,7 +9,7 @@
 library dart_store_file;
 
 import "dart:io";
-import "dart:json";
+import "dart:json" as JSON;
 
 import "package:log4dart/log4dart.dart";
 

@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store_example;
+
 class InventoryPresenter {
   InventoryPresenter(this._messageBus, this._view, this._viewModelFacade)
     : _logger = LoggerFactory.getLogger("InventoryPresenter") 
@@ -19,30 +21,30 @@ class InventoryPresenter {
   go() => showItems();
 
   createItem(String name) {
-    var cmd = new CreateInventoryItem(new Guid(), name);
+    var cmd = new CreateInventoryItem(new Uuid(), name);
     cmd.onSuccess(showItems());
     _messageBus.fire(cmd);
   }
   
-  checkInItems(Guid id, int number, int version) {
+  checkInItems(Uuid id, int number, int version) {
     var cmd = new CheckInItemsToInventory(id, number, version);
     cmd.onSuccess(showDetails(id));
     _messageBus.fire(cmd);
   }
   
-  deactivateItem(Guid id, int version) {
+  deactivateItem(Uuid id, int version) {
     var cmd = new DeactivateInventoryItem(id, version);
     cmd.onSuccess(showItems());
     _messageBus.fire(cmd);
   }
 
-  renameItem(Guid id, String name, int version) {
+  renameItem(Uuid id, String name, int version) {
     var cmd = new RenameInventoryItem(id, name, version);
     cmd.onSuccess(showDetails(id));
     _messageBus.fire(cmd);
   }
 
-  removeItems(Guid id, int number, int version) {
+  removeItems(Uuid id, int number, int version) {
     var cmd = new RemoveItemsFromInventory(id, number, version);
     cmd.onSuccess(showDetails(id));
     _messageBus.fire(cmd);
@@ -53,7 +55,7 @@ class InventoryPresenter {
     _view.showItems(inventoryItems);
   }
 
-  showDetails(Guid id) {
+  showDetails(Uuid id) {
     var details = _viewModelFacade.getInventoryItemDetails(id);
     _view.showDetails(details);
   }
@@ -64,7 +66,7 @@ class InventoryPresenter {
   final InventoryView _view;
 }
 
-interface InventoryView {
+abstract class InventoryView {
   set presenter(InventoryPresenter p);
   
   showItems(List<InventoryItemListEntry> items);

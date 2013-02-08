@@ -5,10 +5,10 @@
 
 library dart_store;
 
-import "dart:json";
-import "dart:math";
 import "dart:async";
-// TODO use for marshalling (or perhaps use serilization lib) import "dart:mirrors";
+export "dart:async";
+import "dart:math";
+import "dart:mirrors";
 
 import "package:uuid/uuid.dart";
 export "package:uuid/uuid.dart";
@@ -17,14 +17,8 @@ import "package:log4dart/log4dart.dart";
 /**
  * DartStore API
  */ 
-part "src/serializers/json_serializer.dart";
 part "src/aggregate_builder.dart";
 part "src/aggregate_root.dart";
-part "src/application_command.dart";
-part "src/application_event.dart";
-part "src/command.dart";
-part "src/dead_event.dart";
-part "src/domain_event.dart";
 part "src/domain_event_builder.dart";
 part "src/domain_event_factory.dart";
 part "src/domain_event_descriptor.dart";
@@ -33,7 +27,7 @@ part "src/errors.dart";
 part "src/event_sourced_entity.dart";
 part "src/event_store.dart";
 part "src/handler_map.dart";
-part "src/message.dart";
+part "src/messages.dart";
 part "src/message_bus.dart";
 part "src/model_repository.dart";
 
@@ -44,3 +38,17 @@ part "src/stores/memory/memory_event_store.dart";
 part "src/stores/memory/memory_domain_repository.dart";
 part "src/stores/memory/memory_model_repository.dart";
 
+/*
+ * Internal helper functions 
+ */
+String _typeName(Object obj) => obj.runtimeType.toString();
+
+String _genericTypeName(Object obj) {
+  // TODO change when typeArguments is implemented in dart:mirrors
+  var typeName = _typeName(obj);
+  var regex = new RegExp(r"(.*)<(.*)>");
+  if(!regex.hasMatch(typeName)) {
+    throw new ArgumentError("Non generic type $typeName passed");
+  }
+  return regex.firstMatch(typeName).group(2);
+}

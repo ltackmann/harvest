@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store_example;
+
 /**
  * Read-only access to the view model
  */ 
@@ -13,7 +15,7 @@ class ViewModelFacade {
     return _itemListRepository.all;
   }
 
-  InventoryItemDetails getInventoryItemDetails(Guid id) {
+  InventoryItemDetails getInventoryItemDetails(Uuid id) {
     return _itemDetailsRepository.getById(id);
   }
   

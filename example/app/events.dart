@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store_example;
+
 class InventoryItemDeactivated extends DomainEvent {
   static final TYPE = "InventoryItemDeactivated";
 
@@ -10,7 +12,7 @@ class InventoryItemDeactivated extends DomainEvent {
   
   InventoryItemDeactivated(this.id): super(TYPE);
   
-  Guid id;
+  Uuid id;
 }
 
 class InventoryItemCreated extends DomainEvent {
@@ -20,7 +22,7 @@ class InventoryItemCreated extends DomainEvent {
   
   InventoryItemCreated(this.id, this.name): super(TYPE); 
   
-  Guid id;
+  Uuid id;
   String name;
 }
 
@@ -31,7 +33,7 @@ class InventoryItemRenamed extends DomainEvent {
   
   InventoryItemRenamed(this.id, this.newName): super(TYPE);
   
-  Guid id;
+  Uuid id;
   String newName;
 }
 
@@ -42,7 +44,7 @@ class ItemsCheckedInToInventory extends DomainEvent {
   
   ItemsCheckedInToInventory(this.id, this.count): super(TYPE);
   
-  Guid id;
+  Uuid id;
   int count;
 }
 
@@ -53,6 +55,6 @@ class ItemsRemovedFromInventory extends DomainEvent {
   
   ItemsRemovedFromInventory(this.id, this.count): super(TYPE);  
   
-  Guid id;
+  Uuid id;
   int count;
 }

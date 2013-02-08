@@ -3,12 +3,14 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store_example;
+
 class InventoryItem extends AggregateRoot {
-  InventoryItem(Guid itemId, String name) {
+  InventoryItem(Uuid itemId, String name) {
     applyChange(new InventoryItemCreated(itemId, name));
   }
   
-  InventoryItem.fromId(Guid itemId) {
+  InventoryItem.fromId(Uuid itemId) {
    id = itemId;
   }
 
@@ -24,7 +26,7 @@ class InventoryItem extends AggregateRoot {
 
   set name(String newName) {
     Expect.isNotNull(newName);
-    Expect.isFalse(newName.isEmpty());
+    Expect.isFalse(newName.isEmpty);
     applyChange(new InventoryItemRenamed(id, newName));
   }
 

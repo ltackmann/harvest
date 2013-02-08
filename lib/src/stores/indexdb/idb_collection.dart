@@ -3,7 +3,9 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-interface IDBCollection {
+part of dart_store_indexdb;
+
+abstract class IDBCollection {
   Future addItem(var key, var item); 
   
   forEach(f);
@@ -12,12 +14,12 @@ interface IDBCollection {
 class _IDBCollection implements IDBCollection {
   _IDBCollection(this._db, this._collection);
   
-  Future<Dynamic> addItem(var key, var item) {
-    Completer<Dynamic> completer = new Completer<Dynamic>();
+  Future<dynamic> addItem(var key, var item) {
+    var completer = new Completer<dynamic>();
     
     var request = _open(IDBTransaction.READ_WRITE).put(item, key);
     request.on.success.add((e) => completer.complete(e));
-    request.on.success.add((e) => completer.completeException(e));
+    request.on.success.add((e) => completer.completeError(e));
   
     return completer.future;
   }

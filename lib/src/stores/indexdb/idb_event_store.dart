@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store_indexdb;
+
 /**
  * IndexDB backed event store
  */
@@ -13,11 +15,11 @@ class IDBEventStore implements EventStore {
     
   }
   
-  void saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion) {
+  void saveEvents(Uuid aggregateId, List<DomainEvent> events, int expectedVersion) {
     throw "TODO";
   }
   
-  List<DomainEvent> getEventsForAggregate(Guid aggregateId) {
+  List<DomainEvent> getEventsForAggregate(Uuid aggregateId) {
     throw "TODO";
   }
   
