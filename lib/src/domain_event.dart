@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store;
+
 /**
  * Domain events are produced by the domain when an action is completed. Domain events are usually 
  * named in the past tense and can be persisted in a event store and replaied later to set the 

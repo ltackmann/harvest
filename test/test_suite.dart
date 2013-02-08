@@ -24,6 +24,7 @@ main() {
   */
   
   // test file backed event store
+  /*
   var domainEventFactory = new DomainEventFactory();
   domainEventFactory.builder["InventoryItemDeactivated"] = () => new InventoryItemDeactivated.init();
   domainEventFactory.builder["InventoryItemCreated"] = () => new InventoryItemCreated.init();
@@ -33,4 +34,5 @@ main() {
   
   var fileInventoryItemRepository = new FileDomainRepository.reset("InventoryItem", (Guid id) => new InventoryItem.fromId(id), domainEventFactory, "/tmp/eventstore");
   new EventStoreTester(fileInventoryItemRepository);
+  */
 }

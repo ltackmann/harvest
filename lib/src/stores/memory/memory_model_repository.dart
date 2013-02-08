@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store;
+
 /**
  * Memory backed model repository
  */
@@ -26,33 +28,33 @@ class MemoryModelRepository<T extends IdModel> implements ModelRepository<T> {
   
   MemoryModelRepository._internal(String type)
     : _logger = LoggerFactory.getLogger("dartstre.${type}ModelRepository"),
-      _store = new Map<Guid, T>(),
+      _store = new Map<Uuid, T>(),
       _type = type;
   
-  List<T> get all => new List.from(_store.getValues());    
+  List<T> get all => new List.from(_store.values);    
   
-  T getById(Guid id) => _store[id];
+  T getById(Uuid id) => _store[id];
 
-  T getOrNew(Dynamic builder()) {
+  T getOrNew(T builder()) {
     List list = all;
-    if(list.isEmpty()) {
+    if(list.isEmpty) {
       var instance = builder();
       save(instance);
       return instance;
     } else if(list.length == 1) {
       return list[0];
     } else {
-      throw new UnsupportedOperationException("more than one existing instance of ${_type} exists");
+      throw new StateError("more than one existing instance of ${_type} exists");
     }
   }
       
   remove(T instance) => _store.remove(instance.id);
   
-  removeById(Guid id) => _store.remove(id);
+  removeById(Uuid id) => _store.remove(id);
   
   save(T instance) => _store[instance.id] = instance;
   
-  final Map<Guid,T> _store;
+  final Map<Uuid,T> _store;
   final Logger _logger;
   final String _type;
 }

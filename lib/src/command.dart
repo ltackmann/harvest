@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store;
+
 /**
  * Commands represents a serialized method call and are created by the application. Commands are usually 
  * written in the imperative tense and cannot be persisted as they can have possible side effects

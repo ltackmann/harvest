@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store;
+
 /**
  * Entities that are part of a aggregate but not the root can still be event sourced by 
  * extending this class. Note that when events are replayed the root will recieve them 

@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store;
+
 /**
  * Factory for building [DomainEvent]'s from type names
  * 

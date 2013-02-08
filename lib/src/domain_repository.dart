@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store;
+
 /**
  * Repository that stores and retrieves domain objects (aggregates) by their events
  */
@@ -30,7 +32,7 @@ abstract class DomainRepository<T extends AggregateRoot>  {
   /**
    * Load aggregate by its id
    */ 
-  Future<T> load(Guid id) {
+  Future<T> load(Uuid id) {
     var completer = new Completer<T>();
     _store.getEventsForAggregate(id).then((List<DomainEvent> events) {
       var obj = _builder(id);

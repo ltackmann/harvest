@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store;
+
 /**
  * Application commands are not part of the CQRS event chain (and are thus not handled by ordinary command handlers). 
  * They serve the same purpose within the application as ordinary commands (to signal that something should be done).

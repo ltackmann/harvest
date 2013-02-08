@@ -3,6 +3,8 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store;
+
 /**
  * The root of an object tree (aggregate). 
  */
@@ -14,7 +16,7 @@ abstract class AggregateRoot {
  
   int get version => _version;
   
-  Guid id;
+  Uuid id;
   
   /**
    * Populate this aggregte root from historic events

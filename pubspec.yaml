@@ -1,8 +1,11 @@
 name: dart_store
 authors: Lars Tackmann <lars@solvr.io> 
 homepage: https://github.com/Solvr/dartstore
+description: >
+  Event store for Dart with multiple backends. Includes functionality for easily 
+  creating event sourced applications in Dart on both the client and server side.
+version: 1.0.0   
 dependencies:
   log4dart: any
-  dart-gap: 
-    git: file:///Users/lt/Projects/dart/dart-gap
-  unittest: { sdk: unittest }
+  unittest: any
+  uuid: any

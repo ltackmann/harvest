@@ -1,10 +1,10 @@
 DartStore
 =========
 
-Dart store is a event store for Dart with multiple backends. It also
-provides classes and interfaces for implementing event sourced
-applications in Dart both client and server side. **DartStore** suits
-the following kind of applications well
+Event store for Dart with multiple backends. Includes functionality for easily 
+creating event sourced applications in Dart on both the client and server side. 
+
+**DartStore** suits the following kind of applications well
 
 * Applications that needs online/offline syncronization 
 * Complex web applications

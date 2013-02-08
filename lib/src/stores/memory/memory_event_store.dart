@@ -3,16 +3,18 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store;
+
 /**
  * Memory backed event store
  */
 class MemoryEventStore implements EventStore {
   MemoryEventStore():
     _logger = LoggerFactory.getLogger("dartstore.MemoryEventStore"),
-    _store = new Map<Guid, List<DomainEventDescriptor>>(), 
+    _store = new Map<Uuid, List<DomainEventDescriptor>>(), 
     _messageBus = new MessageBus();
   
-  Future<int> saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion) {
+  Future<int> saveEvents(Uuid aggregateId, List<DomainEvent> events, int expectedVersion) {
     var completer = new Completer<int>();
     
     if(!_store.containsKey(aggregateId)) {
@@ -20,8 +22,8 @@ class MemoryEventStore implements EventStore {
     } 
     List<DomainEventDescriptor> eventDescriptors = _store[aggregateId];
     
-    if(expectedVersion != -1 && eventDescriptors.last().version != expectedVersion) {
-      completer.completeException(new ConcurrencyException());
+    if(expectedVersion != -1 && eventDescriptors.last.version != expectedVersion) {
+      completer.completeError(new ConcurrencyError());
     }
     for(DomainEvent event in events) {
       expectedVersion++;
@@ -39,11 +41,11 @@ class MemoryEventStore implements EventStore {
     return completer.future; 
   }
   
-  Future<List<DomainEvent>> getEventsForAggregate(Guid aggregateId) {
+  Future<List<DomainEvent>> getEventsForAggregate(Uuid aggregateId) {
     var completer = new Completer<List<DomainEvent>>();
     
     if(!_store.containsKey(aggregateId)) {
-      completer.completeException(new AggregateNotFoundException(aggregateId));
+      completer.completeError(new AggregateNotFoundError(aggregateId));
     } 
     var eventDescriptors = _store[aggregateId];
     Expect.isTrue(eventDescriptors.length > 0);
@@ -53,7 +55,7 @@ class MemoryEventStore implements EventStore {
     return completer.future; 
   }
   
-  final Map<Guid, List<DomainEventDescriptor>> _store;
+  final Map<Uuid, List<DomainEventDescriptor>> _store;
   final MessageBus _messageBus;
   final Logger _logger;
 }

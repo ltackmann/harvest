@@ -9,7 +9,7 @@
 library dart_store_mobile;
 
 import "package:log4dart/log4dart.dart";
-import "package:dart_gap/dart_gap.dart";
+//import "package:dart_gap/dart_gap.dart";
 
 import "dart_store.dart";
 

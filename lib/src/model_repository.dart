@@ -3,16 +3,18 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
+part of dart_store;
+
 /**
  * Repository for working with read-models
  */ 
-interface ModelRepository<T> {
+abstract class ModelRepository<T> {
   /**
    * Get all instances of T
    */
   List<T> get all;
   
-  T getById(Guid id);
+  T getById(Uuid id);
   
   /**
    * Get single instance of T if any exists or use [builder] to make a new one. 
@@ -23,7 +25,7 @@ interface ModelRepository<T> {
   
   remove(T instance);
   
-  removeById(Guid id);
+  removeById(Uuid id);
   
   save(T instance);
 }
@@ -32,6 +34,6 @@ interface ModelRepository<T> {
  * Marker interface than can optionally be put on models to ensure they can 
  * be saved in the model repository.
  */
-interface IdModel {
-  Guid get id;
+abstract class IdModel {
+  Uuid get id;
 }
