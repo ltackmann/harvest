@@ -8,7 +8,7 @@ part of dart_store_indexdb;
 class IDBConnection {
   static IDBDatabase _connection;
   
-  IDBConnection(this.dbName, this.version): _logger = LoggerFactory.getLogger("cqrs4dart.IDBConnection");
+  IDBConnection(this.dbName, this.version): _logger = LoggerFactory.getLogger("dart_store.IDBConnection");
 
   Future<IDBCollection> open(String collection) {
     Completer<IDBCollection> completer = new Completer<IDBCollection>();
@@ -24,12 +24,12 @@ class IDBConnection {
           db.createObjectStore(collection);
           completer.complete(new _IDBCollection(db, collection));
         });
-        changeRequest.on.error.add((versionError) => completer.completeException(versionError));
+        changeRequest.on.error.add((versionError) => completer.completeError(versionError));
       } else {
         completer.complete(new _IDBCollection(db, collection));
       }
     });
-    request.on.error.add((connectionError) => completer.completeException(connectionError));
+    request.on.error.add((connectionError) => completer.completeError(connectionError));
     
     return completer.future;
   }

@@ -3,23 +3,20 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-library dart_store_tests;
+library dart_store_test;
 
 import "package:unittest/unittest.dart";
 
 import "../lib/dart_store.dart";
 import "../example/app/lib.dart";
 
-part "lib/eventstore_state.dart";
+part "lib/helpers.dart";
 part "lib/eventstore_tester.dart";
-part "lib/view_mock.dart";
 
 main() {
   // test memory backed event store
-  /*
-  var memoryInventoryItemRepository = new MemoryDomainRepository("InventoryItem", (Guid id) => new InventoryItem.fromId(id));
-  new EventStoreTester(memoryInventoryItemRepository);
-  */
+  var memoryEventStore = new MemoryEventStore();
+  new EventStoreTester(memoryEventStore);
   
   // test file backed event store
   /* TODO re-enable

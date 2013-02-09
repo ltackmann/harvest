@@ -11,7 +11,7 @@ part of dart_store_example;
 class InventoryItemDetails implements IdModel {
   InventoryItemDetails(this.id, this.name, this.currentCount, this.version);
   
-  Uuid id;
+  Guid id;
   String name;
   int currentCount;
   int version;
@@ -23,7 +23,7 @@ class InventoryItemDetails implements IdModel {
 class InventoryItemListEntry implements IdModel {
   InventoryItemListEntry(this.id, this.name);
   
-  Uuid id;
+  Guid id;
   String name;
 }
 

@@ -13,7 +13,7 @@ class AggregateNotFoundError implements Error {
   
   String toString() => "No aggregate for id: $aggregateId";
   
-  final Uuid aggregateId;
+  final Guid aggregateId;
 }
 
 /**

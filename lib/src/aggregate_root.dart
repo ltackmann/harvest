@@ -12,11 +12,11 @@ abstract class AggregateRoot {
   AggregateRoot()
     : _changes = new List<DomainEvent>(),
       _entities = new List<EventSourcedEntity>(),
-      _logger = LoggerFactory.getLogger("dartstore.AggregateRoot");
+      _logger = LoggerFactory.getLogger("dart_store.AggregateRoot");
  
   int get version => _version;
   
-  Uuid id;
+  Guid id;
   
   /**
    * Populate this aggregte root from historic events
@@ -78,6 +78,11 @@ abstract class AggregateRoot {
   final Logger _logger;
   int _version;
 }
+
+/**
+ * Function that returns a bare aggregate root for the supplied id 
+ */ 
+typedef AggregateRoot AggregateBuilder(Guid aggregateId);
 
 /**
  * Event sourced entity that is part of a aggregate (but not the root)

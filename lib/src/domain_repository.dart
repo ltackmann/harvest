@@ -8,7 +8,7 @@ part of dart_store;
 /**
  * Repository that stores and retrieves domain objects (aggregates) by their events
  */
-abstract class DomainRepository<T extends AggregateRoot>  {
+class DomainRepository<T extends AggregateRoot>  {
   DomainRepository(this._builder, this._store) {
     _typeName = genericTypeNameOf(this);
   }
@@ -33,7 +33,7 @@ abstract class DomainRepository<T extends AggregateRoot>  {
   /**
    * Load aggregate by its id
    */ 
-  Future<T> load(Uuid id) {
+  Future<T> load(Guid id) {
     var completer = new Completer<T>();
     _store.getEventsForAggregate(id).then((List<DomainEvent> events) {
       var obj = _builder(id);
@@ -44,7 +44,7 @@ abstract class DomainRepository<T extends AggregateRoot>  {
     return completer.future;
   }
   
-  Logger get _logger => LoggerFactory.getLogger("dartstore.${_typeName}DomainRepository");
+  Logger get _logger => LoggerFactory.getLogger("dart_store.${_typeName}DomainRepository");
   
   String _typeName;
   final AggregateBuilder _builder;

@@ -6,55 +6,45 @@
 part of dart_store_example;
 
 class InventoryItemDeactivated extends DomainEvent {
-  static final TYPE = "InventoryItemDeactivated";
-
   InventoryItemDeactivated.init();
   
   InventoryItemDeactivated(this.id);
   
-  Uuid id;
+  Guid id;
 }
 
 class InventoryItemCreated extends DomainEvent {
-  static final TYPE = "InventoryItemCreated";
-  
   InventoryItemCreated.init();
   
   InventoryItemCreated(this.id, this.name); 
   
-  Uuid id;
+  Guid id;
   String name;
 }
 
 class InventoryItemRenamed extends DomainEvent {
-  static final TYPE = "InventoryItemRenamed";
- 
   InventoryItemRenamed.init();
   
   InventoryItemRenamed(this.id, this.newName);
   
-  Uuid id;
+  Guid id;
   String newName;
 }
 
 class ItemsCheckedInToInventory extends DomainEvent {
-  static final TYPE = "ItemsCheckedInToInventory";
-
   ItemsCheckedInToInventory.init(); 
   
   ItemsCheckedInToInventory(this.id, this.count);
   
-  Uuid id;
+  Guid id;
   int count;
 }
 
 class ItemsRemovedFromInventory extends DomainEvent {
-  static final TYPE = "ItemsRemovedFromInventory";
-  
   ItemsRemovedFromInventory.init(); 
   
   ItemsRemovedFromInventory(this.id, this.count);  
   
-  Uuid id;
+  Guid id;
   int count;
 }

@@ -11,7 +11,7 @@ part of dart_store_indexdb;
 class IDBEventStore implements EventStore {
   // Chrome only for now, see bug http://code.google.com/p/chromium/issues/detail?id=108223
   // [String version = "1", String storeName = "event-store"]
-  IDBEventStore(this._connection): _logger = LoggerFactory.getLogger("cqrs4dart.IDBEventStore") {
+  IDBEventStore(this._connection): _logger = LoggerFactory.getLogger("dart_store.IDBEventStore") {
     
   }
   

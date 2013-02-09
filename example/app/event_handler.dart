@@ -7,11 +7,11 @@ part of dart_store_example;
 
 class InventoryEventHandler {
   InventoryEventHandler(this._messageBus, this._itemListRepository, this._itemDetailsRepository) {
-    _messageBus.on[InventoryItemCreated.TYPE].add(_onInventoryItemCreated);
-    _messageBus.on[InventoryItemRenamed.TYPE].add(_onInventoryItemRenamed);
-    _messageBus.on[ItemsRemovedFromInventory.TYPE].add(_onItemsRemovedFromInventory);
-    _messageBus.on[ItemsCheckedInToInventory.TYPE].add(_onItemsCheckedInToInventory);
-    _messageBus.on[InventoryItemDeactivated.TYPE].add(_onInventoryItemDeactivated);
+    _messageBus.on[InventoryItemCreated].add(_onInventoryItemCreated);
+    _messageBus.on[InventoryItemRenamed].add(_onInventoryItemRenamed);
+    _messageBus.on[ItemsRemovedFromInventory].add(_onItemsRemovedFromInventory);
+    _messageBus.on[ItemsCheckedInToInventory].add(_onItemsCheckedInToInventory);
+    _messageBus.on[InventoryItemDeactivated].add(_onInventoryItemDeactivated);
   }
   
   _onInventoryItemCreated(InventoryItemCreated message) {

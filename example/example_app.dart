@@ -10,6 +10,7 @@ import "dart:math";
 
 import "package:log4dart/log4dart.dart";
 import "../lib/dart_store.dart";
+import "../lib/dart_store_cqrs.dart";
 
 import "app/lib.dart";
 
@@ -18,19 +19,20 @@ part "app/view.dart";
 
 main() {
   var messageBus = new MessageBus();
+  var eventStore = new MemoryEventStore();
   
   // create repository for domain models and set up command handler 
-  var inventoryItemRepository = new MemoryDomainRepository("InventoryItem", (Uuid id) => new InventoryItem.fromId(id));
-  var commandHandler = new InventoryCommandHandler(messageBus, inventoryItemRepository);
+  var inventoryItemRepo = new DomainRepository<InventoryItem>((Uuid id) => new InventoryItem.fromId(id), eventStore);
+  var commandHandler = new InventoryCommandHandler(messageBus, inventoryItemRepo);
   
   // create respositories for view models and set up event handler
-  var itemListRepository = new MemoryModelRepository<InventoryItemListEntry>("InventoryItemListEntry");
-  var itemDetailsRepository = new MemoryModelRepository<InventoryItemDetails>("InventoryItemDetails");
-  var eventHandler = new InventoryEventHandler(messageBus, itemListRepository, itemDetailsRepository);
+  var itemListRepo = new MemoryModelRepository<InventoryItemListEntry>();
+  var itemDetailsRepo = new MemoryModelRepository<InventoryItemDetails>();
+  var eventHandler = new InventoryEventHandler(messageBus, itemListRepo, itemDetailsRepo);
   
   // wire up frontend
   var view = new _InventoryView(document.body);
-  var viewModelFacade = new ViewModelFacade(itemListRepository, itemDetailsRepository);
+  var viewModelFacade = new ViewModelFacade(itemListRepo, itemDetailsRepo);
   var presenter = new InventoryPresenter(messageBus, view, viewModelFacade);
   
   // start application

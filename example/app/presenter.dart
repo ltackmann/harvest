@@ -21,30 +21,30 @@ class InventoryPresenter {
   go() => showItems();
 
   createItem(String name) {
-    var cmd = new CreateInventoryItem(new Uuid(), name);
+    var cmd = new CreateInventoryItem(new Guid(), name);
     cmd.onSuccess(showItems());
     _messageBus.fire(cmd);
   }
   
-  checkInItems(Uuid id, int number, int version) {
+  checkInItems(Guid id, int number, int version) {
     var cmd = new CheckInItemsToInventory(id, number, version);
     cmd.onSuccess(showDetails(id));
     _messageBus.fire(cmd);
   }
   
-  deactivateItem(Uuid id, int version) {
+  deactivateItem(Guid id, int version) {
     var cmd = new DeactivateInventoryItem(id, version);
     cmd.onSuccess(showItems());
     _messageBus.fire(cmd);
   }
 
-  renameItem(Uuid id, String name, int version) {
+  renameItem(Guid id, String name, int version) {
     var cmd = new RenameInventoryItem(id, name, version);
     cmd.onSuccess(showDetails(id));
     _messageBus.fire(cmd);
   }
 
-  removeItems(Uuid id, int number, int version) {
+  removeItems(Guid id, int number, int version) {
     var cmd = new RemoveItemsFromInventory(id, number, version);
     cmd.onSuccess(showDetails(id));
     _messageBus.fire(cmd);
@@ -55,7 +55,7 @@ class InventoryPresenter {
     _view.showItems(inventoryItems);
   }
 
-  showDetails(Uuid id) {
+  showDetails(Guid id) {
     var details = _viewModelFacade.getInventoryItemDetails(id);
     _view.showDetails(details);
   }

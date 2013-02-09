@@ -3,9 +3,13 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-part of dart_store;
-
 /**
- * Function that returns a bare aggregate root for the supplied id 
+ * Auxilery classes for implementing CQRS applications using DartStpre
  */ 
-typedef AggregateRoot AggregateBuilder(Uuid aggregateId);
+library dart_store_cqrs;
+
+import "dart_store.dart";
+
+part "src/cqrs/cqrs_helpers.dart";
+
+

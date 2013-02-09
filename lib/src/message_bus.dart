@@ -33,7 +33,6 @@ class MessageBus {
   List<MessageHandler> get onAny => _catchAllHandlers;
   
   fire(Message message) {
-    print(message.runtimeType.toString());
     if(_handlerMap.noHandlersFor(message.runtimeType) && message is! DeadEvent) {
       // fire dead event to notify application that no event handlers existed for the message
       message = new DeadEvent(message);

@@ -6,11 +6,11 @@
 part of dart_store_example;
 
 class InventoryItem extends AggregateRoot {
-  InventoryItem(Uuid itemId, String name) {
+  InventoryItem(Guid itemId, String name) {
     applyChange(new InventoryItemCreated(itemId, name));
   }
   
-  InventoryItem.fromId(Uuid itemId) {
+  InventoryItem.fromId(Guid itemId) {
    id = itemId;
   }
 

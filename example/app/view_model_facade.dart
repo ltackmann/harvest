@@ -15,7 +15,7 @@ class ViewModelFacade {
     return _itemListRepository.all;
   }
 
-  InventoryItemDetails getInventoryItemDetails(Uuid id) {
+  InventoryItemDetails getInventoryItemDetails(Guid id) {
     return _itemDetailsRepository.getById(id);
   }
   

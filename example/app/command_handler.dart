@@ -7,11 +7,11 @@ part of dart_store_example;
 
 class InventoryCommandHandler {
   InventoryCommandHandler(this._messageBus, this._domainRepository) {
-    _messageBus.on[CreateInventoryItem.TYPE].add(_onCreateInventoryItem);
-    _messageBus.on[DeactivateInventoryItem.TYPE].add(_onDeactivateInventoryItem);
-    _messageBus.on[RemoveItemsFromInventory.TYPE].add(_onRemoveItemsFromInventory);
-    _messageBus.on[CheckInItemsToInventory.TYPE].add(_onCheckInItemsToInventory);
-    _messageBus.on[RenameInventoryItem.TYPE].add(_onRenameInventoryItem);
+    _messageBus.on[CreateInventoryItem].add(_onCreateInventoryItem);
+    _messageBus.on[DeactivateInventoryItem].add(_onDeactivateInventoryItem);
+    _messageBus.on[RemoveItemsFromInventory].add(_onRemoveItemsFromInventory);
+    _messageBus.on[CheckInItemsToInventory].add(_onCheckInItemsToInventory);
+    _messageBus.on[RenameInventoryItem].add(_onRenameInventoryItem);
   }
  
   _onCreateInventoryItem(CreateInventoryItem command) {

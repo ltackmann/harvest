@@ -8,24 +8,19 @@ library dart_store;
 import "dart:async";
 export "dart:async";
 import "dart:math";
-import "dart:mirrors";
 
 import "package:uuid/uuid.dart";
-export "package:uuid/uuid.dart";
 import "package:log4dart/log4dart.dart";
 
 /**
  * DartStore API
  */ 
-part "src/aggregate_builder.dart";
 part "src/aggregate_root.dart";
-part "src/domain_event_builder.dart";
-part "src/domain_event_factory.dart";
-part "src/domain_event_descriptor.dart";
+part "src/events.dart";
 part "src/domain_repository.dart";
 part "src/errors.dart";
 part "src/event_store.dart";
-part "src/messages.dart";
+part "src/guid.dart";
 part "src/message_bus.dart";
 part "src/model_repository.dart";
 
@@ -33,7 +28,6 @@ part "src/model_repository.dart";
  * Eventstore implementation backed by memory (HashMap)
  */ 
 part "src/stores/memory/memory_event_store.dart";
-part "src/stores/memory/memory_domain_repository.dart";
 part "src/stores/memory/memory_model_repository.dart";
 
 /**

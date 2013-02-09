@@ -14,7 +14,7 @@ abstract class ModelRepository<T> {
    */
   List<T> get all;
   
-  T getById(Uuid id);
+  T getById(Guid id);
   
   /**
    * Get single instance of T if any exists or use [builder] to make a new one. 
@@ -25,7 +25,7 @@ abstract class ModelRepository<T> {
   
   remove(T instance);
   
-  removeById(Uuid id);
+  removeById(Guid id);
   
   save(T instance);
 }
@@ -35,5 +35,5 @@ abstract class ModelRepository<T> {
  * be saved in the model repository.
  */
 abstract class IdModel {
-  Uuid get id;
+  Guid get id;
 }

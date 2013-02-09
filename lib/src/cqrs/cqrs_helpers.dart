@@ -3,12 +3,7 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-part of dart_store;
-
-/**
- * Base class for events  
- */
-abstract class Message { }
+part of dart_store_cqrs;
 
 /**
  * Application commands are not part of the CQRS event chain (and are thus not handled by ordinary command handlers). 
@@ -51,26 +46,4 @@ class Command extends Message {
 }
 
 typedef CommandCompleter();
-
-/**
- * The dead event is fired when a message is placed on the eventbus without any event listners associated with it.
- *
- * This is useful for ensuring the application works as expected. 
- */
-class DeadEvent extends Message {
-  DeadEvent(this.deadMessage);
-  
-  final Message deadMessage;
-}
-
-/**
- * Domain events are produced by the domain when an action is completed. Domain events are usually 
- * named in the past tense and can be persisted in a event store and replaied later to set the 
- * domain in any state
- *
- * Since these events are persisted its best they be constructed from primitive serializable types
- */
-class DomainEvent extends Message {
-  int version;
-}
 

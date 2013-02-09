@@ -12,10 +12,10 @@ abstract class EventStore {
   /**
    * Saves events for aggregate, returns number of events saved
    */  
-  Future<int> saveEvents(Uuid aggregateId, List<DomainEvent> events, int expectedVersion);
+  Future<int> saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion);
   
   /**
    * Get events for aggregate
    */ 
-  Future<List<DomainEvent>> getEventsForAggregate(Uuid aggregateId);
+  Future<List<DomainEvent>> getEventsForAggregate(Guid aggregateId);
 }

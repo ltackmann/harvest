@@ -10,11 +10,11 @@ part of dart_store;
  */
 class MemoryEventStore implements EventStore {
   MemoryEventStore():
-    _logger = LoggerFactory.getLogger("dartstore.MemoryEventStore"),
-    _store = new Map<Uuid, List<DomainEventDescriptor>>(), 
+    _logger = LoggerFactory.getLogger("dart_store.MemoryEventStore"),
+    _store = new Map<Guid, List<DomainEventDescriptor>>(), 
     _messageBus = new MessageBus();
   
-  Future<int> saveEvents(Uuid aggregateId, List<DomainEvent> events, int expectedVersion) {
+  Future<int> saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion) {
     var completer = new Completer<int>();
     
     if(!_store.containsKey(aggregateId)) {
@@ -41,7 +41,7 @@ class MemoryEventStore implements EventStore {
     return completer.future; 
   }
   
-  Future<List<DomainEvent>> getEventsForAggregate(Uuid aggregateId) {
+  Future<List<DomainEvent>> getEventsForAggregate(Guid aggregateId) {
     var completer = new Completer<List<DomainEvent>>();
     
     if(!_store.containsKey(aggregateId)) {
@@ -55,7 +55,7 @@ class MemoryEventStore implements EventStore {
     return completer.future; 
   }
   
-  final Map<Uuid, List<DomainEventDescriptor>> _store;
+  final Map<Guid, List<DomainEventDescriptor>> _store;
   final MessageBus _messageBus;
   final Logger _logger;
 }
