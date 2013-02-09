@@ -11,25 +11,25 @@ part of dart_store;
 class MemoryModelRepository<T extends IdModel> implements ModelRepository<T> {
   static Map<String, MemoryModelRepository> _cache;
   
-  /**
-   * Type is the class name of T and is used to ensure that only one repository exists for each T
-   *
-   * TODO remove this argument once you can use reflection to get the same info
-   */
-  factory MemoryModelRepository(String type) {
+  factory MemoryModelRepository() {
     if(_cache == null) {
       _cache = new Map<String, MemoryModelRepository>();
     }
-    if(!_cache.containsKey(type)) {
-      _cache[type] = new MemoryModelRepository._internal(type);
-    }
-    return _cache[type];
+    // TODO this is suboptimal as we will create objects only to throw them away
+    //
+    // we need to create an instance of the object before we can look it up by
+    // runtime type as we do not have access to the type info in a factory 
+    // constructor.
+    var obj = new MemoryModelRepository._internal();
+    if(!_cache.containsKey(obj._typeName)) {
+      _cache[obj._typeName] = obj;
+    } 
+    return _cache[obj._typeName];
   }
   
-  MemoryModelRepository._internal(String type)
-    : _logger = LoggerFactory.getLogger("dartstore.${type}ModelRepository"),
-      _store = new Map<Uuid, T>(),
-      _type = type;
+  MemoryModelRepository._internal(): _store = new Map<Uuid, T>() {
+    _typeName = genericTypeNameOf(this); 
+  }
   
   List<T> get all => new List.from(_store.values);    
   
@@ -44,7 +44,7 @@ class MemoryModelRepository<T extends IdModel> implements ModelRepository<T> {
     } else if(list.length == 1) {
       return list[0];
     } else {
-      throw new StateError("more than one existing instance of ${_type} exists");
+      throw new StateError("more than one existing instance of ${_typeName} exists");
     }
   }
       
@@ -54,9 +54,9 @@ class MemoryModelRepository<T extends IdModel> implements ModelRepository<T> {
   
   save(T instance) => _store[instance.id] = instance;
   
+  String _typeName;
+  Logger get _logger => LoggerFactory.getLogger(_typeName);
   final Map<Uuid,T> _store;
-  final Logger _logger;
-  final String _type;
 }
 
 

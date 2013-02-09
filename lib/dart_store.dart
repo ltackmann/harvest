@@ -24,9 +24,7 @@ part "src/domain_event_factory.dart";
 part "src/domain_event_descriptor.dart";
 part "src/domain_repository.dart";
 part "src/errors.dart";
-part "src/event_sourced_entity.dart";
 part "src/event_store.dart";
-part "src/handler_map.dart";
 part "src/messages.dart";
 part "src/message_bus.dart";
 part "src/model_repository.dart";
@@ -38,14 +36,14 @@ part "src/stores/memory/memory_event_store.dart";
 part "src/stores/memory/memory_domain_repository.dart";
 part "src/stores/memory/memory_model_repository.dart";
 
-/*
- * Internal helper functions 
+/**
+ * Global Helper functions 
  */
-String _typeName(Object obj) => obj.runtimeType.toString();
+String typeNameOf(Object obj) => obj.runtimeType.toString();
 
-String _genericTypeName(Object obj) {
+String genericTypeNameOf(Object obj) {
   // TODO change when typeArguments is implemented in dart:mirrors
-  var typeName = _typeName(obj);
+  var typeName = typeNameOf(obj);
   var regex = new RegExp(r"(.*)<(.*)>");
   if(!regex.hasMatch(typeName)) {
     throw new ArgumentError("Non generic type $typeName passed");

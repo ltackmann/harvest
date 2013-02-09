@@ -29,7 +29,7 @@ class MemoryEventStore implements EventStore {
       expectedVersion++;
       event.version = expectedVersion;
       eventDescriptors.add(new DomainEventDescriptor(aggregateId, event));
-      _logger.debug("saving event ${event.type} for aggregate ${aggregateId}");
+      _logger.debug("saving event ${event.runtimeType} for aggregate ${aggregateId}");
     }
     _store[aggregateId] = eventDescriptors;
         

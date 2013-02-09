@@ -1,1 +1,8 @@
-TODO implement more functionality from https://github.com/joliver/EventStore
+TODO 
+- look into structure of
+https://github.com/joliver/EventStore/blob/master/src/proj/EventStore/IEventStream.cs
+https://github.com/joliver/EventStore/blob/master/src/proj/EventStore/IStoreEvents.cs
+https://github.com/joliver/EventStore/blob/master/doc/EventStore.Example/MainProgram.cs
+
+- split CQRS code into sub library 
+- look into CQRS/EventStore split from https://github.com/etishor/CQRSEventSourcingSample

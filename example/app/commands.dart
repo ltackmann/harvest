@@ -8,7 +8,7 @@ part of dart_store_example;
 class DeactivateInventoryItem extends Command {
   static final TYPE = "DeactivateInventoryItem";
   
-  DeactivateInventoryItem(this.inventoryItemId, this.originalVersion): super(TYPE); 
+  DeactivateInventoryItem(this.inventoryItemId, this.originalVersion); 
   
   final Uuid inventoryItemId;
   final int originalVersion;
@@ -17,7 +17,7 @@ class DeactivateInventoryItem extends Command {
 class CreateInventoryItem extends Command {
   static final TYPE = "CreateInventoryItem";
   
-  CreateInventoryItem(this.inventoryItemId, this.name): super(TYPE); 
+  CreateInventoryItem(this.inventoryItemId, this.name); 
   
   final Uuid inventoryItemId;
   final String name;
@@ -26,7 +26,7 @@ class CreateInventoryItem extends Command {
 class RenameInventoryItem extends Command {
   static final TYPE = "RenameInventoryItem";
   
-  RenameInventoryItem(this.inventoryItemId, this.newName, this.originalVersion): super(TYPE); 
+  RenameInventoryItem(this.inventoryItemId, this.newName, this.originalVersion); 
   
   final Uuid inventoryItemId;
   final String newName;
@@ -36,7 +36,7 @@ class RenameInventoryItem extends Command {
 class CheckInItemsToInventory extends Command {
   static final TYPE = "CheckInItemsToInventory";
   
-	CheckInItemsToInventory(this.inventoryItemId, this.count, this.originalVersion): super(TYPE); 
+	CheckInItemsToInventory(this.inventoryItemId, this.count, this.originalVersion); 
 
 	final Uuid inventoryItemId;
 	final int count;
@@ -46,7 +46,7 @@ class CheckInItemsToInventory extends Command {
 class RemoveItemsFromInventory extends Command {
   static final TYPE = "RemoveItemsFromInventory";
 
-  RemoveItemsFromInventory(this.inventoryItemId, this.count, this.originalVersion): super(TYPE); 
+  RemoveItemsFromInventory(this.inventoryItemId, this.count, this.originalVersion); 
   
   final Uuid inventoryItemId;
   final int count;

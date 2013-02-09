@@ -5,6 +5,9 @@
 
 part of dart_store;
 
+/**
+ * Message bus for registrering and routing [Message]'s to their [MessageHandler]
+ */
 class MessageBus {
   static MessageBus _instance;
   
@@ -36,8 +39,8 @@ class MessageBus {
       message = new DeadEvent(message);
     }
     _catchAllHandlers.forEach((MessageHandler messageHandler) => messageHandler(message));
-    _handlerMap.forEach((String messageType, List<MessageHandler> messageHandlers){
-      if(message.type == messageType) {
+    _handlerMap.forEach((Type messageType, List<MessageHandler> messageHandlers){
+      if(message.runtimeType == messageType) {
         messageHandlers.forEach((MessageHandler messageHandler) => messageHandler(message));
       }
     });
@@ -46,5 +49,29 @@ class MessageBus {
   final List<MessageHandler> _catchAllHandlers;
   final HandlerMap _handlerMap;
 }
+
+/**
+ * Store the [MessageHandler]'s to be fired for a specific [Type] of a [Message]
+ */
+class HandlerMap {
+  HandlerMap(): _handlers = new Map<Type, List<MessageHandler>>();
+  
+  operator [](Type messageType) {
+    return _handlers.putIfAbsent(messageType, () => new List<MessageHandler>()); 
+  }
+  
+  forEach(Function f) {
+    return _handlers.forEach(f);
+  }
+  
+  bool noHandlersFor(Type messageType) => this[messageType].length == 0;
+  
+  final Map<Type, List<MessageHandler>> _handlers;
+}
+
+/**
+ * Function executed when a message is placed on the [MessageBus]
+ */
+typedef MessageHandler(Message message);
 
 

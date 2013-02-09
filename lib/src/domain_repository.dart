@@ -9,8 +9,9 @@ part of dart_store;
  * Repository that stores and retrieves domain objects (aggregates) by their events
  */
 abstract class DomainRepository<T extends AggregateRoot>  {
-  DomainRepository(String type, this._builder, this._store)
-    : _logger = LoggerFactory.getLogger("dartstore.${type}DomainRepository");
+  DomainRepository(this._builder, this._store) {
+    _typeName = genericTypeNameOf(this);
+  }
   
   /**
    * Save aggregate, return [true] when the aggregate had unsaved data otherwise [false].
@@ -43,7 +44,9 @@ abstract class DomainRepository<T extends AggregateRoot>  {
     return completer.future;
   }
   
-  final Logger _logger;
+  Logger get _logger => LoggerFactory.getLogger("dartstore.${_typeName}DomainRepository");
+  
+  String _typeName;
   final AggregateBuilder _builder;
   final EventStore _store;
 }

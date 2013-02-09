@@ -13,7 +13,7 @@ class InventoryPresenter {
     // show the events fired
     _messageBus.onAny.add((Message message) {
       var messageType = (message is Command) ? "Command" : "Event";
-      var messageName = message.type;
+      var messageName = message.runtimeType.toString();
       _view.recordMessage(messageType, messageName, new Date.now());
     });
   }

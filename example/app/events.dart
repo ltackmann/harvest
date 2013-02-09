@@ -8,9 +8,9 @@ part of dart_store_example;
 class InventoryItemDeactivated extends DomainEvent {
   static final TYPE = "InventoryItemDeactivated";
 
-  InventoryItemDeactivated.init(): super(TYPE);
+  InventoryItemDeactivated.init();
   
-  InventoryItemDeactivated(this.id): super(TYPE);
+  InventoryItemDeactivated(this.id);
   
   Uuid id;
 }
@@ -18,9 +18,9 @@ class InventoryItemDeactivated extends DomainEvent {
 class InventoryItemCreated extends DomainEvent {
   static final TYPE = "InventoryItemCreated";
   
-  InventoryItemCreated.init(): super(TYPE);
+  InventoryItemCreated.init();
   
-  InventoryItemCreated(this.id, this.name): super(TYPE); 
+  InventoryItemCreated(this.id, this.name); 
   
   Uuid id;
   String name;
@@ -29,9 +29,9 @@ class InventoryItemCreated extends DomainEvent {
 class InventoryItemRenamed extends DomainEvent {
   static final TYPE = "InventoryItemRenamed";
  
-  InventoryItemRenamed.init(): super(TYPE);
+  InventoryItemRenamed.init();
   
-  InventoryItemRenamed(this.id, this.newName): super(TYPE);
+  InventoryItemRenamed(this.id, this.newName);
   
   Uuid id;
   String newName;
@@ -40,9 +40,9 @@ class InventoryItemRenamed extends DomainEvent {
 class ItemsCheckedInToInventory extends DomainEvent {
   static final TYPE = "ItemsCheckedInToInventory";
 
-  ItemsCheckedInToInventory.init(): super(TYPE); 
+  ItemsCheckedInToInventory.init(); 
   
-  ItemsCheckedInToInventory(this.id, this.count): super(TYPE);
+  ItemsCheckedInToInventory(this.id, this.count);
   
   Uuid id;
   int count;
@@ -51,9 +51,9 @@ class ItemsCheckedInToInventory extends DomainEvent {
 class ItemsRemovedFromInventory extends DomainEvent {
   static final TYPE = "ItemsRemovedFromInventory";
   
-  ItemsRemovedFromInventory.init(): super(TYPE); 
+  ItemsRemovedFromInventory.init(); 
   
-  ItemsRemovedFromInventory(this.id, this.count): super(TYPE);  
+  ItemsRemovedFromInventory(this.id, this.count);  
   
   Uuid id;
   int count;

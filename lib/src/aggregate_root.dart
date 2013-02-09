@@ -23,7 +23,7 @@ abstract class AggregateRoot {
    */
   loadFromHistory(List<DomainEvent> history) {
     history.forEach((DomainEvent e) {
-      _logger.debug("loading historic event ${e.type} for aggregate ${id}");
+      _logger.debug("loading historic event ${e.runtimeType} for aggregate ${id}");
       _applyChange(e, false);
     });
   }
@@ -32,7 +32,7 @@ abstract class AggregateRoot {
     this.apply(event);
     _entities.forEach((EventSourcedEntity entity) => entity.apply(event)); 
     if(isNew) {
-      _logger.debug("applying change ${event.type} for ${id}");
+      _logger.debug("applying change ${event.runtimeType} for ${id}");
       _changes.add(event);
     }
   }
@@ -78,3 +78,23 @@ abstract class AggregateRoot {
   final Logger _logger;
   int _version;
 }
+
+/**
+ * Event sourced entity that is part of a aggregate (but not the root)
+ * 
+ * Note that when events are replayed the root will recieve them first.
+ */
+abstract class EventSourcedEntity {
+  EventSourcedEntity(AggregateRoot root) {
+    root.addEventSourcedEntity(this);
+  }
+  
+  /**
+   * Implemented in each concrete entity, responsible for extracting data from events and applying it itself
+   */
+  apply(DomainEvent event);
+  
+  ChangeHandler applyChange;
+}
+
+typedef ChangeHandler(DomainEvent event); 

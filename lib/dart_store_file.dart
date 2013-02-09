@@ -15,5 +15,4 @@ import "package:log4dart/log4dart.dart";
 
 import "dart_store.dart";
 
-part "src/stores/file/file_domain_repository.dart";
 part "src/stores/file/file_event_store.dart";
