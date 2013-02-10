@@ -34,28 +34,32 @@ class ApplicationEvent extends Message { }
  * Since commands are not persisted they can contain arbitraly complex types 
  */
 class Command extends Message {
+  Command(): _commandCompleter = new Completer();
+  
   completeSuccess() {
     if(_successHandler != null) {
       _successHandler();
     }
+    _commandCompleter.complete();
   }
   
   /**
-   * Helper function that fires command on [messageBus] and executes [onSuccess] when its done
-   * 
-   * TODO use named argument for onSuccess
+   * Register function to be executed when command has been handled by all command handlers
    */
-  Future fireAsync(MessageBus messageBus, var onSuccess) {
-    var completer = new Completer();
-    _successHandler = () {
-      onSuccess();
-      completer.complete();
-    };
+  Command onSuccess(successHandler) {
+    _successHandler = successHandler;
+    return this;
+  }
+  
+  /**
+   * Fires this command on [messageBus] 
+   */
+  Future fireAsync(MessageBus messageBus) {
     messageBus.fire(this);
-    return completer.future;
+    return _commandCompleter.future;
   }
       
-  CommandCompleter _successHandler;
+  Completer _commandCompleter;
+  var _successHandler;
 }
 
-typedef CommandCompleter();
