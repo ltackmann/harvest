@@ -36,23 +36,24 @@ class EventStoreTester {
   }
   
   _testExecutingEvents() {
+    // record all events
+    var events = new List<DomainEvent>();
+    _messageBus.onAny.add((Message message) {
+      if(message is DomainEvent) {
+        events.add(message);
+      }
+    }); 
+    
     group("executing events -", () {
-      // record all events
-      var events = new List<DomainEvent>();
-      _messageBus.onAny.add((Message message) {
-        if(message is DomainEvent) {
-          events.add(message);
-        }
-      }); 
+      String item1name = "Book 1";
+      Guid item1id;
       
-      String name1;
-      Guid id1;
-      
-      test("create item 1", () {
-        name1 = "Book 1";
-        _presenter.createItem(name1);
-        expect(_view.displayedItems.length, equals(1));
-        id1 = _view.displayedItems[0].id;
+      test("creating an item should display it", () {
+        _presenter.createItem(item1name).then(expectAsync1(() {
+          expect(_view.displayedItems.length, equals(1));
+          item1id = _view.displayedItems[0].id;
+          expect(item1id, isNotNull);
+        }));
       });
       
       /*

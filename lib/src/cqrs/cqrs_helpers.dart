@@ -40,10 +40,22 @@ class Command extends Message {
     }
   }
   
-  onSuccess(CommandCompleter onSuccess) => _successHandler = onSuccess; 
+  /**
+   * Helper function that fires command on [messageBus] and executes [onSuccess] when its done
+   * 
+   * TODO use named argument for onSuccess
+   */
+  Future fireAsync(MessageBus messageBus, var onSuccess) {
+    var completer = new Completer();
+    _successHandler = () {
+      onSuccess();
+      completer.complete();
+    };
+    messageBus.fire(this);
+    return completer.future;
+  }
       
   CommandCompleter _successHandler;
 }
 
 typedef CommandCompleter();
-
