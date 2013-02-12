@@ -1,11 +1,9 @@
 name: dart_store
-authors: Lars Tackmann <lars@solvr.io> 
+version: 1.0.0
+author: Lars Tackmann <lars@solvr.io>
+description: Event store for Dart with multiple backends. Includes functionality for easily  creating event sourced applications in Dart on both the client and server side.
 homepage: https://github.com/ltackmann/dartstore
-description: >
-  Event store for Dart with multiple backends. Includes functionality for easily 
-  creating event sourced applications in Dart on both the client and server side.
-version: 1.0.0   
 dependencies:
-  log4dart: any
   unittest: any
-  uuid: any
+  uuid: '>=0.1.1 <0.1.2'
+  log4dart: '>=1.2.6 <2.0.0'

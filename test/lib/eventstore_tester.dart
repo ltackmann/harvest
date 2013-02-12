@@ -68,16 +68,36 @@ class EventStoreTester {
         expect(item1Version, isNotNull);
       });
       
-      // 1: check items in
+      // TODO rename to addInventory instead of checkInItems
+      test("add invetory of item 1", () {
+        _presenter.checkInItems(item1Id, 2, item1Version).then(expectAsync1((res) {
+          expect(_view.displayedDetails.currentCount, equals(2));
+          assertEvents(["InventoryItemCreated", "ItemsCheckedInToInventory"], events);   
+          
+          expect(_view.displayedDetails.version, isNot(equals(item1Version)), reason: "version should be bumped");
+          item1Version = _view.displayedDetails.version;
+        }));
+      });
       
-      // 1: check items out
-      
-      // 1: rename item
       test("rename item 1", () {
         item1Name = item1Name.concat(" v2");
         _presenter.renameItem(item1Id, item1Name, item1Version).then(expectAsync1((res) {
           expect(item1Name, equals(_view.displayedDetails.name));
-          assertEvents(["InventoryItemCreated", "InventoryItemRenamed"], events);   
+          assertEvents(["InventoryItemCreated", "ItemsCheckedInToInventory", "InventoryItemRenamed"], events);
+          
+          expect(_view.displayedDetails.version, isNot(equals(item1Version)), reason: "version should be bumped");
+          item1Version = _view.displayedDetails.version;
+        }));
+      });
+      
+      // TODO rename to removeInventory instead of checkInItems
+      test("remove invetory of item 1", () {
+        _presenter.removeItems(item1Id, 1, item1Version).then(expectAsync1((res) {
+          expect(_view.displayedDetails.currentCount, equals(1));
+          // TODO collect these into one line and only pass the expected new events in
+          assertEvents(["InventoryItemCreated", "ItemsCheckedInToInventory", "InventoryItemRenamed", "ItemsRemovedFromInventory"], events);   
+          expect(_view.displayedDetails.version, isNot(equals(item1Version)), reason: "version should be bumped");
+          item1Version = _view.displayedDetails.version;
         }));
       });
       
