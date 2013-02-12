@@ -18,7 +18,7 @@ class _InventoryView implements InventoryView {
     </section>
     """);
     
-    elm.query("a").on.click.add((Event e) {
+    elm.query("a").onClick.listen((Event e) {
       InputElement nameInput = elm.query('input');
       presenter.createItem(nameInput.value);
       nameInput.value = '';
@@ -30,7 +30,7 @@ class _InventoryView implements InventoryView {
           <a href="#">Name: ${item.name}</a>
         </li>
       """);
-      entry.query("a").on.click.add((Event e) => presenter.showDetails(item.id));
+      entry.query("a").onClick.listen((MouseEvent e) => presenter.showDetails(item.id));
       elm.query("ul").nodes.add(entry);
     });
     
@@ -53,32 +53,32 @@ class _InventoryView implements InventoryView {
      </section>
      """);
     // rename handler
-    elm.query("#rename").on.click.add((Event e) {
+    elm.query("#rename").onClick.listen((Event e) {
       _changeItemName((String newName) {
         presenter.renameItem(details.id, newName, details.version);
       });
     });
     
-    elm.query("#check_items_in").on.click.add((Event e) {
+    elm.query("#check_items_in").onClick.listen((Event e) {
       _checkInItems((int count) {
         presenter.checkInItems(details.id, count, details.version);
       });
     });
     
-    elm.query("#deactivate").on.click.add((Event e) => presenter.deactivateItem(details.id, details.version));
+    elm.query("#deactivate").onClick.listen((Event e) => presenter.deactivateItem(details.id, details.version));
     
-    elm.query("#remove_items").on.click.add((Event e) {
+    elm.query("#remove_items").onClick.listen((Event e) {
       _removeItems((int count) {
         presenter.removeItems(details.id, count, details.version);
       });
     });
     
-    elm.query("#back").on.click.add((Event e) => presenter.showItems());
+    elm.query("#back").onClick.listen((Event e) => presenter.showItems());
     
     _show(elm);
   }
   
-  recordMessage(String messageType, String messageName, Date time) {
+  recordMessage(String messageType, String messageName, DateTime time) {
     var elm = new Element.html("<li>$messageType $messageName date: ${time.toString()}");
     var widget = _container.query("#message_log ul");
     widget.nodes.add(elm);
@@ -91,7 +91,7 @@ class _InventoryView implements InventoryView {
       <button name="submit">Submit</button>
     </section>
     """);
-    elm.query("button").on.click.add((MouseEvent event) {
+    elm.query("button").onClick.listen((MouseEvent event) {
       InputElement input = elm.query("input");
       onSubmit(input.value);
     });
@@ -105,9 +105,9 @@ class _InventoryView implements InventoryView {
       <button name="submit">Submit</button>
     </section>
     """);
-    elm.query("button").on.click.add((MouseEvent event) {
+    elm.query("button").onClick.listen((MouseEvent event) {
       InputElement input = elm.query("input");
-      onSubmit(parseInt(input.value));
+      onSubmit(int.parse(input.value));
     });
     _show(elm);
   }
@@ -119,9 +119,9 @@ class _InventoryView implements InventoryView {
       <button name="submit">Submit</button>
     </section>
     """);
-    elm.query("button").on.click.add((MouseEvent event) {
+    elm.query("button").onClick.listen((MouseEvent event) {
       InputElement input = elm.query("input");
-      onSubmit(parseInt(input.value));
+      onSubmit(int.parse(input.value));
     });
     _show(elm);
   }

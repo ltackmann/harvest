@@ -21,7 +21,7 @@ abstract class AggregateRoot {
   /**
    * Populate this aggregte root from historic events
    */
-  loadFromHistory(List<DomainEvent> history) {
+  loadFromHistory(Iterable<DomainEvent> history) {
     history.forEach((DomainEvent e) {
       _logger.debug("loading historic event ${e.runtimeType} for aggregate ${id}");
       _applyChange(e, false);

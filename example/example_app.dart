@@ -22,7 +22,7 @@ main() {
   var eventStore = new MemoryEventStore();
   
   // create repository for domain models and set up command handler 
-  var inventoryItemRepo = new DomainRepository<InventoryItem>((Uuid id) => new InventoryItem.fromId(id), eventStore);
+  var inventoryItemRepo = new DomainRepository<InventoryItem>((Guid id) => new InventoryItem.fromId(id), eventStore);
   var commandHandler = new InventoryCommandHandler(messageBus, inventoryItemRepo);
   
   // create respositories for view models and set up event handler

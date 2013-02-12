@@ -41,15 +41,15 @@ class MemoryEventStore implements EventStore {
     return completer.future; 
   }
   
-  Future<List<DomainEvent>> getEventsForAggregate(Guid aggregateId) {
-    var completer = new Completer<List<DomainEvent>>();
+  Future<Iterable<DomainEvent>> getEventsForAggregate(Guid aggregateId) {
+    var completer = new Completer<Iterable<DomainEvent>>();
     
     if(!_store.containsKey(aggregateId)) {
       completer.completeError(new AggregateNotFoundError(aggregateId));
     } 
     var eventDescriptors = _store[aggregateId];
-    Expect.isTrue(eventDescriptors.length > 0);
-    List<DomainEvent> events = eventDescriptors.map((DomainEventDescriptor desc) => desc.eventData);
+    assert(eventDescriptors.length > 0);
+    var events = eventDescriptors.map((DomainEventDescriptor desc) => desc.eventData);
     completer.complete(events);
     
     return completer.future; 

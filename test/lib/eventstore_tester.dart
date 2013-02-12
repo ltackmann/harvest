@@ -45,32 +45,41 @@ class EventStoreTester {
     }); 
     
     group("executing events -", () {
-      String item1name = "Book 1";
-      Guid item1id;
+      String item1Name = "Book 1";
+      Guid item1Id;
+      int item1Version;
       
       test("creating an item should display it", () {
-        _presenter.createItem(item1name).then(expectAsync1(() {
+        _presenter.createItem(item1Name).then(expectAsync1((res) {
           expect(_view.displayedItems.length, equals(1));
-          item1id = _view.displayedItems[0].id;
-          expect(item1id, isNotNull);
+          
+          item1Id = _view.displayedItems[0].id;
+          expect(item1Id, isNotNull);
         }));
       });
       
-      /*
       test("show details for item 1", () {
-        _presenter.showDetails(id1);
-        expect(id1, equals(_view.displayedDetails.id));
-        expect(name1, equals(_view.displayedDetails.name));
-        assertEvents(["InventoryItemCreated"], events);   
+        _presenter.showDetails(item1Id);
+        expect(item1Id, equals(_view.displayedDetails.id));
+        expect(item1Name, equals(_view.displayedDetails.name));
+        assertEvents(["InventoryItemCreated"], events); 
+        
+        item1Version = _view.displayedDetails.version;
+        expect(item1Version, isNotNull);
       });
-      */
       
       // 1: check items in
       
       // 1: check items out
       
       // 1: rename item
-      //_presenter.renameItem()
+      test("rename item 1", () {
+        item1Name = item1Name.concat(" v2");
+        _presenter.renameItem(item1Id, item1Name, item1Version).then(expectAsync1((res) {
+          expect(item1Name, equals(_view.displayedDetails.name));
+          assertEvents(["InventoryItemCreated", "InventoryItemRenamed"], events);   
+        }));
+      });
       
       // 2: create item
       

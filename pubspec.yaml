@@ -1,6 +1,6 @@
 name: dart_store
 authors: Lars Tackmann <lars@solvr.io> 
-homepage: https://github.com/Solvr/dartstore
+homepage: https://github.com/ltackmann/dartstore
 description: >
   Event store for Dart with multiple backends. Includes functionality for easily 
   creating event sourced applications in Dart on both the client and server side.

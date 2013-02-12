@@ -17,5 +17,5 @@ abstract class EventStore {
   /**
    * Get events for aggregate
    */ 
-  Future<List<DomainEvent>> getEventsForAggregate(Guid aggregateId);
+  Future<Iterable<DomainEvent>> getEventsForAggregate(Guid aggregateId);
 }

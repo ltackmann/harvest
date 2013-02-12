@@ -35,7 +35,7 @@ class DomainRepository<T extends AggregateRoot>  {
    */ 
   Future<T> load(Guid id) {
     var completer = new Completer<T>();
-    _store.getEventsForAggregate(id).then((List<DomainEvent> events) {
+    _store.getEventsForAggregate(id).then((Iterable<DomainEvent> events) {
       var obj = _builder(id);
       _logger.debug("loading aggregate ${id} from ${events.length} total events");
       obj.loadFromHistory(events);
