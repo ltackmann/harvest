@@ -1,3 +1,5 @@
+[![Build Status](https://drone.io/github.com/ltackmann/dart-store/status.png)](https://drone.io/github.com/ltackmann/dart-store/latest)
+
 DartStore
 =========
 
