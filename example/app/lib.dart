@@ -7,7 +7,6 @@ library dart_store_example;
 
 import "package:log4dart/log4dart.dart";
 
-import "../../lib/dart_store.dart";
 import "../../lib/dart_store_cqrs.dart";
 
 part "command_handler.dart";

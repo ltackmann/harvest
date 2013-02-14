@@ -9,7 +9,6 @@ import "dart:html";
 import "dart:math";
 
 import "package:log4dart/log4dart.dart";
-import "../lib/dart_store.dart";
 import "../lib/dart_store_cqrs.dart";
 
 import "app/lib.dart";

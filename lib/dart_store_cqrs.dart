@@ -4,11 +4,12 @@
 // specified in the LICENSE file
 
 /**
- * Auxilery classes for implementing CQRS applications using DartStpre
+ * DartStore augmented with classes for implementing CQRS applications 
  */ 
 library dart_store_cqrs;
 
 import "dart_store.dart";
+export "dart_store.dart";
 
 part "src/cqrs/cqrs_helpers.dart";
 
