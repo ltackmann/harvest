@@ -1,10 +1,10 @@
 [![Build Status](https://drone.io/github.com/ltackmann/dart-store/status.png)](https://drone.io/github.com/ltackmann/dart-store/latest)
 
-DartStore
-=========
+Harvest
+=======
 
-Event store for Dart with multiple backends. Includes functionality for easily 
-creating event sourced applications on both the client and server side. 
+Event store for Dart with multiple backends, facilitating event sourced 
+applications on both the client and server side. 
 
 Introduction
 ------------

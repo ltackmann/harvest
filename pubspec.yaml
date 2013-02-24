@@ -1,9 +1,9 @@
-name: dart_store
+name: harvest
 version: 1.0.1
 author: Lars Tackmann <lars@solvr.io>
-description: Event store for Dart with multiple backends. Includes functionality for easily  creating event sourced applications in Dart on both the client and server side.
+description: Event store for Dart with multiple backends, facilitating event sourced applications on both the client and server side. 
 homepage: https://github.com/ltackmann/dartstore
 dependencies:
   unittest: any
-  log4dart: '>=1.2.6 <2.0.0'
-  uuid: '>=0.1.1 <0.1.2'
+  log4dart: '>=1.3.0 <2.0.0'
+  uuid: '>=0.1.1 <0.2.0'

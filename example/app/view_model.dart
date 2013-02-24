@@ -13,8 +13,7 @@ class InventoryItemDetails implements IdModel {
   
   Guid id;
   String name;
-  int currentCount;
-  int version;
+  int currentCount, version;
 }
 
 /**
