@@ -7,18 +7,20 @@ part of harvest_file;
 
 /**
  * File backed event store
+ * 
+ * TODO fix this so it works again after switching to ASYNC api
  */
 class FileEventStore implements EventStore {
   /**
    * Store events in files in the [_storeFolder] directory. Each aggregate gets its own file.  
    */ 
   FileEventStore(this._storeFolder, DomainEventFactory eventFactory):
-    _logger = LoggerFactory.getLogger(FileEventStore),
-    _store = new Map<Uuid, File>(), 
+    _logger = LoggerFactory.getLoggerFor(FileEventStore),
+    _store = new Map<Guid, File>(), 
     _messageBus = new MessageBus(),
     _jsonSerializer = new JsonSerializer(eventFactory);
   
-  Future<int> saveEvents(Uuid aggregateId, List<DomainEvent> events, int expectedVersion) {
+  Future<int> saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion) {
     var completer = new Completer<int>();
     
     if(!_store.containsKey(aggregateId)) {
@@ -57,7 +59,7 @@ class FileEventStore implements EventStore {
     return completer.future;
   }
   
-  _saveEventsFor(Uuid aggregateId, List<DomainEvent> events, int expectedVersion, Completer<int> completer, File aggregateFile, Map json) {
+  _saveEventsFor(Guid aggregateId, List<DomainEvent> events, int expectedVersion, Completer<int> completer, File aggregateFile, Map json) {
     if(!json.containsKey("eventlog")) {
       completer.completeError(new ArgumentError("malformed json in file ${aggregateFile.fullPathSync()}"));
     } 

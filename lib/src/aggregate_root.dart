@@ -12,7 +12,7 @@ abstract class AggregateRoot {
   AggregateRoot()
     : _changes = new List<DomainEvent>(),
       _entities = new List<EventSourcedEntity>(),
-      _logger = LoggerFactory.getLogger(AggregateRoot);
+      _logger = LoggerFactory.getLoggerFor(AggregateRoot);
  
   int get version => _version;
   

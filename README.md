@@ -3,7 +3,7 @@
 Harvest
 =======
 Event store for Dart with multiple backends for easly creating event sourced 
-applications in both the browser and VM.
+applications on both the browser and VM.
 
 Introduction
 ------------

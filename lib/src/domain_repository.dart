@@ -44,7 +44,7 @@ class DomainRepository<T extends AggregateRoot>  {
     return completer.future;
   }
   
-  Logger get _logger => LoggerFactory.getLogger(this.runtimeType);
+  Logger get _logger => LoggerFactory.getLoggerFor(DomainRepository);
   
   String _typeName;
   final AggregateBuilder _builder;

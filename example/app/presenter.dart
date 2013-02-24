@@ -7,14 +7,14 @@ part of harvest_example;
 
 class InventoryPresenter {
   InventoryPresenter(this._messageBus, this._view, this._viewModelFacade)
-    : _logger = LoggerFactory.getLogger(InventoryPresenter) 
+    : _logger = LoggerFactory.getLoggerFor(InventoryPresenter) 
   {
     _view.presenter = this;
     // show the events fired
     _messageBus.onAny.add((Message message) {
       var messageType = (message is Command) ? "Command" : "Event";
       var messageName = message.runtimeType.toString();
-      _view.recordMessage(messageType, messageName, new Date.now());
+      _view.recordMessage(messageType, messageName, new DateTime.now());
     });
   }
   
@@ -68,5 +68,5 @@ abstract class InventoryView {
   
   showDetails(InventoryItemDetails details);
   
-  recordMessage(String messageType, String messageName, Date time);
+  recordMessage(String messageType, String messageName, DateTime time);
 }

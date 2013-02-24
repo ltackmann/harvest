@@ -10,7 +10,7 @@ part of harvest;
  */
 class MemoryEventStore implements EventStore {
   MemoryEventStore():
-    _logger = LoggerFactory.getLogger(MemoryEventStore),
+    _logger = LoggerFactory.getLoggerFor(MemoryEventStore),
     _store = new Map<Guid, List<DomainEventDescriptor>>(), 
     _messageBus = new MessageBus();
   

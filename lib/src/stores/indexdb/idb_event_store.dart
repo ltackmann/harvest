@@ -11,7 +11,7 @@ part of harvest_indexd_db;
 class IDBEventStore implements EventStore {
   // Chrome only for now, see bug http://code.google.com/p/chromium/issues/detail?id=108223
   // [String version = "1", String storeName = "event-store"]
-  IDBEventStore(this._connection): _logger = LoggerFactory.getLogger(IDBEventStore) {
+  IDBEventStore(this._connection): _logger = LoggerFactory.getLoggerFor(IDBEventStore) {
     
   }
   

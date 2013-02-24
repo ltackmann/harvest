@@ -8,7 +8,7 @@ part of harvet_indexd_db;
 class IDBConnection {
   static IDBDatabase _connection;
   
-  IDBConnection(this.dbName, this.version): _logger = LoggerFactory.getLogger(IDBConnection);
+  IDBConnection(this.dbName, this.version): _logger = LoggerFactory.getLoggerFor(IDBConnection);
 
   Future<IDBCollection> open(String collection) {
     Completer<IDBCollection> completer = new Completer<IDBCollection>();

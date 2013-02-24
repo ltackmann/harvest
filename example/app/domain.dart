@@ -25,23 +25,22 @@ class InventoryItem extends AggregateRoot {
   }
 
   set name(String newName) {
-    Expect.isNotNull(newName);
-    Expect.isFalse(newName.isEmpty);
+    assert(newName != null && newName.isEmpty == false);
     applyChange(new InventoryItemRenamed(id, newName));
   }
 
   remove(int count) {
-    Expect.isTrue(count > 0);
+    assert(count > 0);
     applyChange(new ItemsRemovedFromInventory(id, count));
   }
 
   checkIn(int count) {
-    Expect.isTrue(count > 0);
+    assert(count > 0);
     applyChange(new ItemsCheckedInToInventory(id, count));
   }
 
   deactivate() {
-    Expect.isTrue(_activated);
+    assert(_activated);
     applyChange(new InventoryItemDeactivated(id));
   }
   
