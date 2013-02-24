@@ -8,16 +8,17 @@ applications on both the browser and VM.
 Introduction
 ------------
 Event sourcing is the concept of saving and retriving domain objects by
-the events that occured on them rather than by their current state (CRUD). 
-To understand this concept consider the following bank deposit list
+the events that occured on them rather than by their current state (as 
+is done in CRUD style persistence layers). To understand this concept 
+consider the following bank use case
 
-1. Create account
-1. Deposit 10$
-1. Withdraw 2$
+1. User creates account
+1. User deposits 10$
+1. User withdraws 2$
 
-In a CRUD application you would have a **BankAccount** object with an amount 
-property with the value **8**. In a event sourced application you have a 
-**BankAccount** object and 3 events for it
+In a CRUD application you would now have a **BankAccount** object with an 
+amount property with the value **8**. In a event sourced application you 
+have a **BankAccount** object and 3 events for it
 
 1. AccountCreated
 1. AmountDeposited
@@ -25,13 +26,15 @@ property with the value **8**. In a event sourced application you have a
 
 Why is this a trick ?. 
 
-For certain types of applications this eventlog can be benificial in it self 
-(like auditing in financial systems) but it can also be a valuable design for 
-complex web since it makes each use case explicit and makes debugging easy 
-(you can replay the event log to recreate any system state. Finally it also 
-makes implementing online/offline syncronization managable, since the offline 
-application can just queue up any events that occures and replay them on the 
-backend once it comes back online. 
+For certain applications the eventlog can be useful in itself such as a audit 
+trail in a financial system. It can also be a valuable for complex applications 
+since it makes each use case explicit by forcing programmers to make event types 
+for every action that can occur in the system.
+
+Further it also makes debugging easy since you can replay the event log to recreate 
+any former system state where an error occurred  Finally it also makes implementing 
+online/offline synchronization managable, since the offline application can just queue 
+up events and replay them on the backend once it comes online. 
 
 For more information, see the provided **example** application.
 
