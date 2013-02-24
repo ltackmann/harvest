@@ -4,12 +4,12 @@
 // specified in the LICENSE file
 
 /**
- * DartStore augmented with classes for implementing CQRS applications 
+ * Event store augmented with classes for implementing CQRS applications 
  */ 
-library dart_store_cqrs;
+library harvest_cqrs;
 
-import "dart_store.dart";
-export "dart_store.dart";
+import "harvest.dart";
+export "harvest.dart";
 
 part "src/cqrs/cqrs_helpers.dart";
 

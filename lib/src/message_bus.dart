@@ -3,7 +3,7 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-part of dart_store;
+part of harvest;
 
 /**
  * Message bus for registrering and routing [Message]'s to their [MessageHandler]

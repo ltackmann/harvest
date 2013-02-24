@@ -3,7 +3,7 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-part of dart_store_cqrs;
+part of harvest_cqrs;
 
 /**
  * Application commands are not part of the CQRS event chain (and are thus not handled by ordinary command handlers). 

@@ -1,6 +1,6 @@
+name: harvest_example_app
 dependencies:
-  log4dart:
-    git: git://github.com/Solvr/log4dart.git
-  dart-store:
-    git: git://github.com/Solvr/dart-store.git
+  log4dart: any
+  harvest:
+    git: git://github.com/ltackmann/harvest.git
 

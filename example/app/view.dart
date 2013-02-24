@@ -3,7 +3,7 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-part of dart_store_example_app;
+part of harvest_example_app;
 
 class _InventoryView implements InventoryView {
   _InventoryView(this._container);

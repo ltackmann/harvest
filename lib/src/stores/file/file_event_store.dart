@@ -3,7 +3,7 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-part of dart_store_file;
+part of harvest_file;
 
 /**
  * File backed event store
@@ -13,7 +13,7 @@ class FileEventStore implements EventStore {
    * Store events in files in the [_storeFolder] directory. Each aggregate gets its own file.  
    */ 
   FileEventStore(this._storeFolder, DomainEventFactory eventFactory):
-    _logger = LoggerFactory.getLogger("dart_store.FileEventStore"),
+    _logger = LoggerFactory.getLogger(FileEventStore),
     _store = new Map<Uuid, File>(), 
     _messageBus = new MessageBus(),
     _jsonSerializer = new JsonSerializer(eventFactory);

@@ -3,11 +3,11 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-library dart_store_test;
+library harvest_test;
 
 import "package:unittest/unittest.dart";
 
-import "../lib/dart_store.dart";
+import "../lib/harvest.dart";
 import "../example/app/lib.dart";
 
 part "lib/helpers.dart";

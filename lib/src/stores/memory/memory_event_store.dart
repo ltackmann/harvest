@@ -3,14 +3,14 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-part of dart_store;
+part of harvest;
 
 /**
  * Memory backed event store
  */
 class MemoryEventStore implements EventStore {
   MemoryEventStore():
-    _logger = LoggerFactory.getLogger("dart_store.MemoryEventStore"),
+    _logger = LoggerFactory.getLogger(MemoryEventStore),
     _store = new Map<Guid, List<DomainEventDescriptor>>(), 
     _messageBus = new MessageBus();
   

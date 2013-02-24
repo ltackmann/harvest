@@ -3,11 +3,11 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-part of dart_store_example;
+part of harvest_example;
 
 class InventoryPresenter {
   InventoryPresenter(this._messageBus, this._view, this._viewModelFacade)
-    : _logger = LoggerFactory.getLogger("InventoryPresenter") 
+    : _logger = LoggerFactory.getLogger(InventoryPresenter) 
   {
     _view.presenter = this;
     // show the events fired

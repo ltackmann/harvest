@@ -6,13 +6,14 @@
 /**
  * Eventstore implementation backed by IndexDB (HTML5)
  */ 
-library dart_store_indexdb;
+library harvest_indexd_db;
 
 import "dart:indexed_db";
 
 import "package:log4dart/log4dart.dart";
 
-import "dart_store.dart";
+import "harvest.dart";
+export "harvest.dart";
 
 part "src/stores/indexdb/idb_collection.dart";
 part "src/stores/indexdb/idb_connection.dart";

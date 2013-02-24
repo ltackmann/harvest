@@ -3,7 +3,10 @@
 // This open #source software is governed by the license terms 
 // specified in the LICENSE file
 
-library dart_store;
+/**
+ * Event store 
+ */ 
+library harvest;
 
 import "dart:async";
 export "dart:async";
@@ -13,7 +16,7 @@ import "package:uuid/uuid.dart";
 import "package:log4dart/log4dart.dart";
 
 /**
- * DartStore API
+ * API
  */ 
 part "src/aggregate_root.dart";
 part "src/events.dart";

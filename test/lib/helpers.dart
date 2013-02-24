@@ -3,7 +3,7 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-part of dart_store_test;
+part of harvest_test;
 
 /**
  * Helper class that retrieves the entire current view state. Useful for comparing 
@@ -68,7 +68,7 @@ assertEvents(List<String> eventNames, List<DomainEvent> events) {
  * Assert that two [ViewModelState]'s are identical
  */
 assertEqualState(ViewModelState origState, ViewModelState replayedState) {
-  Expect.equals(origState.itemList.length, replayedState.itemList.length);
+  expect(origState.itemList.length, equals(replayedState.itemList.length));
   for(int i=0; i<origState.itemList.length; i++) {
     var origItem = origState.itemList[i];
     var replayedItem = replayedState.itemList[i];
@@ -76,7 +76,7 @@ assertEqualState(ViewModelState origState, ViewModelState replayedState) {
     expect(origItem.name, equals(replayedItem.name));
   }
   
-  Expect.equals(origState.itemDetailsList.length, replayedState.itemDetailsList.length);
+  expect(origState.itemDetailsList.length, equals(replayedState.itemDetailsList.length));
   for(int j=0; j<origState.itemDetailsList.length; j++) {
     var origDetails = origState.itemDetailsList[j];
     var replayedDetails = replayedState.itemDetailsList[j];

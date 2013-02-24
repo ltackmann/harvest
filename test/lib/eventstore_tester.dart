@@ -3,7 +3,7 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-part of dart_store_test;
+part of harvest_test;
 
 /**
  * Test class used for asserting the robustness of eventstore implementations

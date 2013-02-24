@@ -3,7 +3,7 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-part of dart_store;
+part of harvest;
 
 /**
  * Repository that stores and retrieves domain objects (aggregates) by their events
@@ -44,7 +44,7 @@ class DomainRepository<T extends AggregateRoot>  {
     return completer.future;
   }
   
-  Logger get _logger => LoggerFactory.getLogger("dart_store.${_typeName}DomainRepository");
+  Logger get _logger => LoggerFactory.getLogger(this.runtimeType);
   
   String _typeName;
   final AggregateBuilder _builder;

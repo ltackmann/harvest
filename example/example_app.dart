@@ -3,13 +3,13 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-library dart_store_example_app;
+library harvest_example_app;
 
 import "dart:html";
 import "dart:math";
 
 import "package:log4dart/log4dart.dart";
-import "../lib/dart_store_cqrs.dart";
+import "../lib/harvest_cqrs.dart";
 
 import "app/lib.dart";
 

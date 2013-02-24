@@ -3,12 +3,12 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-part of dart_store_indexdb;
+part of harvet_indexd_db;
 
 class IDBConnection {
   static IDBDatabase _connection;
   
-  IDBConnection(this.dbName, this.version): _logger = LoggerFactory.getLogger("dart_store.IDBConnection");
+  IDBConnection(this.dbName, this.version): _logger = LoggerFactory.getLogger(IDBConnection);
 
   Future<IDBCollection> open(String collection) {
     Completer<IDBCollection> completer = new Completer<IDBCollection>();

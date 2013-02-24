@@ -3,7 +3,7 @@
 // This open source software is governed by the license terms 
 // specified in the LICENSE file
 
-part of dart_store;
+part of harvest;
 
 /**
  * The root of an object tree (aggregate). 
@@ -12,7 +12,7 @@ abstract class AggregateRoot {
   AggregateRoot()
     : _changes = new List<DomainEvent>(),
       _entities = new List<EventSourcedEntity>(),
-      _logger = LoggerFactory.getLogger("dart_store.AggregateRoot");
+      _logger = LoggerFactory.getLogger(AggregateRoot);
  
   int get version => _version;
   
