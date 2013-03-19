@@ -52,9 +52,9 @@ class Command extends Message {
   }
   
   /**
-   * Fires this command on [messageBus] 
+   * Execute this command on [messageBus] 
    */
-  Future fireAsync(MessageBus messageBus) {
+  Future execute(MessageBus messageBus) {
     messageBus.fire(this);
     return _commandCompleter.future;
   }

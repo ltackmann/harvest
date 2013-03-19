@@ -24,17 +24,18 @@ class FileEventStore implements EventStore {
     var completer = new Completer<int>();
     
     if(!_store.containsKey(aggregateId)) {
+      // TODO switch to using path for windows support
       var aggregteFilePath = "${_storeFolder.path}/${aggregateId}.json";
       var aggregateFile = new File(aggregteFilePath);
       aggregateFile.exists().then((bool exists) {
         if(exists) {
-          _logger.debug("aggregate file ${aggregateFile.fullPathSync()} existed");
+          _logger.debug("using existing aggregate file $aggregteFilePath");
           _store[aggregateId] = aggregateFile;
           _readJsonFile(aggregateFile).then((Map json) {
             _saveEventsFor(aggregateId, events, expectedVersion, completer, aggregateFile, json);
           });
         } else {
-          _logger.debug("aggregate file did exists, creating it");
+          _logger.debug("creating aggregate file $aggregteFilePath");
           aggregateFile.create().then((File file) {
             _store[aggregateId] = file;
             _saveEventsFor(aggregateId, events, expectedVersion, completer, file, {"eventlog":[]});
@@ -59,11 +60,11 @@ class FileEventStore implements EventStore {
     return completer.future;
   }
   
-  _saveEventsFor(Guid aggregateId, List<DomainEvent> events, int expectedVersion, Completer<int> completer, File aggregateFile, Map json) {
-    if(!json.containsKey("eventlog")) {
-      completer.completeError(new ArgumentError("malformed json in file ${aggregateFile.fullPathSync()}"));
+  _saveEventsFor(Guid aggregateId, List<DomainEvent> events, int expectedVersion, Completer<int> completer, File aggregateFile, Map data) {
+    if(!data.containsKey("eventlog")) {
+      completer.completeError(new ArgumentError("malformed data in file ${aggregateFile.fullPathSync()}"));
     } 
-    var eventDescriptors = _jsonSerializer.loadJsonEventDescriptors(json["eventData"]);
+    var eventDescriptors = _jsonSerializer.loadJsonEventDescriptors(data["eventData"]);
     
     // TODO duplicated code begin
     if(expectedVersion != -1 && eventDescriptors.last.version != expectedVersion) {
@@ -73,7 +74,7 @@ class FileEventStore implements EventStore {
       expectedVersion++;
       event.version = expectedVersion;
       eventDescriptors.add(new DomainEventDescriptor(aggregateId, event));
-      _logger.debug("saving event ${event.type} for aggregate ${aggregateId}");
+      _logger.debug("saving event ${event.runtimeType} for aggregate ${aggregateId}");
     }
     // TODO duplicated code end
     
@@ -101,7 +102,7 @@ class FileEventStore implements EventStore {
     return completer.future;
   }
   
-  Future<List<DomainEvent>> getEventsForAggregate(Uuid aggregateId) {
+  Future<List<DomainEvent>> getEventsForAggregate(Guid aggregateId) {
     /*
     var completer = new Completer<List<DomainEvent>>();
     
@@ -117,7 +118,7 @@ class FileEventStore implements EventStore {
     */
   }
   
-  final Map<Uuid, File> _store;
+  final Map<Guid, File> _store;
   final Directory _storeFolder;
   final MessageBus _messageBus;
   final Logger _logger;
