@@ -19,4 +19,9 @@ class AggregateNotFoundError implements Error {
  * Represents an optimistic concurrency conflict between multiple writers.
  */
 class ConcurrencyError implements Exception {
+  ConcurrencyError(this.message);
+
+  String toString() => message;
+  
+  final String message;
 }

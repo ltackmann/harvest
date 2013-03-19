@@ -22,7 +22,7 @@ class MemoryEventStore implements EventStore {
     List<DomainEventDescriptor> eventDescriptors = _store[aggregateId];
     
     if(expectedVersion != -1 && eventDescriptors.last.version != expectedVersion) {
-      completer.completeError(new ConcurrencyError());
+      completer.completeError(new ConcurrencyError("unexpected version $expectedVersion"));
     }
     for(DomainEvent event in events) {
       expectedVersion++;
