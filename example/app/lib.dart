@@ -6,6 +6,7 @@ library harvest_example;
 
 import "package:log4dart/log4dart.dart";
 import "package:harvest/harvest_cqrs.dart";
+export "package:harvest/harvest_cqrs.dart";
 
 part "command_handler.dart";
 part "commands.dart";

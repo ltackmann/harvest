@@ -9,7 +9,6 @@ import "dart:html";
 import "dart:math";
 
 import "package:log4dart/log4dart.dart";
-import "package:harvest/harvest_cqrs.dart";
 
 import "app/lib.dart";
 
@@ -25,13 +24,13 @@ main() {
   var commandHandler = new InventoryCommandHandler(messageBus, itemRepo);
   
   // create respositories for view models and set up event handler
-  var itemListRepo = new MemoryModelRepository<ItemEntry>();
+  var itemEntryRepo = new MemoryModelRepository<ItemEntry>();
   var itemDetailsRepo = new MemoryModelRepository<ItemDetails>();
-  var eventHandler = new InventoryEventHandler(messageBus, itemListRepo, itemDetailsRepo);
+  var eventHandler = new InventoryEventHandler(messageBus, itemEntryRepo, itemDetailsRepo);
   
   // wire up frontend
   var view = new _InventoryView(document.body);
-  var viewModelFacade = new ViewModelFacade(itemListRepo, itemDetailsRepo);
+  var viewModelFacade = new ViewModelFacade(itemEntryRepo, itemDetailsRepo);
   var presenter = new InventoryPresenter(messageBus, view, viewModelFacade);
   
   // start application

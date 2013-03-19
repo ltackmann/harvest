@@ -7,7 +7,6 @@ library harvest_test;
 
 import "package:unittest/unittest.dart";
 
-import "../lib/harvest.dart";
 import "../example/app/lib.dart";
 
 part "lib/helpers.dart";

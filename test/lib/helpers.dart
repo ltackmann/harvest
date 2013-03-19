@@ -16,18 +16,18 @@ class ViewModelState {
     var itemList = view.displayedItems;
     
     // save details for each item in the list
-    var itemDetailsList = new List<InventoryItemDetails>();
+    var itemDetailsList = new List<ItemDetails>();
     itemList.forEach((var item) {
-      presenter.showDetails(item.id);
+      presenter.showItemDetails(item.id);
       itemDetailsList.add(view.displayedDetails);
     });
     return new ViewModelState._internal(itemList, itemDetailsList);
   }
   
-  ViewModelState._internal(this.itemList, this.itemDetailsList);
+  ViewModelState._internal(this.itemEntryList, this.itemDetailsList);
   
-  final List<InventoryItemListEntry> itemList;
-  final List<InventoryItemDetails> itemDetailsList;
+  final List<ItemEntry> itemEntryList;
+  final List<ItemDetails> itemDetailsList;
 }
 
 /**
@@ -35,23 +35,22 @@ class ViewModelState {
  */
 class InventoryViewMock implements InventoryView {
   set presenter(InventoryPresenter p) {
-    
   }
   
-  showItems(List<InventoryItemListEntry> items) {
+  showItems(List<ItemEntry> items) {
     displayedItems = items;
   }
   
-  showDetails(InventoryItemDetails details) {
+  showDetails(ItemDetails details) {
     displayedDetails = details;
   }
   
-  recordMessage(String messageType, String messageName, Date time) {
+  recordMessage(String messageType, String messageName, DateTime time) {
   }
   
   // testing data
-  List<InventoryItemListEntry> displayedItems;
-  InventoryItemDetails displayedDetails;
+  List<ItemEntry> displayedItems;
+  ItemDetails displayedDetails;
 }
 
 /**
@@ -68,10 +67,10 @@ assertEvents(List<String> eventNames, List<DomainEvent> events) {
  * Assert that two [ViewModelState]'s are identical
  */
 assertEqualState(ViewModelState origState, ViewModelState replayedState) {
-  expect(origState.itemList.length, equals(replayedState.itemList.length));
-  for(int i=0; i<origState.itemList.length; i++) {
-    var origItem = origState.itemList[i];
-    var replayedItem = replayedState.itemList[i];
+  expect(origState.itemEntryList.length, equals(replayedState.itemEntryList.length));
+  for(int i=0; i<origState.itemEntryList.length; i++) {
+    var origItem = origState.itemEntryList[i];
+    var replayedItem = replayedState.itemEntryList[i];
     expect(origItem.id, equals(replayedItem.id));
     expect(origItem.name, equals(replayedItem.name));
   }

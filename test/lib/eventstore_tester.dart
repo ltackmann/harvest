@@ -9,7 +9,7 @@ part of harvest_test;
  * Test class used for asserting the robustness of eventstore implementations
  */ 
 class EventStoreTester {
-  EventStoreTester(this._eventStore): _messageBus = new MessageBus() {
+  EventStoreTester(this._eventStore) {
     _init();
     
     // test that executing events causes app to behave as expected    
@@ -21,17 +21,17 @@ class EventStoreTester {
   
   _init() {
     // create repository for domain models and set up command handler 
-    var inventoryItemRepo = new DomainRepository<InventoryItem>((Guid id) => new InventoryItem.fromId(id), _eventStore);
-    var commandHandler = new InventoryCommandHandler(_messageBus, inventoryItemRepo);
+    var itemRepo = new DomainRepository<Item>((Guid id) => new Item.fromId(id), _eventStore);
+    var commandHandler = new InventoryCommandHandler(_messageBus, itemRepo);
     
     // create respositories for view models and set up event handler
-    var itemListRepo = new MemoryModelRepository<InventoryItemListEntry>();
-    var itemDetailsRepo = new MemoryModelRepository<InventoryItemDetails>();
-    var eventHandler = new InventoryEventHandler(_messageBus, itemListRepo, itemDetailsRepo);
+    var itemEntryRepo = new MemoryModelRepository<ItemEntry>();
+    var itemDetailsRepo = new MemoryModelRepository<ItemDetails>();
+    var eventHandler = new InventoryEventHandler(_messageBus, itemEntryRepo, itemDetailsRepo);
     
     // wire up frontend
     _view = new InventoryViewMock();
-    var viewModelFacade = new ViewModelFacade(itemListRepo, itemDetailsRepo);
+    var viewModelFacade = new ViewModelFacade(itemEntryRepo, itemDetailsRepo);
     _presenter = new InventoryPresenter(_messageBus, _view, viewModelFacade);
   }
   
@@ -49,9 +49,10 @@ class EventStoreTester {
       Guid item1Id;
       int item1Version;
       
-      test("creating an item should display it", () {
+      test("creating item and display it", () {
         _presenter.createItem(item1Name).then(expectAsync1((res) {
           expect(_view.displayedItems.length, equals(1));
+          assertEvents(expectedEvents..add("ItemCreated"), events); 
           
           item1Id = _view.displayedItems[0].id;
           expect(item1Id, isNotNull);
@@ -59,20 +60,18 @@ class EventStoreTester {
       });
       
       test("show details for item 1", () {
-        _presenter.showDetails(item1Id);
+        _presenter.showItemDetails(item1Id);
         expect(item1Id, equals(_view.displayedDetails.id));
         expect(item1Name, equals(_view.displayedDetails.name));
-        assertEvents(["InventoryItemCreated"], events); 
         
         item1Version = _view.displayedDetails.version;
         expect(item1Version, isNotNull);
       });
       
-      // TODO rename to addInventory instead of checkInItems
-      test("add invetory of item 1", () {
-        _presenter.checkInItems(item1Id, 2, item1Version).then(expectAsync1((res) {
+      test("increase invetory of item 1", () {
+        _presenter.increaseInventory(item1Id, 2, item1Version).then(expectAsync1((res) {
           expect(_view.displayedDetails.currentCount, equals(2));
-          assertEvents(["InventoryItemCreated", "ItemsCheckedInToInventory"], events);   
+          assertEvents(expectedEvents..add("InventoryIncreased"), events);   
           
           expect(_view.displayedDetails.version, isNot(equals(item1Version)), reason: "version should be bumped");
           item1Version = _view.displayedDetails.version;
@@ -80,32 +79,31 @@ class EventStoreTester {
       });
       
       test("rename item 1", () {
-        item1Name = item1Name.concat(" v2");
+        item1Name = "$item1Name v2";
         _presenter.renameItem(item1Id, item1Name, item1Version).then(expectAsync1((res) {
           expect(item1Name, equals(_view.displayedDetails.name));
-          assertEvents(["InventoryItemCreated", "ItemsCheckedInToInventory", "InventoryItemRenamed"], events);
+          assertEvents(expectedEvents..add("ItemRenamed"), events);
           
           expect(_view.displayedDetails.version, isNot(equals(item1Version)), reason: "version should be bumped");
           item1Version = _view.displayedDetails.version;
         }));
       });
       
-      // TODO rename to removeInventory instead of checkInItems
-      test("remove invetory of item 1", () {
-        _presenter.removeItems(item1Id, 1, item1Version).then(expectAsync1((res) {
+      test("decrease invetory of item 1", () {
+        _presenter.decreaseInventory(item1Id, 1, item1Version).then(expectAsync1((res) {
           expect(_view.displayedDetails.currentCount, equals(1));
-          // TODO collect these into one line and only pass the expected new events in
-          assertEvents(["InventoryItemCreated", "ItemsCheckedInToInventory", "InventoryItemRenamed", "ItemsRemovedFromInventory"], events);   
+          assertEvents(expectedEvents..add("InventoryDecreased"), events);   
+          
           expect(_view.displayedDetails.version, isNot(equals(item1Version)), reason: "version should be bumped");
           item1Version = _view.displayedDetails.version;
         }));
       });
       
-      // 2: create item
+      // 2: create item 2
       
-      // 2: check items in
+      // 2: check items 2 in
       
-      // 2: deactivate item 
+      // 2: deactivate item 1
     });
   }
   
@@ -126,7 +124,8 @@ class EventStoreTester {
   
   InventoryPresenter _presenter;
   InventoryViewMock _view;
-  final MessageBus _messageBus;
   final EventStore _eventStore;
+  final _messageBus = new MessageBus();
+  final expectedEvents = new List<String>();
 }
 
