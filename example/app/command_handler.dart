@@ -1,52 +1,51 @@
-// Copyright (c) 2013 Solvr, Inc. All rights reserved.
-//
-// This open source software is governed by the license terms 
-// specified in the LICENSE file
+// Copyright (c) 2013, the project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed 
+// by a Apache license that can be found in the LICENSE file.
 
 part of harvest_example;
 
 class InventoryCommandHandler {
   InventoryCommandHandler(this._messageBus, this._domainRepository) {
-    _messageBus.on[CreateInventoryItem].add(_onCreateInventoryItem);
-    _messageBus.on[DeactivateInventoryItem].add(_onDeactivateInventoryItem);
-    _messageBus.on[RemoveItemsFromInventory].add(_onRemoveItemsFromInventory);
-    _messageBus.on[CheckInItemsToInventory].add(_onCheckInItemsToInventory);
-    _messageBus.on[RenameInventoryItem].add(_onRenameInventoryItem);
+    _messageBus.on[CreateItem].add(_onCreateItem);
+    _messageBus.on[DecreaseInventory].add(_onDecreaseInventory);
+    _messageBus.on[IncreaseInventory].add(_onIncreaseInventory);
+    _messageBus.on[RemoveItem].add(_onRemoveItem);
+    _messageBus.on[RenameItem].add(_onRenameItem);
   }
  
-  _onCreateInventoryItem(CreateInventoryItem command) {
-    var item = new InventoryItem(command.inventoryItemId, command.name);
+  _onCreateItem(CreateItem command) {
+    var item = new Item(command.itemId, command.name);
     _domainRepository.save(item).then((v) => command.completeSuccess());
   }
-
-  _onDeactivateInventoryItem(DeactivateInventoryItem command) {
-    _domainRepository.load(command.inventoryItemId).then((InventoryItem item) {
-      item.deactivate();
+  
+  _onDecreaseInventory(DecreaseInventory command) {
+    _domainRepository.load(command.itemId).then((Item item) {
+      item.decreaseInventory(command.count);
       _domainRepository.save(item, command.originalVersion).then((v) => command.completeSuccess());
     });
   }
   
-  _onRemoveItemsFromInventory(RemoveItemsFromInventory command) {
-    _domainRepository.load(command.inventoryItemId).then((InventoryItem item) {
-      item.remove(command.count);
+  _onIncreaseInventory(IncreaseInventory command) {
+    _domainRepository.load(command.itemId).then((Item item) {
+      item.increaseInventory(command.count);
       _domainRepository.save(item, command.originalVersion).then((v) => command.completeSuccess());
     });
   }
   
-  _onCheckInItemsToInventory(CheckInItemsToInventory command) {
-    _domainRepository.load(command.inventoryItemId).then((InventoryItem item) {
-      item.checkIn(command.count);
+  _onRemoveItem(RemoveItem command) {
+    _domainRepository.load(command.itemId).then((Item item) {
+      item.remove();
       _domainRepository.save(item, command.originalVersion).then((v) => command.completeSuccess());
     });
   }
   
-  _onRenameInventoryItem(RenameInventoryItem command) {
-    _domainRepository.load(command.inventoryItemId).then((InventoryItem item) {
+  _onRenameItem(RenameItem command) {
+    _domainRepository.load(command.itemId).then((Item item) {
       item.name = command.newName;
       _domainRepository.save(item, command.originalVersion).then((v) => command.completeSuccess());
     });
   }
   
-  final DomainRepository<InventoryItem> _domainRepository;
+  final DomainRepository<Item> _domainRepository;
   final MessageBus _messageBus;
 }

@@ -1,50 +1,40 @@
-// Copyright (c) 2013 Solvr, Inc. All rights reserved.
-//
-// This open source software is governed by the license terms 
-// specified in the LICENSE file
+// Copyright (c) 2013, the project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed 
+// by a Apache license that can be found in the LICENSE file.
 
 part of harvest_example;
 
-class InventoryItemDeactivated extends DomainEvent {
-  InventoryItemDeactivated.init();
-  
-  InventoryItemDeactivated(this.id);
+class InventoryIncreased extends DomainEvent {
+  InventoryIncreased(this.id, this.count);
   
   Guid id;
+  int count;
 }
 
-class InventoryItemCreated extends DomainEvent {
-  InventoryItemCreated.init();
+class InventoryDecreased extends DomainEvent {
+  InventoryDecreased(this.id, this.count);  
   
-  InventoryItemCreated(this.id, this.name); 
+  Guid id;
+  int count;
+}
+
+class ItemCreated extends DomainEvent {
+  ItemCreated(this.id, this.name); 
   
   Guid id;
   String name;
 }
 
-class InventoryItemRenamed extends DomainEvent {
-  InventoryItemRenamed.init();
+class ItemRemoved extends DomainEvent {
+  ItemRemoved(this.id);
   
-  InventoryItemRenamed(this.id, this.newName);
+  Guid id;
+}
+
+class ItemRenamed extends DomainEvent {
+  ItemRenamed(this.id, this.newName);
   
   Guid id;
   String newName;
 }
 
-class ItemsCheckedInToInventory extends DomainEvent {
-  ItemsCheckedInToInventory.init(); 
-  
-  ItemsCheckedInToInventory(this.id, this.count);
-  
-  Guid id;
-  int count;
-}
-
-class ItemsRemovedFromInventory extends DomainEvent {
-  ItemsRemovedFromInventory.init(); 
-  
-  ItemsRemovedFromInventory(this.id, this.count);  
-  
-  Guid id;
-  int count;
-}

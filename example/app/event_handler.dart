@@ -1,55 +1,54 @@
-// Copyright (c) 2013 Solvr, Inc. All rights reserved.
-//
-// This open source software is governed by the license terms 
-// specified in the LICENSE file
+// Copyright (c) 2013, the project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed 
+// by a Apache license that can be found in the LICENSE file.
 
 part of harvest_example;
 
 class InventoryEventHandler {
-  InventoryEventHandler(this._messageBus, this._itemListRepository, this._itemDetailsRepository) {
-    _messageBus.on[InventoryItemCreated].add(_onInventoryItemCreated);
-    _messageBus.on[InventoryItemRenamed].add(_onInventoryItemRenamed);
-    _messageBus.on[ItemsRemovedFromInventory].add(_onItemsRemovedFromInventory);
-    _messageBus.on[ItemsCheckedInToInventory].add(_onItemsCheckedInToInventory);
-    _messageBus.on[InventoryItemDeactivated].add(_onInventoryItemDeactivated);
+  InventoryEventHandler(this._messageBus, this._itemEntryRepository, this._itemDetailsRepository) {
+    _messageBus.on[ItemCreated].add(_onItemCreated);
+    _messageBus.on[ItemRenamed].add(_onItemRenamed);
+    _messageBus.on[InventoryDecreased].add(_onInventoryDecreased);
+    _messageBus.on[InventoryIncreased].add(_onInventoryIncreased);
+    _messageBus.on[ItemRemoved].add(_onItemRemoved);
   }
   
-  _onInventoryItemCreated(InventoryItemCreated message) {
-    _itemDetailsRepository.save(new InventoryItemDetails(message.id, message.name, 0, 0));
-    _itemListRepository.save(new InventoryItemListEntry(message.id, message.name));
+  _onItemCreated(ItemCreated message) {
+    _itemDetailsRepository.save(new ItemDetails(message.id, message.name, 0, 0));
+    _itemEntryRepository.save(new ItemEntry(message.id, message.name));
   }
 
-  _onInventoryItemRenamed(InventoryItemRenamed message) {
-    InventoryItemDetails details = _itemDetailsRepository.getById(message.id);
+  _onItemRenamed(ItemRenamed message) {
+    ItemDetails details = _itemDetailsRepository.getById(message.id);
     details.name = message.newName;
     details.version = message.version;
     _itemDetailsRepository.save(details);
   
-    InventoryItemListEntry entry = _itemListRepository.getById(message.id);
+    ItemEntry entry = _itemEntryRepository.getById(message.id);
     entry.name = message.newName;
-    _itemListRepository.save(entry);
+    _itemEntryRepository.save(entry);
   }
 
-  _onItemsRemovedFromInventory(ItemsRemovedFromInventory message) {
-    InventoryItemDetails details = _itemDetailsRepository.getById(message.id);
+  _onInventoryDecreased(InventoryDecreased message) {
+    ItemDetails details = _itemDetailsRepository.getById(message.id);
     details.currentCount -= message.count;
     details.version = message.version;
     _itemDetailsRepository.save(details);
   }
 
-  _onItemsCheckedInToInventory(ItemsCheckedInToInventory message) {
-    InventoryItemDetails details = _itemDetailsRepository.getById(message.id);
+  _onInventoryIncreased(InventoryIncreased message) {
+    ItemDetails details = _itemDetailsRepository.getById(message.id);
     details.currentCount += message.count;
     details.version = message.version;
     _itemDetailsRepository.save(details);
   }
 
-  _onInventoryItemDeactivated(InventoryItemDeactivated message) {
+  _onItemRemoved(ItemRemoved message) {
     _itemDetailsRepository.removeById(message.id);
-    _itemListRepository.removeById(message.id);
+    _itemEntryRepository.removeById(message.id);
   }
   
   final MessageBus _messageBus;
-  final ModelRepository<InventoryItemListEntry> _itemListRepository;
-  final ModelRepository<InventoryItemDetails> _itemDetailsRepository;
+  final ModelRepository<ItemEntry> _itemEntryRepository;
+  final ModelRepository<ItemDetails> _itemDetailsRepository;
 }

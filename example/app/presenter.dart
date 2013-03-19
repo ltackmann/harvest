@@ -1,7 +1,6 @@
-// Copyright (c) 2013 Solvr, Inc. All rights reserved.
-//
-// This open source software is governed by the license terms 
-// specified in the LICENSE file
+// Copyright (c) 2013, the project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed 
+// by a Apache license that can be found in the LICENSE file.
 
 part of harvest_example;
 
@@ -10,7 +9,7 @@ class InventoryPresenter {
     : _logger = LoggerFactory.getLoggerFor(InventoryPresenter) 
   {
     _view.presenter = this;
-    // show the events fired
+    // show events fired
     _messageBus.onAny.add((Message message) {
       var messageType = (message is Command) ? "Command" : "Event";
       var messageName = message.runtimeType.toString();
@@ -21,37 +20,37 @@ class InventoryPresenter {
   go() => showItems();
 
   Future createItem(String name) {
-    var cmd = new CreateInventoryItem(new Guid(), name);
-    return cmd.onSuccess(showItems).fireAsync(_messageBus);
+    var cmd = new CreateItem(new Guid(), name);
+    return cmd.onSuccess(showItems).executeOn(_messageBus);
   }
   
-  Future checkInItems(Guid id, int number, int version) {
-    var cmd = new CheckInItemsToInventory(id, number, version);
-    return cmd.onSuccess(() => showDetails(id)).fireAsync(_messageBus);
+  Future decreaseInventory(Guid itemId, int numberOfItems, int version) {
+    var cmd = new DecreaseInventory(itemId, numberOfItems, version);
+    return cmd.onSuccess(() => showItemDetails(itemId)).executeOn(_messageBus);
   }
   
-  Future deactivateItem(Guid id, int version) {
-    var cmd = new DeactivateInventoryItem(id, version);
-    return cmd.onSuccess(showItems).fireAsync(_messageBus);
+  Future increaseInventory(Guid itemId, int numberOfItems, int version) {
+    var cmd = new IncreaseInventory(itemId, numberOfItems, version);
+    return cmd.onSuccess(() => showItemDetails(itemId)).executeOn(_messageBus);
+  }
+  
+  Future removeItem(Guid itemId, int version) {
+    var cmd = new RemoveItem(itemId, version);
+    return cmd.onSuccess(showItems).executeOn(_messageBus);
   }
 
-  Future renameItem(Guid id, String name, int version) {
-    var cmd = new RenameInventoryItem(id, name, version);
-    return cmd.onSuccess(() => showDetails(id)).fireAsync(_messageBus);
-  }
-
-  Future removeItems(Guid id, int number, int version) {
-    var cmd = new RemoveItemsFromInventory(id, number, version);
-    return cmd.onSuccess(() => showDetails(id)).fireAsync(_messageBus);
+  Future renameItem(Guid itemId, String name, int version) {
+    var cmd = new RenameItem(itemId, name, version);
+    return cmd.onSuccess(() => showItemDetails(itemId)).executeOn(_messageBus);
   }
   
   showItems() {
-    var inventoryItems = _viewModelFacade.getInventoryItems();
+    var inventoryItems = _viewModelFacade.getItems();
     _view.showItems(inventoryItems);
   }
 
-  showDetails(Guid id) {
-    var details = _viewModelFacade.getInventoryItemDetails(id);
+  showItemDetails(Guid itemId) {
+    var details = _viewModelFacade.getItemDetails(itemId);
     _view.showDetails(details);
   }
   
@@ -64,9 +63,9 @@ class InventoryPresenter {
 abstract class InventoryView {
   set presenter(InventoryPresenter p);
   
-  showItems(List<InventoryItemListEntry> items);
+  showItems(List<ItemEntry> itemEntries);
   
-  showDetails(InventoryItemDetails details);
+  showDetails(ItemDetails details);
   
   recordMessage(String messageType, String messageName, DateTime time);
 }

@@ -1,7 +1,6 @@
-// Copyright (c) 2013 Solvr, Inc. All rights reserved.
-//
-// This open source software is governed by the license terms 
-// specified in the LICENSE file
+// Copyright (c) 2013, the project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed 
+// by a Apache license that can be found in the LICENSE file.
 
 part of harvest_example;
 
@@ -9,16 +8,12 @@ part of harvest_example;
  * Read-only access to the view model
  */ 
 class ViewModelFacade {
-  ViewModelFacade( this._itemListRepository, this._itemDetailsRepository);
+  ViewModelFacade(this._itemEntryRepository, this._itemDetailsRepository);
   
-  List<InventoryItemListEntry> getInventoryItems() {
-    return _itemListRepository.all;
-  }
+  List<ItemEntry> getItems() => _itemEntryRepository.all;
 
-  InventoryItemDetails getInventoryItemDetails(Guid id) {
-    return _itemDetailsRepository.getById(id);
-  }
+  ItemDetails getItemDetails(Guid id) => _itemDetailsRepository.getById(id);
   
-  final ModelRepository<InventoryItemListEntry> _itemListRepository;
-  final ModelRepository<InventoryItemDetails> _itemDetailsRepository;
+  final ModelRepository<ItemEntry> _itemEntryRepository;
+  final ModelRepository<ItemDetails> _itemDetailsRepository;
 }

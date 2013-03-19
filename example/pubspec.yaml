@@ -1,6 +1,8 @@
 name: harvest_example_app
 dependencies:
-  log4dart: any
+  browser: any
   harvest:
-    git: git://github.com/ltackmann/harvest.git
+    git: file:///Users/lt/Projects/dart/harvest
+  #git://github.com/ltackmann/harvest.git
+  log4dart: any
 
