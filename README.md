@@ -29,7 +29,7 @@ Why is this a trick ?.
 For certain applications the eventlog can be useful in itself such as a audit 
 trail in a financial system. It can also be a valuable for complex applications 
 since it makes each use case explicit by forcing programmers to make event types 
-for every action that can occur in the system.
+for every action that can occur.
 
 Further it also makes debugging easy since you can replay the event log to recreate 
 any former system state where an error occurred  Finally it also makes implementing 
