@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
-part of harvest_indexd_db;
+part of harvest_indexeddb;
 
 /**
  * IndexDB backed event store

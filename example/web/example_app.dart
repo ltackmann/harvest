@@ -1,19 +1,18 @@
-// Copyright (c) 2013 Solvr, Inc. All rights reserved.
-//
-// This open source software is governed by the license terms 
-// specified in the LICENSE file
+// Copyright (c) 2013, the project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed 
+// by a Apache license that can be found in the LICENSE file.
 
 library harvest_example_app;
 
-import "dart:html";
-import "dart:math";
+import 'dart:html';
+import 'dart:math';
 
-import "package:log4dart/log4dart.dart";
+import 'package:log4dart/log4dart.dart';
 
-import "app/lib.dart";
+import 'app/lib.dart';
 
-// we load the view here so "app/lib.dart" does not need to reference dart:html
-part "app/view.dart";
+// we load the view here so 'app/lib.dart' does not need to reference dart:html
+part 'app/view.dart';
 
 main() {
   var messageBus = new MessageBus();

@@ -5,4 +5,6 @@ dependencies:
     git: file:///Users/lt/Projects/dart/harvest
   #git://github.com/ltackmann/harvest.git
   log4dart: any
+  route: any
+  web_ui: any
 
