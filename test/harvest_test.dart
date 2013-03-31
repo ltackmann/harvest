@@ -6,7 +6,7 @@ library harvest_test;
 
 import "package:unittest/unittest.dart";
 
-import "../example/app/lib.dart";
+import "../example/web/app/lib.dart";
 
 part "lib/helpers.dart";
 part "lib/eventstore_tester.dart";
