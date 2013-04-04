@@ -4,13 +4,9 @@
 
 part of harvest;
 
-/**
- * Repository for working with read-models
- */ 
+/** Repository for working with read-models */ 
 abstract class ModelRepository<T> {
-  /**
-   * Get all instances of T
-   */
+  /** Get all instances of T */
   List<T> get all;
   
   T getById(Guid id);

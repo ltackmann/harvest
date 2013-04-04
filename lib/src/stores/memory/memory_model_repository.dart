@@ -4,18 +4,19 @@
 
 part of harvest;
 
-/**
- * Memory backed model repository
- */
+/** Memory backed model repository */
 class MemoryModelRepository<T extends IdModel> implements ModelRepository<T> {
-  MemoryModelRepository(): _store = new Map<Guid, T>() {
+  MemoryModelRepository()  {
     _typeName = genericTypeNameOf(this); 
   }
   
+  @override
   List<T> get all => new List.from(_store.values);    
   
+  @override
   T getById(Guid id) => _store[id];
 
+  @override
   T getOrNew(T builder()) {
     List list = all;
     if(list.isEmpty) {
@@ -28,16 +29,18 @@ class MemoryModelRepository<T extends IdModel> implements ModelRepository<T> {
       throw new StateError("more than one existing instance of ${_typeName} exists");
     }
   }
-      
+    
+  @override
   remove(T instance) => _store.remove(instance.id);
   
+  @override
   removeById(Guid id) => _store.remove(id);
   
+  @override
   save(T instance) => _store[instance.id] = instance;
   
   String _typeName;
-  Logger get _logger => LoggerFactory.getLogger(_typeName);
-  final Map<Guid,T> _store;
+  final _store = new Map<Guid, T>();
 }
 
 

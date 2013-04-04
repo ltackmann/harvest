@@ -6,11 +6,11 @@ part of harvest_example;
 
 class InventoryEventHandler {
   InventoryEventHandler(this._messageBus, this._itemEntryRepository, this._itemDetailsRepository) {
-    _messageBus.on[ItemCreated].add(_onItemCreated);
-    _messageBus.on[ItemRenamed].add(_onItemRenamed);
-    _messageBus.on[InventoryDecreased].add(_onInventoryDecreased);
-    _messageBus.on[InventoryIncreased].add(_onInventoryIncreased);
-    _messageBus.on[ItemRemoved].add(_onItemRemoved);
+    _messageBus.stream(ItemCreated).listen(_onItemCreated);
+    _messageBus.stream(ItemRenamed).listen(_onItemRenamed);
+    _messageBus.stream(InventoryDecreased).listen(_onInventoryDecreased);
+    _messageBus.stream(InventoryIncreased).listen(_onInventoryIncreased);
+    _messageBus.stream(ItemRemoved).listen(_onItemRemoved);
   }
   
   _onItemCreated(ItemCreated message) {

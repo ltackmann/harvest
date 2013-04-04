@@ -5,13 +5,8 @@
 part of harvest;
 
 class Guid {
-  static Uuid valueFactory;
-  
   factory Guid() {
-    if(valueFactory == null) {
-      valueFactory = new Uuid();
-    }
-    var val = valueFactory.v1();
+    var val = _valueFactory.v1();
     return new Guid._internal(val);
   }
   
@@ -22,5 +17,6 @@ class Guid {
   String toString() => value;
   
   final String value;
+  static final _valueFactory = new Uuid();
 }
 

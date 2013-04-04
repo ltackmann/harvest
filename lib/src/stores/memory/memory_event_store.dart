@@ -4,15 +4,11 @@
 
 part of harvest;
 
-/**
- * Memory backed event store
- */
+/** Memory backed event store */
 class MemoryEventStore implements EventStore {
-  MemoryEventStore():
-    _logger = LoggerFactory.getLoggerFor(MemoryEventStore),
-    _store = new Map<Guid, List<DomainEventDescriptor>>(), 
-    _messageBus = new MessageBus();
+  MemoryEventStore(this._messageBus);
   
+  @override
   Future<int> saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion) {
     var completer = new Completer<int>();
     
@@ -40,6 +36,7 @@ class MemoryEventStore implements EventStore {
     return completer.future; 
   }
   
+  @override
   Future<Iterable<DomainEvent>> getEventsForAggregate(Guid aggregateId) {
     var completer = new Completer<Iterable<DomainEvent>>();
     
@@ -54,8 +51,8 @@ class MemoryEventStore implements EventStore {
     return completer.future; 
   }
   
-  final Map<Guid, List<DomainEventDescriptor>> _store;
   final MessageBus _messageBus;
-  final Logger _logger;
+  final _store = new Map<Guid, List<DomainEventDescriptor>>();
+  static final _logger = LoggerFactory.getLoggerFor(MemoryEventStore);
 }
 

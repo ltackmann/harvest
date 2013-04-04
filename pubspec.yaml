@@ -1,10 +1,11 @@
 name: harvest
-version: 1.1.6
+version: 1.2.0
 author: Lars Tackmann <lars@solvr.io>
 description: Event store for Dart with multiple backends
 homepage: https://github.com/ltackmann/harvest
 dependencies:
   log4dart: '>=1.4.0 <2.0.0'
+  meta: '>=0.4.0'
   uuid: '>=0.1.2 <0.2.0'
 dev_dependencies:
   unittest: any

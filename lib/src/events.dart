@@ -22,14 +22,14 @@ class DeadEvent extends Message {
  *
  * Since these events are persisted its best they be constructed from primitive serializable types
  */
-class DomainEvent extends Message {
+abstract class DomainEvent extends Message {
   int version;
 }
 
 /**
  * Factory for building [DomainEvent]'s from type names
  * 
- * TODO remove when mirrors support emit
+ * TODO remove when mirrors support emit from type
  */ 
 class DomainEventFactory {
   DomainEventFactory(): builder = new Map<String, DomainEventBuilder>();
@@ -42,7 +42,7 @@ class DomainEventFactory {
 /**
  * Function that returns a bare domain event 
  * 
- * TODO remove this once mirrors support emit 
+ * TODO remove this once mirrors support emit from type
  */ 
 typedef DomainEvent DomainEventBuilder();
 
@@ -61,7 +61,5 @@ class DomainEventDescriptor {
   int version;
 }
 
-/**
- * Base class for events  
- */
+/** Base class for events */
 abstract class Message { }

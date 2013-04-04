@@ -8,15 +8,13 @@
 library harvest;
 
 import "dart:async";
-export "dart:async";
 import "dart:math";
 
-import "package:uuid/uuid.dart";
 import "package:log4dart/log4dart.dart";
+import "package:meta/meta.dart";
+import "package:uuid/uuid.dart";
 
-/**
- * API
- */ 
+// API
 part "src/aggregate_root.dart";
 part "src/events.dart";
 part "src/domain_repository.dart";
@@ -26,15 +24,11 @@ part "src/guid.dart";
 part "src/message_bus.dart";
 part "src/model_repository.dart";
 
-/**
- * Eventstore implementation backed by memory (HashMap)
- */ 
+// Eventstore implementation backed by memory 
 part "src/stores/memory/memory_event_store.dart";
 part "src/stores/memory/memory_model_repository.dart";
 
-/**
- * Global Helper functions 
- */
+// Global Helper functions 
 String typeNameOf(Object obj) => obj.runtimeType.toString();
 
 String genericTypeNameOf(Object obj) {

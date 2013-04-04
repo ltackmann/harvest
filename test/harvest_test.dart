@@ -8,13 +8,18 @@ import "package:unittest/unittest.dart";
 
 import "../example/web/app/lib.dart";
 
-part "lib/helpers.dart";
-part "lib/eventstore_tester.dart";
+part "src/helpers.dart";
+part "src/eventstore_tester.dart";
+part "src/message_test.dart";
 
 main() {
+  // test message bus
+  //new MessageTest();
+  //if(true) return;
+  var messageBus = new MessageBus();
   // test memory backed event store
-  var memoryEventStore = new MemoryEventStore();
-  new EventStoreTester(memoryEventStore);
+  var memoryEventStore = new MemoryEventStore(messageBus);
+  new EventStoreTester(messageBus, memoryEventStore);
   
   // test file backed event store
   /* TODO re-enable

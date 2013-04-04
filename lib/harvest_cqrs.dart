@@ -7,9 +7,11 @@
  */ 
 library harvest_cqrs;
 
-import "harvest.dart";
-export "harvest.dart";
+import 'dart:async';
 
-part "src/cqrs/cqrs_helpers.dart";
+import 'harvest.dart';
+export 'harvest.dart';
+
+part 'src/cqrs/cqrs_helpers.dart';
 
 

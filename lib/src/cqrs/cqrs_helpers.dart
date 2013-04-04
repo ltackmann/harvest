@@ -33,8 +33,6 @@ class ApplicationEvent extends Message { }
  * Since commands are not persisted they can contain arbitraly complex types 
  */
 class Command extends Message {
-  Command(): _commandCompleter = new Completer();
-  
   completeSuccess() {
     if(_successHandler != null) {
       _successHandler();
@@ -58,7 +56,7 @@ class Command extends Message {
     return _commandCompleter.future;
   }
       
-  Completer _commandCompleter;
+  final _commandCompleter = new Completer();
   var _successHandler;
 }
 

@@ -6,11 +6,11 @@ part of harvest_example;
 
 class InventoryCommandHandler {
   InventoryCommandHandler(this._messageBus, this._domainRepository) {
-    _messageBus.on[CreateItem].add(_onCreateItem);
-    _messageBus.on[DecreaseInventory].add(_onDecreaseInventory);
-    _messageBus.on[IncreaseInventory].add(_onIncreaseInventory);
-    _messageBus.on[RemoveItem].add(_onRemoveItem);
-    _messageBus.on[RenameItem].add(_onRenameItem);
+    _messageBus.stream(CreateItem).listen(_onCreateItem);
+    _messageBus.stream(DecreaseInventory).listen(_onDecreaseInventory);
+    _messageBus.stream(IncreaseInventory).listen(_onIncreaseInventory);
+    _messageBus.stream(RemoveItem).listen(_onRemoveItem);
+    _messageBus.stream(RenameItem).listen(_onRenameItem);
   }
  
   _onCreateItem(CreateItem command) {

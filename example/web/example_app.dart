@@ -16,7 +16,7 @@ part 'app/view.dart';
 
 main() {
   var messageBus = new MessageBus();
-  var eventStore = new MemoryEventStore();
+  var eventStore = new MemoryEventStore(messageBus);
   
   // create repository for domain models and set up command handler 
   var itemRepo = new DomainRepository<Item>((Guid id) => new Item.fromId(id), eventStore);

@@ -8,7 +8,7 @@ part of harvest_test;
  * Test class used for asserting the robustness of eventstore implementations
  */ 
 class EventStoreTester {
-  EventStoreTester(this._eventStore) {
+  EventStoreTester(this._messageBus, this._eventStore) {
     _init();
     
     // test that executing events causes app to behave as expected    
@@ -37,7 +37,7 @@ class EventStoreTester {
   _testExecutingEvents() {
     // record all events
     var events = new List<DomainEvent>();
-    _messageBus.onAny.add((Message message) {
+    _messageBus.everyMessage.listen((Message message) {
       if(message is DomainEvent) {
         events.add(message);
       }
@@ -112,7 +112,6 @@ class EventStoreTester {
       var origState = new ViewModelState(_presenter, _view);
       
       // reload the application (causes replay of the recorded events)
-      _messageBus.onAny.clear();
       _init();
       
       // compare state after replay
@@ -124,7 +123,7 @@ class EventStoreTester {
   InventoryPresenter _presenter;
   InventoryViewMock _view;
   final EventStore _eventStore;
-  final _messageBus = new MessageBus();
+  final MessageBus _messageBus;
   final expectedEvents = new List<String>();
 }
 

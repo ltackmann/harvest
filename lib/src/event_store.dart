@@ -4,17 +4,11 @@
 
 part of harvest;
 
-/**
- * Interface implemented by event stores
- */ 
+/** Interface implemented by event stores */ 
 abstract class EventStore {
-  /**
-   * Saves events for aggregate, returns number of events saved
-   */  
+  /** Saves events for aggregate, returns number of events saved */  
   Future<int> saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion);
   
-  /**
-   * Get events for aggregate
-   */ 
+  /** Get events for aggregate */ 
   Future<Iterable<DomainEvent>> getEventsForAggregate(Guid aggregateId);
 }

@@ -5,12 +5,10 @@
 part of harvest_example;
 
 class InventoryPresenter {
-  InventoryPresenter(this._messageBus, this._view, this._viewModelFacade)
-    : _logger = LoggerFactory.getLoggerFor(InventoryPresenter) 
-  {
+  InventoryPresenter(this._messageBus, this._view, this._viewModelFacade) {
     _view.presenter = this;
     // show events fired
-    _messageBus.onAny.add((Message message) {
+    _messageBus.everyMessage.listen((Message message) {
       var messageType = (message is Command) ? "Command" : "Event";
       var messageName = message.runtimeType.toString();
       _view.recordMessage(messageType, messageName, new DateTime.now());
@@ -35,6 +33,7 @@ class InventoryPresenter {
   }
   
   Future removeItem(Guid itemId, int version) {
+    assert(itemId is Guid);
     var cmd = new RemoveItem(itemId, version);
     return cmd.onSuccess(showItems).executeOn(_messageBus);
   }
@@ -53,11 +52,11 @@ class InventoryPresenter {
     var details = _viewModelFacade.getItemDetails(itemId);
     _view.showDetails(details);
   }
-  
-  final Logger _logger;
+ 
   final MessageBus _messageBus;
   final ViewModelFacade _viewModelFacade;
   final InventoryView _view;
+  static final _logger = LoggerFactory.getLoggerFor(InventoryPresenter);
 }
 
 abstract class InventoryView {

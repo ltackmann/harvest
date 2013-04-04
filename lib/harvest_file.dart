@@ -7,12 +7,12 @@
  */ 
 library harvest_file;
 
-import "dart:io";
-import "dart:json" as JSON;
+import 'dart:io';
+import 'dart:json' as JSON;
 
-import "package:log4dart/log4dart.dart";
+import 'package:log4dart/log4dart.dart';
 
-import "harvest.dart";
-export "harvest.dart";
+import 'harvest.dart';
+export 'harvest.dart';
 
-part "src/stores/file/file_event_store.dart";
+part 'src/stores/file/file_event_store.dart';
