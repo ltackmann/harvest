@@ -17,9 +17,9 @@ Quick Guide
 **2.** Add harvest to some code and run it
 ```dart
 main() {
-	// get a event stream for streamId 
-	Guid streamId = new Guid();
+	var streamId = new Guid();
 	var eventStore = new MemoryEventStore();
+	// get a event stream for streamId 
 	var eventStream = eventStore.openStream(streamId);
 	
 	// create some events
