@@ -49,15 +49,15 @@ have a **BankAccount** object and 3 events for it
 Where is this useful?
 --------------------- 
 
-1. For certain applications the eventlog can be useful in itself such as a audit 
+ * For certain applications the eventlog can be useful in itself such as a audit 
 trail in a financial system. 
-1. It can help manage complexity in large applications by forcing programmers to 
+ * It can help manage complexity in large applications by forcing programmers to 
 make event types for every action that can occur.
-1. It makes debugging easy since you can replay the event log to recreate 
+ * It makes debugging easy since you can replay the event log to recreate 
 any former system state where an error occurred.  
-1. It makes mobile app synchronization a breeze, since the offline app can just 
+ * It makes mobile app synchronization a breeze, since the offline app can just 
 queue up events and replay them on the backend once it comes online. 
-1. In applications using the [CQRS architecture pattern](http://msdn.microsoft.com/en-us/library/jj554200.aspx).
+ * In applications using the [CQRS architecture pattern](http://msdn.microsoft.com/en-us/library/jj554200.aspx).
 
 For more information, see the provided **example** application.
 
