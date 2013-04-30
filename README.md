@@ -5,6 +5,29 @@ Harvest
 Event store for Dart with multiple backends for easly creating event sourced 
 applications on both the browser and VM.
 
+
+How does it work
+----------------
+
+Harvest stores and load events based on identifers
+
+```dart
+main() {
+	// wire up event store
+	var messageBus = new MessageBus();
+	var eventStore = new MemoryEventStore();
+	eventStore.stream
+	
+	// create some events
+	var event1 = ...
+	var event2 = ...
+	
+	// store them
+	eventStore.saveEvents(id, [event1, event2], expectedVersion:0);
+}	
+```
+
+
 Introduction
 ------------
 Event sourcing is the concept of saving and retriving domain objects by

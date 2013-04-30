@@ -2,17 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
-part of harvest;
+part of harvest_cqrs;
 
-/**
- * The root of an object tree (aggregate). 
- */
-abstract class AggregateRoot {
-  AggregateRoot()
-    : _changes = new List<DomainEvent>(),
-      _entities = new List<EventSourcedEntity>(),
-      _logger = LoggerFactory.getLoggerFor(AggregateRoot);
- 
+/** The root of an object tree (aggregate) */
+abstract class AggregateRoot { 
   int get version => _version;
   
   Guid id;
@@ -36,19 +29,13 @@ abstract class AggregateRoot {
     }
   }
   
-  /**
-   * Implemented in each concrete aggregate, responsible for extracting data from events and applying it itself
-   */
+  /** Implemented in each concrete aggregate, responsible for extracting data from events and applying it itself */
   apply(DomainEvent event);
 
-  /**
-   * Apply a new event to this aggregate
-   */
+  /** Apply a new event to this aggregate */
   applyChange(DomainEvent event) => _applyChange(event, true);
   
-  /**
-   * List of events applied to this aggregate that are not persisted in the event store
-   */
+  /** List of events applied to this aggregate that are not persisted in the event store */
   List<DomainEvent> get uncommittedChanges => _changes;
  
   bool get hasUncommittedChanges => _changes.length > 0;
@@ -72,16 +59,23 @@ abstract class AggregateRoot {
   
   String toString() => "aggregate $id";
   
-  final List<EventSourcedEntity> _entities;
-  final List<DomainEvent> _changes;
-  final Logger _logger;
   int _version;
+  final _entities = new List<EventSourcedEntity>();
+  final _changes = new List<DomainEvent>();
+  static final _logger = LoggerFactory.getLoggerFor(AggregateRoot);
 }
 
-/**
- * Function that returns a bare aggregate root for the supplied id 
- */ 
+/** Function that returns a bare aggregate root for the supplied id */ 
 typedef AggregateRoot AggregateBuilder(Guid aggregateId);
+
+/** Represents an attempt to retrieve a nonexistent aggregate */
+class AggregateNotFoundError implements Error {
+  const AggregateNotFoundError(this.aggregateId);
+  
+  String toString() => "No aggregate for id: $aggregateId";
+  
+  final Guid aggregateId;
+}
 
 /**
  * Event sourced entity that is part of a aggregate (but not the root)
@@ -94,11 +88,11 @@ abstract class EventSourcedEntity {
   }
   
   /**
-   * Implemented in each concrete entity, responsible for extracting data from events and applying it itself
+   * Extracting data from event and apply it to the entity itself
    */
   apply(DomainEvent event);
   
   ChangeHandler applyChange;
 }
 
-typedef ChangeHandler(DomainEvent event); 
+typedef ChangeHandler(PersistentEvent event); 

@@ -4,11 +4,31 @@
 
 part of harvest_test;
 
-/**
- * Test class used for asserting the robustness of eventstore implementations
- */ 
-class EventStoreTester {
-  EventStoreTester(this._messageBus, this._eventStore) {
+// test event store implementations
+class StoresTest {
+  StoresTest() {
+    var messageBus = new MessageBus();
+    // test memory backed event store
+    var memoryEventStore = new MemoryEventStore(messageBus);
+    new StoreTester(messageBus, memoryEventStore);
+    
+    // test file backed event store
+    /* TODO re-enable
+    var domainEventFactory = new DomainEventFactory();
+    domainEventFactory.builder["InventoryItemDeactivated"] = () => new InventoryItemDeactivated.init();
+    domainEventFactory.builder["InventoryItemCreated"] = () => new InventoryItemCreated.init();
+    domainEventFactory.builder["InventoryItemRenamed"] = () => new  InventoryItemRenamed.init();
+    domainEventFactory.builder["ItemsCheckedInToInventory"] = () => new   ItemsCheckedInToInventory.init();
+    domainEventFactory.builder["ItemsRemovedFromInventory"] = () => new  ItemsRemovedFromInventory.init();
+    
+    var fileInventoryItemRepository = new FileDomainRepository.reset("InventoryItem", (Guid id) => new InventoryItem.fromId(id), domainEventFactory, "/tmp/eventstore");
+    new EventStoreTester(fileInventoryItemRepository);
+     */
+  }
+}
+
+class StoreTester {
+  StoreTester(this._messageBus, this._eventStore) {
     _init();
     
     // test that executing events causes app to behave as expected    

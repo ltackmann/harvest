@@ -2,25 +2,24 @@
 // for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
-part of harvest;
+part of harvest_cqrs;
 
-/**
- * Repository that stores and retrieves domain objects (aggregates) by their events
- */
+/** Repository that stores and retrieves domain objects (aggregates) by their events. */
 class DomainRepository<T extends AggregateRoot>  {
-  DomainRepository(this._builder, this._store) {
+  DomainRepository(this._builder, this._store, this._messageBus) {
     _typeName = genericTypeNameOf(this);
   }
   
-  /**
-   * Save aggregate, return [true] when the aggregate had unsaved data otherwise [false].
-   */ 
+  /** Save aggregate, return [true] when the aggregate had unsaved data otherwise [false]. */ 
   Future<bool> save(AggregateRoot aggregate, [int expectedVersion = -1]) {
     var completer = new Completer<bool>();
     if(aggregate.hasUncommittedChanges) {
-      _logger.debug("saving aggregate ${aggregate.id} with ${aggregate.uncommittedChanges.length} new events");
-      _store.saveEvents(aggregate.id, aggregate.uncommittedChanges, expectedVersion).then((r) {
+      var events = aggregate.uncommittedChanges;
+      _logger.debug("saving aggregate ${aggregate.id} with ${events.length} new events");
+      _store.openStream(aggregate.id, expectedVersion).then((stream) {
+        stream.addAll(events);
         aggregate.markChangesAsCommitted();
+        _notifyEventListeners(events);
         completer.complete(true);
       });
     } else {
@@ -28,13 +27,14 @@ class DomainRepository<T extends AggregateRoot>  {
     }
     return completer.future;
   }
+  
+  _notifyEventListeners(List<DomainEvent> events) => events.forEach(_messageBus.fire);
 
-  /**
-   * Load aggregate by its id
-   */ 
+  /** Load aggregate by its id */ 
   Future<T> load(Guid id) {
     var completer = new Completer<T>();
-    _store.getEventsForAggregate(id).then((Iterable<DomainEvent> events) {
+    _store.openStream(id).then((stream) {
+      var events = stream.committedEvents as List<DomainEvent>;
       var obj = _builder(id);
       _logger.debug("loading aggregate ${id} from ${events.length} total events");
       obj.loadFromHistory(events);
@@ -48,4 +48,5 @@ class DomainRepository<T extends AggregateRoot>  {
   String _typeName;
   final AggregateBuilder _builder;
   final EventStore _store;
+  final MessageBus _messageBus;
 }

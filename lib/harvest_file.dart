@@ -7,6 +7,7 @@
  */ 
 library harvest_file;
 
+import 'dart:async';
 import 'dart:io';
 import 'dart:json' as JSON;
 

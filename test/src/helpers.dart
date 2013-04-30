@@ -29,9 +29,7 @@ class ViewModelState {
   final List<ItemDetails> itemDetailsList;
 }
 
-/**
- * Mock implementation of [InventoryView] that does not depend on dart:html
- */
+/** Mock implementation of [InventoryView] that does not depend on dart:html */
 class InventoryViewMock implements InventoryView {
   set presenter(InventoryPresenter p) {
   }
@@ -52,9 +50,7 @@ class InventoryViewMock implements InventoryView {
   ItemDetails displayedDetails;
 }
 
-/**
- * Assert that event are in correct order 
- */
+/** Assert that event are in correct order */
 assertEvents(List<String> eventNames, List<DomainEvent> events) {
   expect(eventNames.length, equals(events.length));
   for(int i=0; i<eventNames.length; i++) {
@@ -62,9 +58,7 @@ assertEvents(List<String> eventNames, List<DomainEvent> events) {
   }
 }
 
-/**
- * Assert that two [ViewModelState]'s are identical
- */
+/** Assert that two [ViewModelState]'s are identical */
 assertEqualState(ViewModelState origState, ViewModelState replayedState) {
   expect(origState.itemEntryList.length, equals(replayedState.itemEntryList.length));
   for(int i=0; i<origState.itemEntryList.length; i++) {

@@ -6,53 +6,60 @@ part of harvest;
 
 /** Memory backed event store */
 class MemoryEventStore implements EventStore {
-  MemoryEventStore(this._messageBus);
-  
-  @override
-  Future<int> saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion) {
-    var completer = new Completer<int>();
-    
-    if(!_store.containsKey(aggregateId)) {
-      _store[aggregateId] = new List<DomainEventDescriptor>();
-    } 
-    List<DomainEventDescriptor> eventDescriptors = _store[aggregateId];
-    
-    if(expectedVersion != -1 && eventDescriptors.last.version != expectedVersion) {
-      completer.completeError(new ConcurrencyError("unexpected version $expectedVersion"));
+  Future<EventStream> openStream(Guid id, [int expectedVersion = -1]) {
+    if(!_store.containsKey(id)) {
+      _store[id] = new MemoryEventStream(id);
     }
-    for(DomainEvent event in events) {
-      expectedVersion++;
-      event.version = expectedVersion;
-      eventDescriptors.add(new DomainEventDescriptor(aggregateId, event));
-      _logger.debug("saving event ${event.runtimeType} for aggregate ${aggregateId}");
+    var stream = _store[id];
+    if(stream.streamVersion != expectedVersion) {
+      new ConcurrencyError("unexpected version $expectedVersion");
     }
-    _store[aggregateId] = eventDescriptors;
-        
-    for(DomainEvent event in events) {
-      _messageBus.fire(event);
-    }
-    completer.complete(events.length);
-    
-    return completer.future; 
+    return new Future.value(stream);
   }
   
-  @override
-  Future<Iterable<DomainEvent>> getEventsForAggregate(Guid aggregateId) {
-    var completer = new Completer<Iterable<DomainEvent>>();
-    
-    if(!_store.containsKey(aggregateId)) {
-      completer.completeError(new AggregateNotFoundError(aggregateId));
-    } 
-    var eventDescriptors = _store[aggregateId];
-    assert(eventDescriptors.length > 0);
-    var events = eventDescriptors.map((DomainEventDescriptor desc) => desc.eventData);
-    completer.complete(events);
-    
-    return completer.future; 
-  }
-  
-  final MessageBus _messageBus;
-  final _store = new Map<Guid, List<DomainEventDescriptor>>();
-  static final _logger = LoggerFactory.getLoggerFor(MemoryEventStore);
+  final _store = new Map<Guid, EventStream>();
 }
 
+class MemoryEventStream implements EventStream {
+  MemoryEventStream(this.id): _streamVersion = -1;
+
+  @override
+  Iterable<PersistentEvent> get committedEvents => _storedEvents;
+
+  @override
+  Iterable<PersistentEvent> get uncommittedEvents => _changes;
+
+  @override
+  commitChanges() {
+    _changes.forEach((PersistentEvent event) {
+      _streamVersion++;
+      event.version = streamVersion;
+      _storedEvents.add(event);
+      _logger.debug("saving event ${event.runtimeType} for id ${id}");
+    });
+    clearChanges();
+  }
+
+  @override
+  clearChanges() => _changes.clear();
+  
+  @override
+  bool get hasUncommittedChanges => _changes.length > 0;
+
+  @override
+  addAll(Iterable<PersistentEvent> events) => events.forEach(add);
+  
+  @override
+  add(PersistentEvent event) => _changes.add(event);
+  
+  @override
+  final Guid id;
+  
+  @override
+  int get streamVersion => _streamVersion;
+  
+  int _streamVersion;
+  final _changes = new List<PersistentEvent>();
+  final _storedEvents = new List<PersistentEvent>();
+  static final _logger = LoggerFactory.getLoggerFor(MemoryEventStream);
+}

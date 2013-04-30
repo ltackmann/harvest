@@ -4,45 +4,35 @@
 
 part of harvest_file;
 
-/**
- * File backed event store
- * 
- * TODO fix this so it works again after switching to ASYNC api
- */
+/** File backed event store */
 class FileEventStore implements EventStore {
-  /**
-   * Store events in files in the [_storeFolder] directory. Each aggregate gets its own file.  
-   */ 
-  FileEventStore(this._storeFolder, DomainEventFactory eventFactory):
-    _logger = LoggerFactory.getLoggerFor(FileEventStore),
-    _store = new Map<Guid, File>(), 
-    _messageBus = new MessageBus(),
-    _jsonSerializer = new JsonSerializer(eventFactory);
+  /** Store events in files in the [directory] directory */ 
+  FileEventStore(Directory directory): _store = new _FileStore(directory);
   
   Future<int> saveEvents(Guid aggregateId, List<DomainEvent> events, int expectedVersion) {
     var completer = new Completer<int>();
     
-    if(!_store.containsKey(aggregateId)) {
+    if(!_stores.containsKey(aggregateId)) {
       // TODO switch to using path for windows support
-      var aggregteFilePath = "${_storeFolder.path}/${aggregateId}.json";
+      var aggregteFilePath = "${_store.path}/${aggregateId}.json";
       var aggregateFile = new File(aggregteFilePath);
       aggregateFile.exists().then((bool exists) {
         if(exists) {
           _logger.debug("using existing aggregate file $aggregteFilePath");
-          _store[aggregateId] = aggregateFile;
+          _stores[aggregateId] = aggregateFile;
           _readJsonFile(aggregateFile).then((Map json) {
             _saveEventsFor(aggregateId, events, expectedVersion, completer, aggregateFile, json);
           });
         } else {
           _logger.debug("creating aggregate file $aggregteFilePath");
           aggregateFile.create().then((File file) {
-            _store[aggregateId] = file;
+            _stores[aggregateId] = file;
             _saveEventsFor(aggregateId, events, expectedVersion, completer, file, {"eventlog":[]});
           });
         }
       });
     } else {
-      var aggregateFile = _store[aggregateId];
+      var aggregateFile = _stores[aggregateId];
       _readJsonFile(aggregateFile).then((Map json) {
         _saveEventsFor(aggregateId, events, expectedVersion, completer, aggregateFile, json);
       });
@@ -117,10 +107,49 @@ class FileEventStore implements EventStore {
     */
   }
   
-  final Map<Guid, File> _store;
   final Directory _storeFolder;
-  final MessageBus _messageBus;
-  final Logger _logger;
   final JsonSerializer _jsonSerializer;
+  final _store = new _FileStore();
+  
+  static final _logger = LoggerFactory.getLoggerFor(FileEventStore);
 }
 
+class _FileStore {
+  _File
+  if(!_stores.containsKey(aggregateId)) {
+    // TODO switch to using path for windows support
+    var aggregteFilePath = "${_store.path}/${aggregateId}.json";
+    var aggregateFile = new File(aggregteFilePath);
+    aggregateFile.exists().then((bool exists) {
+      if(exists) {
+        _logger.debug("using existing aggregate file $aggregteFilePath");
+        _stores[aggregateId] = aggregateFile;
+        _readJsonFile(aggregateFile).then((Map json) {
+          _saveEventsFor(aggregateId, events, expectedVersion, completer, aggregateFile, json);
+        });
+      } else {
+        _logger.debug("creating aggregate file $aggregteFilePath");
+        aggregateFile.create().then((File file) {
+          _stores[aggregateId] = file;
+          _saveEventsFor(aggregateId, events, expectedVersion, completer, file, {"eventlog":[]});
+        });
+      }
+    });
+  } else {
+    var aggregateFile = _stores[aggregateId];
+    _readJsonFile(aggregateFile).then((Map json) {
+      _saveEventsFor(aggregateId, events, expectedVersion, completer, aggregateFile, json);
+    });
+  }
+  
+  
+  Future<File> getFileFor(Guid aggregateId) {
+    if(!_stores.containsKey(aggregateId)) {
+      
+    } else {
+      return new Future.of(_stores[])
+    }
+  }
+  
+  final _stores = new Map<Guid, File>();
+}

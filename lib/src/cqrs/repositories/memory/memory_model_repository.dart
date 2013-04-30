@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
-part of harvest;
+part of harvest_cqrs;
 
 /** Memory backed model repository */
 class MemoryModelRepository<T extends IdModel> implements ModelRepository<T> {
