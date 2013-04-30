@@ -8,13 +8,13 @@ a **Guid** for future retrival.
 Quick Guide
 -----------
 
-*1.* Add the folowing to your pubspec.yaml and run pub install
+**1.** Add the folowing to your pubspec.yaml and run pub install
 ```yaml
     dependencies:
       harvest: any
 ```
 
-*2.* Add harvest to some code and run it
+**2.** Add harvest to some code and run it
 ```dart
 main() {
 	// get a event stream for streamId 
@@ -34,10 +34,9 @@ main() {
 
 Why do this ?
 -------------
-Event sourcing is the concept of saving and retriving object state by
-the events that occured on them rather than by their current state. 
-
-Consider the following bank use case
+Event sourcing is the concept of saving and retriving object state by the events 
+that occured on them rather than by their current state. Consider the following 
+bank use case:
 
 1. User creates account
 1. User deposits 10$
