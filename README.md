@@ -2,14 +2,19 @@
 
 Harvest
 =======
-Event store for Dart with multiple backends. 
+Harvest is a event store for Dart with multiple backends. Harvest creates and persists streams of events. Each persistent event stream is identified by 
+a **Guid** for future retrival.
 
-How does it work
-----------------
+Quick Guide
+-----------
 
-Harvest creates and persists streams of events. Each persistent event stream is identified by 
-a **Guid** for future retrival. For example
+*1.* Add the folowing to your pubspec.yaml and run pub install
+```yaml
+    dependencies:
+      harvest: any
+```
 
+*2.* Add harvest to some code and run it
 ```dart
 main() {
 	// get a event stream for streamId 
