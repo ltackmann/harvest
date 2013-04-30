@@ -13,11 +13,13 @@ class DomainRepository<T extends AggregateRoot>  {
   /** Save aggregate, return [true] when the aggregate had unsaved data otherwise [false]. */ 
   Future<bool> save(AggregateRoot aggregate, [int expectedVersion = -1]) {
     var completer = new Completer<bool>();
+    // TODO clean this mess, get event stream from aggreate
     if(aggregate.hasUncommittedChanges) {
       var events = aggregate.uncommittedChanges;
       _logger.debug("saving aggregate ${aggregate.id} with ${events.length} new events");
       _store.openStream(aggregate.id, expectedVersion).then((stream) {
         stream.addAll(events);
+        stream.commitChanges();
         aggregate.markChangesAsCommitted();
         _notifyEventListeners(events);
         completer.complete(true);
@@ -34,7 +36,7 @@ class DomainRepository<T extends AggregateRoot>  {
   Future<T> load(Guid id) {
     var completer = new Completer<T>();
     _store.openStream(id).then((stream) {
-      var events = stream.committedEvents as List<DomainEvent>;
+      var events = stream.committedEvents;
       var obj = _builder(id);
       _logger.debug("loading aggregate ${id} from ${events.length} total events");
       obj.loadFromHistory(events);

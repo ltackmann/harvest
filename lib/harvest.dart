@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
-/** Event store */ 
+/** Event store API */ 
 library harvest;
 
 import 'dart:async';
@@ -13,7 +13,6 @@ import 'package:meta/meta.dart';
 
 import 'src/harvest_api.dart';
 export 'src/harvest_api.dart';
-import 'src/harvest_internal.dart';
 
 part 'src/stores/memory/memory_event_store.dart';
 

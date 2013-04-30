@@ -14,10 +14,10 @@ abstract class EventStream {
   Guid get id;
 
   /// List of events persisted in the event store 
-  Iterable<PersistentEvent> get committedEvents;
+  Iterable<DomainEvent> get committedEvents;
 
   /// List of events that are not persisted in the event store 
-  Iterable<PersistentEvent> get uncommittedEvents;
+  Iterable<DomainEvent> get uncommittedEvents;
   
   /// true if uncommited events exists
   bool get hasUncommittedChanges;
@@ -28,9 +28,9 @@ abstract class EventStream {
   /// Clears the uncommitted changes.
   clearChanges();
   
-  addAll(Iterable<PersistentEvent> events);
+  addAll(Iterable<DomainEvent> events);
   
-  add(PersistentEvent event);
+  add(DomainEvent event);
   
   /// the version of the last event stored in the stream
   int streamVersion;

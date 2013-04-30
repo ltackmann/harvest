@@ -4,6 +4,7 @@
 
 part of harvest_file;
 
+/*
 /** File backed event store */
 class FileEventStore implements EventStore {
   /** Store events in files in the [directory] directory */ 
@@ -153,3 +154,4 @@ class _FileStore {
   
   final _stores = new Map<Guid, File>();
 }
+*/

@@ -11,8 +11,8 @@ class DeadEvent extends Message {
   final Message deadMessage;
 }
 
-/** Events that can be stored */
-abstract class PersistentEvent extends Message {
+/** Events that can be stored, ususally named in the past tense as they describe a event that has taken place */
+abstract class DomainEvent extends Message {
   int version;
 }
 

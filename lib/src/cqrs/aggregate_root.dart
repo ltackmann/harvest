@@ -4,15 +4,15 @@
 
 part of harvest_cqrs;
 
+// TODO clean this up by wrapping event stream ?
+
 /** The root of an object tree (aggregate) */
 abstract class AggregateRoot { 
   int get version => _version;
   
   Guid id;
   
-  /**
-   * Populate this aggregte root from historic events
-   */
+  /** Populate this aggregte root from historic events */
   loadFromHistory(Iterable<DomainEvent> history) {
     history.forEach((DomainEvent e) {
       _logger.debug("loading historic event ${e.runtimeType} for aggregate ${id}");
@@ -87,12 +87,10 @@ abstract class EventSourcedEntity {
     root.addEventSourcedEntity(this);
   }
   
-  /**
-   * Extracting data from event and apply it to the entity itself
-   */
+  /** Extracting data from event and apply it to the entity itself */
   apply(DomainEvent event);
   
   ChangeHandler applyChange;
 }
 
-typedef ChangeHandler(PersistentEvent event); 
+typedef ChangeHandler(DomainEvent event); 

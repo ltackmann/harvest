@@ -9,7 +9,7 @@ class StoresTest {
   StoresTest() {
     var messageBus = new MessageBus();
     // test memory backed event store
-    var memoryEventStore = new MemoryEventStore(messageBus);
+    var memoryEventStore = new MemoryEventStore();
     new StoreTester(messageBus, memoryEventStore);
     
     // test file backed event store
@@ -40,7 +40,7 @@ class StoreTester {
   
   _init() {
     // create repository for domain models and set up command handler 
-    var itemRepo = new DomainRepository<Item>((Guid id) => new Item.fromId(id), _eventStore);
+    var itemRepo = new DomainRepository<Item>((Guid id) => new Item.fromId(id), _eventStore, _messageBus);
     var commandHandler = new InventoryCommandHandler(_messageBus, itemRepo);
     
     // create respositories for view models and set up event handler

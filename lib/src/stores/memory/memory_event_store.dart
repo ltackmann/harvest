@@ -24,14 +24,14 @@ class MemoryEventStream implements EventStream {
   MemoryEventStream(this.id): _streamVersion = -1;
 
   @override
-  Iterable<PersistentEvent> get committedEvents => _storedEvents;
+  Iterable<DomainEvent> get committedEvents => _storedEvents;
 
   @override
-  Iterable<PersistentEvent> get uncommittedEvents => _changes;
+  Iterable<DomainEvent> get uncommittedEvents => _changes;
 
   @override
   commitChanges() {
-    _changes.forEach((PersistentEvent event) {
+    _changes.forEach((DomainEvent event) {
       _streamVersion++;
       event.version = streamVersion;
       _storedEvents.add(event);
@@ -47,10 +47,10 @@ class MemoryEventStream implements EventStream {
   bool get hasUncommittedChanges => _changes.length > 0;
 
   @override
-  addAll(Iterable<PersistentEvent> events) => events.forEach(add);
+  addAll(Iterable<DomainEvent> events) => events.forEach(add);
   
   @override
-  add(PersistentEvent event) => _changes.add(event);
+  add(DomainEvent event) => _changes.add(event);
   
   @override
   final Guid id;
@@ -59,7 +59,7 @@ class MemoryEventStream implements EventStream {
   int get streamVersion => _streamVersion;
   
   int _streamVersion;
-  final _changes = new List<PersistentEvent>();
-  final _storedEvents = new List<PersistentEvent>();
+  final _changes = new List<DomainEvent>();
+  final _storedEvents = new List<DomainEvent>();
   static final _logger = LoggerFactory.getLoggerFor(MemoryEventStream);
 }

@@ -56,7 +56,7 @@ class EventStoreTest {
   }
 }
 
-class TestEvent extends PersistentEvent {
+class TestEvent extends DomainEvent {
   TestEvent(this.data);
   final String data;
 }

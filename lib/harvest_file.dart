@@ -2,9 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
-/**
- * Eventstore implementation backed by a file system
- */ 
+/** Eventstore backed by a file system */ 
 library harvest_file;
 
 import 'dart:async';
