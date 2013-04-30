@@ -13,6 +13,6 @@ part 'src/helpers.dart';
 part 'src/stores_test.dart';
 
 main() {
-  //new EventStoreTest();
+  new EventStoreTest();
   new StoresTest();
 }
