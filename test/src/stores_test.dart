@@ -12,15 +12,7 @@ class StoresTest {
     var memoryEventStore = new MemoryEventStore();
     new StoreTester(messageBus, memoryEventStore);
     
-    // test file backed event store
-    /* TODO re-enable
-    var domainEventFactory = new DomainEventFactory();
-    domainEventFactory.builder["InventoryItemDeactivated"] = () => new InventoryItemDeactivated.init();
-    domainEventFactory.builder["InventoryItemCreated"] = () => new InventoryItemCreated.init();
-    domainEventFactory.builder["InventoryItemRenamed"] = () => new  InventoryItemRenamed.init();
-    domainEventFactory.builder["ItemsCheckedInToInventory"] = () => new   ItemsCheckedInToInventory.init();
-    domainEventFactory.builder["ItemsRemovedFromInventory"] = () => new  ItemsRemovedFromInventory.init();
-    
+    /* TODO test file backed event store
     var fileInventoryItemRepository = new FileDomainRepository.reset("InventoryItem", (Guid id) => new InventoryItem.fromId(id), domainEventFactory, "/tmp/eventstore");
     new EventStoreTester(fileInventoryItemRepository);
      */
@@ -40,7 +32,7 @@ class StoreTester {
   
   _init() {
     // create repository for domain models and set up command handler 
-    var itemRepo = new DomainRepository<Item>((Guid id) => new Item.fromId(id), _eventStore, _messageBus);
+    var itemRepo = new DomainRepository<Item>((Guid id) => new Item(id), _eventStore, _messageBus);
     var commandHandler = new InventoryCommandHandler(_messageBus, itemRepo);
     
     // create respositories for view models and set up event handler
@@ -84,7 +76,7 @@ class StoreTester {
         expect(item1Name, equals(_view.displayedDetails.name));
         
         item1Version = _view.displayedDetails.version;
-        expect(item1Version, isNotNull);
+        expect(item1Version, equals(0), reason:"initial version should be zero");
       });
       
       test("increase invetory of item 1", () {

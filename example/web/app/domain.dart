@@ -5,17 +5,16 @@
 part of harvest_example;
 
 class Item extends AggregateRoot {
-  Item(Guid itemId, String name) {
-    applyChange(new ItemCreated(itemId, name));
+  factory Item.create(String name) {
+    var item = new Item(new Guid());
+    item.applyChange(new ItemCreated(item.id, name));
+    return item;
   }
   
-  Item.fromId(Guid itemId) {
-   id = itemId;
-  }
+  Item(Guid itemId): super(itemId); 
 
   apply(var event) {
     if(event is ItemCreated) {
-      id = event.id;
       _name = event.name;
       _activated = true;
     } else if(event is ItemRemoved) {

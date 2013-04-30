@@ -4,9 +4,7 @@
 
 part of harvest_example;
 
-/**
- * The details of a [Item]
- */
+/** The details of a [Item] */
 class ItemDetails implements IdModel {
   ItemDetails(this.id, this.name, this.currentCount, this.version);
   
@@ -15,9 +13,7 @@ class ItemDetails implements IdModel {
   int currentCount, version;
 }
 
-/**
- * [Item] list entry 
- */
+/** [Item] list entry */
 class ItemEntry implements IdModel {
   ItemEntry(this.id, this.name);
   

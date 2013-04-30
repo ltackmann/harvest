@@ -4,17 +4,22 @@
 
 part of harvest_cqrs;
 
-// TODO clean this up by wrapping event stream ?
-
 /** The root of an object tree (aggregate) */
 abstract class AggregateRoot { 
-  int get version => _version;
+  AggregateRoot(this.id) {
+    var eventStore = new MemoryEventStore();
+    _history = eventStore.openStream(id);
+  }
   
-  Guid id;
+  int get version => _history.streamVersion;
   
   /** Populate this aggregte root from historic events */
-  loadFromHistory(Iterable<DomainEvent> history) {
-    history.forEach((DomainEvent e) {
+  loadFromHistory(EventStream history) {
+    if(history.id != id) {
+      throw new StateError('stream with id ${history.id} does not match $this');
+    }
+    _history = history;
+    _history.committedEvents.forEach((DomainEvent e) {
       _logger.debug("loading historic event ${e.runtimeType} for aggregate ${id}");
       _applyChange(e, false);
     });
@@ -25,7 +30,7 @@ abstract class AggregateRoot {
     _entities.forEach((EventSourcedEntity entity) => entity.apply(event)); 
     if(isNew) {
       _logger.debug("applying change ${event.runtimeType} for ${id}");
-      _changes.add(event);
+      _history.add(event);
     }
   }
   
@@ -34,16 +39,6 @@ abstract class AggregateRoot {
 
   /** Apply a new event to this aggregate */
   applyChange(DomainEvent event) => _applyChange(event, true);
-  
-  /** List of events applied to this aggregate that are not persisted in the event store */
-  List<DomainEvent> get uncommittedChanges => _changes;
- 
-  bool get hasUncommittedChanges => _changes.length > 0;
-
-    /**
-   * Mark all events as persisted, usually called by event stores when events are saved
-   */
-  markChangesAsCommitted() => _changes.clear();
   
   /**
    * Add a non-root entity to participate in the event sourcing of this aggregate.
@@ -55,13 +50,13 @@ abstract class AggregateRoot {
     entity.applyChange = this.applyChange;
   }
   
-  operator ==(AggregateRoot other) => other.id == id; 
+  operator ==(AggregateRoot other) => (other.id == id && other.version == version); 
   
   String toString() => "aggregate $id";
   
-  int _version;
+  EventStream _history;
+  final Guid id;
   final _entities = new List<EventSourcedEntity>();
-  final _changes = new List<DomainEvent>();
   static final _logger = LoggerFactory.getLoggerFor(AggregateRoot);
 }
 

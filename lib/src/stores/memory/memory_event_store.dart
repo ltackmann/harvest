@@ -6,51 +6,56 @@ part of harvest;
 
 /** Memory backed event store */
 class MemoryEventStore implements EventStore {
-  Future<EventStream> openStream(Guid id, [int expectedVersion = -1]) {
+  EventStream openStream(Guid id, [int expectedVersion = -1]) {
     if(!_store.containsKey(id)) {
-      _store[id] = new MemoryEventStream(id);
+      _store[id] = new _MemoryEventStream(id);
     }
     var stream = _store[id];
     if(stream.streamVersion != expectedVersion) {
       new ConcurrencyError("unexpected version $expectedVersion");
     }
-    return new Future.value(stream);
+    return stream;
   }
   
-  final _store = new Map<Guid, EventStream>();
+  Future<EventStream> openStreamAsync(Guid id, [int expectedVersion = -1]) => new Future.value(openStream(id, expectedVersion));
+  
+  static final _store = new Map<Guid, EventStream>();
 }
 
-class MemoryEventStream implements EventStream {
-  MemoryEventStream(this.id): _streamVersion = -1;
+class _MemoryEventStream implements EventStream {
+  _MemoryEventStream(this.id): _streamVersion = -1;
 
   @override
-  Iterable<DomainEvent> get committedEvents => _storedEvents;
+  Iterable<DomainEvent> get committedEvents => _committedEvents;
 
   @override
-  Iterable<DomainEvent> get uncommittedEvents => _changes;
+  Iterable<DomainEvent> get uncommittedEvents => _uncommittedEvents;
 
   @override
-  commitChanges() {
-    _changes.forEach((DomainEvent event) {
+  commitChanges({commitListener(DomainEvent):null}) {
+    _uncommittedEvents.forEach((DomainEvent event) {
       _streamVersion++;
       event.version = streamVersion;
-      _storedEvents.add(event);
+      _committedEvents.add(event);
       _logger.debug("saving event ${event.runtimeType} for id ${id}");
     });
+    if(?commitListener) {
+      _uncommittedEvents.forEach(commitListener);
+    }
     clearChanges();
   }
 
   @override
-  clearChanges() => _changes.clear();
+  clearChanges() => _uncommittedEvents.clear();
   
   @override
-  bool get hasUncommittedChanges => _changes.length > 0;
+  bool get hasUncommittedEvents => _uncommittedEvents.length > 0;
 
   @override
   addAll(Iterable<DomainEvent> events) => events.forEach(add);
   
   @override
-  add(DomainEvent event) => _changes.add(event);
+  add(DomainEvent event) => _uncommittedEvents.add(event);
   
   @override
   final Guid id;
@@ -59,7 +64,7 @@ class MemoryEventStream implements EventStream {
   int get streamVersion => _streamVersion;
   
   int _streamVersion;
-  final _changes = new List<DomainEvent>();
-  final _storedEvents = new List<DomainEvent>();
-  static final _logger = LoggerFactory.getLoggerFor(MemoryEventStream);
+  final _uncommittedEvents = new List<DomainEvent>();
+  final _committedEvents = new List<DomainEvent>();
+  static final _logger = LoggerFactory.getLoggerFor(MemoryEventStore);
 }

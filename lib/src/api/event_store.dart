@@ -5,8 +5,11 @@
 part of harvest_api;
 
 abstract class EventStore {
-  /** Open an [EventStream] for [id], fails if the stored events does not match [expectedVersion]*/
-  Future<EventStream> openStream(Guid id, [int expectedVersion = -1]);
+  /** Open an [EventStream] asynchronously for [id], fails if [EventStream] version does not match [expectedVersion]*/
+  Future<EventStream> openStreamAsync(Guid id, [int expectedVersion = -1]);
+  
+  /** Open an [EventStream] for [id], fails if [EventStream] version does not match [expectedVersion]*/
+  EventStream openStream(Guid id, [int expectedVersion = -1]);
 }
 
 /** Track a series of events and commit them to durable storage */
@@ -20,7 +23,7 @@ abstract class EventStream {
   Iterable<DomainEvent> get uncommittedEvents;
   
   /// true if uncommited events exists
-  bool get hasUncommittedChanges;
+  bool get hasUncommittedEvents;
 
   /// Commits uncommitted events
   commitChanges();

@@ -28,23 +28,24 @@ class EventStoreTest {
     });
     
     group('event stream', () {
-      EventStore eventStore = new MemoryEventStore();
       EventStream stream;
-      var id = new Guid();
+      
+      test('get stream', () {
+        var eventStore = new MemoryEventStore();
+        stream = eventStore.openStream(new Guid());
+        expect(stream, isNotNull);
+      });
       
       test('add events', () {
-        eventStore.openStream(id).then(expectAsync1((s) {
-          s.add(new TestEvent('initial event'));
-          s.add(new TestEvent('another event'));
-          expect(s.hasUncommittedChanges, isTrue);
-          expect(s.committedEvents, isEmpty);
-          stream = s;
-        }));
+        stream.add(new TestEvent('initial event'));
+        stream.add(new TestEvent('another event'));
+        expect(stream.hasUncommittedEvents, isTrue);
+        expect(stream.committedEvents, isEmpty);
       });
       
       test('commit events', () {
         stream.commitChanges(); 
-        expect(stream.hasUncommittedChanges, isFalse);
+        expect(stream.hasUncommittedEvents, isFalse);
         expect(stream.committedEvents, isNot(isEmpty));
       });
       
