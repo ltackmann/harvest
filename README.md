@@ -2,38 +2,37 @@
 
 Harvest
 =======
-Event store for Dart with multiple backends for easly creating event sourced 
-applications on both the browser and VM.
-
+Event store for Dart with multiple backends. 
 
 How does it work
 ----------------
 
-Harvest stores and load events based on identifers
+Harvest creates and persists streams of events. Each persistent event stream is identified by 
+a **Guid** for future retrival. For example
 
 ```dart
 main() {
-	// wire up event store
-	var messageBus = new MessageBus();
+	// get a event stream for streamId 
+	Guid streamId = new Guid();
 	var eventStore = new MemoryEventStore();
-	eventStore.stream
+	var eventStream = eventStore.openStream(streamId);
 	
 	// create some events
 	var event1 = ...
 	var event2 = ...
 	
 	// store them
-	eventStore.saveEvents(id, [event1, event2], expectedVersion:0);
+	eventStream.addAll([event1, event2]);
+	eventStrem.commitChanges();
 }	
 ```
 
+Why do this ?
+-------------
+Event sourcing is the concept of saving and retriving object state by
+the events that occured on them rather than by their current state. 
 
-Introduction
-------------
-Event sourcing is the concept of saving and retriving domain objects by
-the events that occured on them rather than by their current state (as 
-is done in CRUD style persistence layers). To understand this concept 
-consider the following bank use case
+Consider the following bank use case
 
 1. User creates account
 1. User deposits 10$
@@ -47,17 +46,18 @@ have a **BankAccount** object and 3 events for it
 1. AmountDeposited
 1. AmountWithdrawn
 
-Why is this a trick ?. 
+Where is this useful?
+--------------------- 
 
-For certain applications the eventlog can be useful in itself such as a audit 
-trail in a financial system. It can also be a valuable for complex applications 
-since it makes each use case explicit by forcing programmers to make event types 
-for every action that can occur.
-
-Further it also makes debugging easy since you can replay the event log to recreate 
-any former system state where an error occurred  Finally it also makes implementing 
-online/offline synchronization managable, since the offline application can just queue 
-up events and replay them on the backend once it comes online. 
+1. For certain applications the eventlog can be useful in itself such as a audit 
+trail in a financial system. 
+1. It can help manage complexity in large applications by forcing programmers to 
+make event types for every action that can occur.
+1. It makes debugging easy since you can replay the event log to recreate 
+any former system state where an error occurred.  
+1. It makes mobile app synchronization a breeze, since the offline app can just 
+queue up events and replay them on the backend once it comes online. 
+1. In applications using the [CQRS architecture pattern](http://msdn.microsoft.com/en-us/library/jj554200.aspx).
 
 For more information, see the provided **example** application.
 
