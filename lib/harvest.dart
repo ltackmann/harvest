@@ -14,7 +14,7 @@ import 'package:meta/meta.dart';
 import 'src/harvest_api.dart';
 export 'src/harvest_api.dart';
 
-part 'src/stores/memory/memory_event_store.dart';
+part 'src/stores/memory_event_store.dart';
 
 // Global Helper functions 
 String typeNameOf(Object obj) => obj.runtimeType.toString();

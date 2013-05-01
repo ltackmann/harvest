@@ -67,11 +67,11 @@ For more information, see the provided **example** application.
 
 Supported Storage Engines
 -------------------------
-Currently DartStore implements the following event stores.
+Harvest supports the following event stores.
 
-* Memory engine: suitable for testing purposes
-* IndexDB: suitable for web applications (**work in progress**)
-* Cordova: suitable for mobile applications (**work in progress**)
+* **FileEventStore**: Durable disk based event store
+* **IndexeddbEventStore**: Durable IndexedDB based event store, suitable for web applications.
+* **MemoryEventStore**: Non-durable memory based event store, suitable for testing purposes
 
 Links
 -----

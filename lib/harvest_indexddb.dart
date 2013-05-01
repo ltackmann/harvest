@@ -12,6 +12,5 @@ import 'package:log4dart/log4dart.dart';
 import 'harvest.dart';
 export 'harvest.dart';
 
-part 'src/stores/indexdb/indexeddb_event_store.dart';
+part 'src/stores/indexeddb_event_store.dart';
 
-IDBConnection idbConnection(String name, String version) => new IDBConnection(name, version);
