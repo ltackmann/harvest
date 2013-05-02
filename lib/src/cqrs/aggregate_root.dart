@@ -6,20 +6,14 @@ part of harvest_cqrs;
 
 /** The root of an object tree (aggregate) */
 abstract class AggregateRoot { 
-  AggregateRoot(this.id) {
-    var eventStore = new MemoryEventStore();
-    _history = eventStore.openStream(id);
-  }
-  
-  int get version => _history.streamVersion;
+  AggregateRoot(this.id);
   
   /** Populate this aggregte root from historic events */
-  loadFromHistory(EventStream history) {
-    if(history.id != id) {
-      throw new StateError('stream with id ${history.id} does not match $this');
+  loadFromHistory(EventStream eventStream) {
+    if(eventStream.id != id) {
+      throw new StateError('stream with id ${eventStream.id} does not match $this');
     }
-    _history = history;
-    _history.committedEvents.forEach((DomainEvent e) {
+    eventStream.committedEvents.forEach((DomainEvent e) {
       _logger.debug("loading historic event ${e.runtimeType} for aggregate ${id}");
       _applyChange(e, false);
     });
@@ -30,7 +24,7 @@ abstract class AggregateRoot {
     _entities.forEach((EventSourcedEntity entity) => entity.apply(event)); 
     if(isNew) {
       _logger.debug("applying change ${event.runtimeType} for ${id}");
-      _history.add(event);
+      uncommitedChanges.add(event);
     }
   }
   
@@ -50,12 +44,16 @@ abstract class AggregateRoot {
     entity.applyChange = this.applyChange;
   }
   
-  operator ==(AggregateRoot other) => (other.id == id && other.version == version); 
+  operator ==(AggregateRoot other) => (other.id == id); 
   
   String toString() => "aggregate $id";
   
-  EventStream _history;
+  /// id 
   final Guid id;
+  
+  /// the events applied to this entity
+  final uncommitedChanges = new List<DomainEvent>();
+  
   final _entities = new List<EventSourcedEntity>();
   static final _logger = LoggerFactory.getLoggerFor(AggregateRoot);
 }

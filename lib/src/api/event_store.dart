@@ -8,6 +8,8 @@ abstract class EventStore {
   /** Open an [EventStream] asynchronously for [id], fails if [EventStream] version does not match [expectedVersion]*/
   Future<EventStream> openStreamAsync(Guid id, [int expectedVersion = -1]);
   
+  // TODO remove sync version as its not implementable in all databases (i.e. indexed db)
+  
   /** Open an [EventStream] for [id], fails if [EventStream] version does not match [expectedVersion]*/
   EventStream openStream(Guid id, [int expectedVersion = -1]);
 }
@@ -25,6 +27,8 @@ abstract class EventStream {
   /// true if uncommited events exists
   bool get hasUncommittedEvents;
 
+  // TODO make async Future<EventStream> commitChanges
+  
   /// Commits uncommitted events
   commitChanges();
 

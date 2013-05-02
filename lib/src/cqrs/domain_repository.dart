@@ -13,13 +13,14 @@ class DomainRepository<T extends AggregateRoot>  {
   /** Save aggregate, return [true] when the aggregate had unsaved data otherwise [false]. */ 
   Future<bool> save(AggregateRoot aggregate, [int expectedVersion = -1]) {
     var completer = new Completer<bool>();
-    // TODO clean this mess, get event stream from aggreate
-    var stream = aggregate._history;
-    if(stream.hasUncommittedEvents) {
-      var events = stream.uncommittedEvents;
-      _logger.debug("saving aggregate ${aggregate.id} with ${events.length} new events");
-      stream.commitChanges(commitListener:_messageBus.fire);
-      completer.complete(true);
+    if(!aggregate.uncommitedChanges.isEmpty) {
+      _store.openStreamAsync(aggregate.id).then((stream) {
+        _logger.debug("saving aggregate ${aggregate.id} with ${aggregate.uncommitedChanges.length} new events");
+        stream.addAll(aggregate.uncommitedChanges);      
+        stream.commitChanges(commitListener:_messageBus.fire);
+        aggregate.uncommitedChanges.clear();
+        completer.complete(true);
+      });
     } else {
       completer.complete(false);
     }

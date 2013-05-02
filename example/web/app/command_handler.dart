@@ -15,34 +15,34 @@ class InventoryCommandHandler {
  
   _onCreateItem(CreateItem command) {
     var item = new Item.create(command.name);
-    _domainRepository.save(item).then((v) => command.completeSuccess());
+    _domainRepository.save(item).then((_) => command.completeSuccess());
   }
   
   _onDecreaseInventory(DecreaseInventory command) {
     _domainRepository.load(command.itemId).then((Item item) {
       item.decreaseInventory(command.count);
-      _domainRepository.save(item, command.originalVersion).then((v) => command.completeSuccess());
+      _domainRepository.save(item, command.originalVersion).then((_) => command.completeSuccess());
     });
   }
   
   _onIncreaseInventory(IncreaseInventory command) {
     _domainRepository.load(command.itemId).then((Item item) {
       item.increaseInventory(command.count);
-      _domainRepository.save(item, command.originalVersion).then((v) => command.completeSuccess());
+      _domainRepository.save(item, command.originalVersion).then((_) => command.completeSuccess());
     });
   }
   
   _onRemoveItem(RemoveItem command) {
     _domainRepository.load(command.itemId).then((Item item) {
       item.remove();
-      _domainRepository.save(item, command.originalVersion).then((v) => command.completeSuccess());
+      _domainRepository.save(item, command.originalVersion).then((_) => command.completeSuccess());
     });
   }
   
   _onRenameItem(RenameItem command) {
     _domainRepository.load(command.itemId).then((Item item) {
       item.name = command.newName;
-      _domainRepository.save(item, command.originalVersion).then((v) => command.completeSuccess());
+      _domainRepository.save(item, command.originalVersion).then((_) => command.completeSuccess());
     });
   }
   
