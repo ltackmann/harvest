@@ -9,7 +9,7 @@ class InventoryPresenter {
     _view.presenter = this;
     // show events fired
     _messageBus.everyMessage.listen((Message message) {
-      var messageType = (message is Command) ? "Command" : "Event";
+      var messageType = (message is DomainCommand) ? "Command" : "Event";
       var messageName = message.runtimeType.toString();
       _view.recordMessage(messageType, messageName, new DateTime.now());
     });

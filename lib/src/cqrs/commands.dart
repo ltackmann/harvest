@@ -21,7 +21,7 @@ class ApplicationCommand extends Message { }
  *
  * Since commands are not persisted they can contain arbitraly complex types 
  */
-class Command extends Message {
+class DomainCommand extends Message {
   completeSuccess() {
     if(_successHandler != null) {
       _successHandler();
@@ -29,17 +29,13 @@ class Command extends Message {
     _commandCompleter.complete();
   }
   
-  /**
-   * Register function to be executed when command has been handled by all command handlers
-   */
-  Command onSuccess(successHandler) {
+  /** Register function to be executed when command has been handled by all command handlers */
+  DomainCommand onSuccess(successHandler) {
     _successHandler = successHandler;
     return this;
   }
   
-  /**
-   * Execute this command on [messageBus] 
-   */
+  /** Execute this command on [messageBus] */
   Future executeOn(MessageBus messageBus) {
     messageBus.fire(this);
     return _commandCompleter.future;

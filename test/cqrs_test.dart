@@ -5,7 +5,8 @@
 library harvest_test;
 
 import 'package:unittest/unittest.dart';
-
+// import application in the same way to avoid library clashes 
+import '../lib/harvest_file.dart';
 import '../example/web/app/lib.dart';
 
 part 'src/helpers.dart';
@@ -17,14 +18,14 @@ main() {
 // test CQRS functionality using various event stores implementations
 class CqrsTest {
   CqrsTest() {
-    var messageBus = new MessageBus();
-    // test memory based event store
+    // cqrs test on memory based event store
     var memoryEventStore = new MemoryEventStore();
-    new CqrsTester(messageBus, memoryEventStore);
+    new CqrsTester(new MessageBus(), memoryEventStore);
     
-    // test file based event store
-    //var fileEventStore = new FileEventStore("/tmp/");
-    //new CqrsTester(messageBus, memoryEventStore);
+    // cqrs test on file based event store
+    // TODO fix
+    //var fileEventStore = new FileEventStore("/tmp/harvest");
+    //new CqrsTester(new MessageBus(), fileEventStore);
   }
 }
 

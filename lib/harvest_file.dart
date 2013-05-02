@@ -14,6 +14,5 @@ import 'package:meta/meta.dart';
 import 'package:serialization/serialization.dart';
 
 import 'harvest.dart';
-export 'harvest.dart';
 
 part 'src/stores/file_event_store.dart';

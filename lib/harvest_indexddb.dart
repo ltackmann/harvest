@@ -10,7 +10,6 @@ import 'dart:indexed_db';
 import 'package:log4dart/log4dart.dart';
 
 import 'harvest.dart';
-export 'harvest.dart';
 
 part 'src/stores/indexeddb_event_store.dart';
 

@@ -4,28 +4,28 @@
 
 part of harvest_example;
 
-class CreateItem extends Command {
+class CreateItem extends DomainCommand {
   CreateItem(this.itemId, this.name); 
   
   final Guid itemId;
   final String name;
 }
 
-class DecreaseInventory extends Command {
+class DecreaseInventory extends DomainCommand {
   DecreaseInventory(this.itemId, this.count, this.originalVersion); 
   
   final Guid itemId;
   final int count, originalVersion;
 }
 	
-class IncreaseInventory extends Command {
+class IncreaseInventory extends DomainCommand {
   IncreaseInventory(this.itemId, this.count, this.originalVersion); 
 
 	final Guid itemId;
 	final int count, originalVersion;
 }
 	
-class RenameItem extends Command {
+class RenameItem extends DomainCommand {
   RenameItem(this.itemId, this.newName, this.originalVersion); 
   
   final Guid itemId;
@@ -33,7 +33,7 @@ class RenameItem extends Command {
   final int originalVersion;
 }
 
-class RemoveItem extends Command {
+class RemoveItem extends DomainCommand {
   RemoveItem(this.itemId, this.originalVersion); 
   
   final Guid itemId;

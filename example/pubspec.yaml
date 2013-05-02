@@ -1,10 +1,8 @@
 name: harvest_example_app
 dependencies:
-  browser: any
-  harvest:
-    git: file:///Users/lt/Projects/dart/harvest
-  #git://github.com/ltackmann/harvest.git
-  log4dart: ">=1.4.2"
   route: any
+  browser: any
   web_ui: any
+  log4dart: '>=1.4.6'
 
+#git://github.com/ltackmann/harvest.git

@@ -8,7 +8,7 @@ import 'dart:async';
 
 import 'package:log4dart/log4dart.dart';
 //import 'package:harvest/harvest_cqrs.dart';
-//export 'package:harvest/harvest_cqrs.dart';
+//export 'package:harvest/harvest_cqrs.dart'
 import '../../../lib/harvest_cqrs.dart';
 export '../../../lib/harvest_cqrs.dart';
 
