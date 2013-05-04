@@ -67,8 +67,7 @@ class CqrsTester {
     
     group("executing events -", () {
       String item1Name = "Book 1";
-      Guid item1Id;
-      int item1Version;
+      var item1Id, item1Version;
       
       test("creating item and display it", () {
         _presenter.createItem(item1Name).then(expectAsync1((res) {

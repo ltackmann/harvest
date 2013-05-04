@@ -16,20 +16,22 @@ Quick Guide
 
 **2.** Add harvest to some code and run it
 ```dart
-main() {
-	var streamId = new Guid();
-	var eventStore = new MemoryEventStore();
-	// get a event stream for streamId 
-	var eventStream = eventStore.openStream(streamId);
+	import 'package:harvest/harvest.dart';
 	
-	// create some events
-	var event1 = ...
-	var event2 = ...
-	
-	// store them
-	eventStream.addAll([event1, event2]);
-	eventStrem.commitChanges();
-}	
+	main() {
+		var streamId = new Guid();
+		var eventStore = new MemoryEventStore();
+		// get a event stream for streamId 
+		eventStore.openStream(streamId).then((eventStream) {
+			// create some events
+			var event1 = ...
+			var event2 = ...
+			
+			// store them
+			eventStream.addAll([event1, event2]);
+			eventStrem.commitChanges();
+		});
+	}	
 ```
 
 Why do this ?
