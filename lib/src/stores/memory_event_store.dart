@@ -7,7 +7,7 @@ part of harvest;
 /** Memory backed event store */
 class MemoryEventStore implements EventStore {
   @override
-  EventStream openStream(Guid id, [int expectedVersion = -1]) {
+  Future<EventStream> openStream(Guid id, [int expectedVersion = -1]) {
     if(!_store.containsKey(id)) {
       _store[id] = new _MemoryEventStream(id);
     }
@@ -15,11 +15,8 @@ class MemoryEventStore implements EventStore {
     if(stream.streamVersion != expectedVersion) {
       new ConcurrencyError("unexpected version $expectedVersion");
     }
-    return stream;
+    return new Future.value(stream);
   }
-  
-  @override
-  Future<EventStream> openStreamAsync(Guid id, [int expectedVersion = -1]) => new Future.value(openStream(id, expectedVersion));
   
   static final _store = new Map<Guid, EventStream>();
 }
@@ -34,7 +31,9 @@ class _MemoryEventStream implements EventStream {
   Iterable<DomainEvent> get uncommittedEvents => _uncommittedEvents;
 
   @override
-  commitChanges({commitListener(DomainEvent):null}) {
+  Future<int> commitChanges({commitListener(DomainEvent):null}) {
+    var numberOfEvents = _uncommittedEvents.length;
+    
     _uncommittedEvents.forEach((DomainEvent event) {
       _streamVersion++;
       event.version = streamVersion;
@@ -45,6 +44,7 @@ class _MemoryEventStream implements EventStream {
       _uncommittedEvents.forEach(commitListener);
     }
     clearChanges();
+    return new Future.value(numberOfEvents);
   }
 
   @override

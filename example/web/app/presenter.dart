@@ -19,28 +19,28 @@ class InventoryPresenter {
 
   Future createItem(String name) {
     var cmd = new CreateItem(new Guid(), name);
-    return cmd.onSuccess(showItems).executeOn(_messageBus);
+    return cmd.onSuccess(showItems).broadcastOn(_messageBus);
   }
   
   Future decreaseInventory(Guid itemId, int numberOfItems, int version) {
     var cmd = new DecreaseInventory(itemId, numberOfItems, version);
-    return cmd.onSuccess(() => showItemDetails(itemId)).executeOn(_messageBus);
+    return cmd.onSuccess(() => showItemDetails(itemId)).broadcastOn(_messageBus);
   }
   
   Future increaseInventory(Guid itemId, int numberOfItems, int version) {
     var cmd = new IncreaseInventory(itemId, numberOfItems, version);
-    return cmd.onSuccess(() => showItemDetails(itemId)).executeOn(_messageBus);
+    return cmd.onSuccess(() => showItemDetails(itemId)).broadcastOn(_messageBus);
   }
   
   Future removeItem(Guid itemId, int version) {
     assert(itemId is Guid);
     var cmd = new RemoveItem(itemId, version);
-    return cmd.onSuccess(showItems).executeOn(_messageBus);
+    return cmd.onSuccess(showItems).broadcastOn(_messageBus);
   }
 
   Future renameItem(Guid itemId, String name, int version) {
     var cmd = new RenameItem(itemId, name, version);
-    return cmd.onSuccess(() => showItemDetails(itemId)).executeOn(_messageBus);
+    return cmd.onSuccess(() => showItemDetails(itemId)).broadcastOn(_messageBus);
   }
   
   showItems() {

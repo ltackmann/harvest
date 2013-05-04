@@ -49,8 +49,10 @@ class EventStoreTest {
     EventStream stream;
     
     test('get stream', () {
-      stream = eventStore.openStream(streamId);
-      expect(stream, isNotNull);
+      eventStore.openStream(streamId).then(expectAsync1((EventStream s) {
+        stream = s;
+        expect(stream, isNotNull);
+      }));
     });
     
     test('add events', () {
@@ -61,16 +63,19 @@ class EventStoreTest {
     });
     
     test('commit events', () {
-      stream.commitChanges(); 
-      expect(stream.hasUncommittedEvents, isFalse);
-      expect(stream.committedEvents, isNot(isEmpty));
+      stream.commitChanges().then(expectAsync1((int committedEvents) {
+        expect(committedEvents, greaterThan(0));
+        expect(stream.hasUncommittedEvents, isFalse);
+        expect(stream.committedEvents, isNot(isEmpty));
+      })); 
     });
     
     test('reload stream', () {
-      var stream2 = eventStore.openStream(streamId);
-      expect(stream.id, equals(stream2.id));
-      expect(stream.streamVersion, equals(stream2.streamVersion));
-      expect(stream.committedEvents, orderedEquals(stream2.committedEvents));
+      eventStore.openStream(streamId).then(expectAsync1((EventStream stream2) {
+        expect(stream.id, equals(stream2.id));
+        expect(stream.streamVersion, equals(stream2.streamVersion));
+        expect(stream.committedEvents, orderedEquals(stream2.committedEvents));
+      }));
     });
     
     //test('fail opening stream if version is incorrect', () {

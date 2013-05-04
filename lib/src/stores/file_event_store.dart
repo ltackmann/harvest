@@ -19,49 +19,36 @@ class FileEventStore implements EventStore {
   }
   
   @override
-  EventStream openStream(Guid id, [int expectedVersion = -1]) {
-    if(!_store.containsKey(id)) {
-      var filePath = _directory.append('${id}.log');
-      var file = new File.fromPath(filePath);
-      if(!file.existsSync()) {
-        _logger.debug('creating file event stream ${file}');
-        file.createSync();
-        _store[id] = new _FileEventStream.init(id, file);
-      } else {
-        _store[id] = new _FileEventStream.load(file);
-      }
-    } 
-    var stream = _store[id];
+  Future<EventStream> openStream(Guid id, [int expectedVersion = -1]) {
+    var completer = new Completer<EventStream>();
+    
+    if(_store.containsKey(id)) {
+      var stream = _store[id];
+      _checkStreamVersion(stream, expectedVersion);
+      completer.complete(stream);
+    } else {
+      _getEventStream(id, _directory).then((EventStream stream) {
+        _store[id] = stream;
+        _checkStreamVersion(stream, expectedVersion);
+        completer.complete(stream);
+      });
+    }
+    
+    return completer.future;
+  }
+  
+  _checkStreamVersion(EventStream stream, int expectedVersion) {
     if(stream.streamVersion != expectedVersion) {
       new ConcurrencyError("unexpected version $expectedVersion");
     }
-    return stream;
   }
-  
-  // TODO implement async
-  @override
-  Future<EventStream> openStreamAsync(Guid id, [int expectedVersion = -1]) => new Future.value(openStream(id, expectedVersion));
   
   final Path _directory;
   static final _store = new Map<Guid, EventStream>();
-  static final _logger = LoggerFactory.getLoggerFor(FileEventStore);
 }
 
 class _FileEventStream implements EventStream {
-  factory _FileEventStream.init(Guid id, File eventLog) {
-    var version = -1;
-    var descriptor = new _FileEventStreamDescriptor.createNew(id, version, <DomainEvent>[]);
-    descriptor.writeAsJsonSync(eventLog);
-    return new _FileEventStream._internal(eventLog, descriptor);
-  }
-
-  factory _FileEventStream.load(File eventLog) {
-    var descriptor = new _FileEventStreamDescriptor();
-    descriptor.loadFromJsonSync(eventLog);
-    return new _FileEventStream._internal(eventLog, descriptor);
-  }
-  
-  _FileEventStream._internal(this._eventLog, this._descriptor);
+  _FileEventStream(this._eventLog, this._descriptor);
 
   @override
   Iterable<DomainEvent> get committedEvents => _descriptor.events;
@@ -70,18 +57,25 @@ class _FileEventStream implements EventStream {
   Iterable<DomainEvent> get uncommittedEvents => _uncommittedEvents;
 
   @override
-  commitChanges({commitListener(DomainEvent):null}) {
+  Future<int> commitChanges({commitListener(DomainEvent):null}) {
+    var completer = new Completer<int>();
+    var numberOfEvents = _uncommittedEvents.length;
+    
     _uncommittedEvents.forEach((DomainEvent event) {
       _descriptor.version++;
       event.version = streamVersion;
       _descriptor.events.add(event);
       _logger.debug("saving event ${event.runtimeType} for id ${id} in ${_eventLog}");
     });
-    _descriptor.writeAsJsonSync(_eventLog);
-    if(?commitListener) {
-      _uncommittedEvents.forEach(commitListener);
-    }
-    clearChanges();
+    _descriptor.writeAsJson(_eventLog).then((_) {
+      if(?commitListener) {
+        _uncommittedEvents.forEach(commitListener);
+      }
+      clearChanges();
+      completer.complete(numberOfEvents);
+    });
+    
+    return completer.future;
   }
 
   @override
@@ -105,38 +99,75 @@ class _FileEventStream implements EventStream {
   final _FileEventStreamDescriptor _descriptor;
   final File _eventLog;
   final _uncommittedEvents = new List<DomainEvent>();
-  static final _logger = LoggerFactory.getLoggerFor(FileEventStore);
+ 
+}
+
+Future<EventStream> _getEventStream(Guid id, Path directory) {
+  var completer = new Completer<EventStream>();  
+  
+  var filePath = directory.append('${id}.log');
+  var file = new File.fromPath(filePath);
+  file.exists().then((bool exists) {
+    if(!exists) {
+      _logger.debug('creating new event stream in file ${file}');
+      file.create().then((File eventLog) {
+        var descriptor = new _FileEventStreamDescriptor.createNew(id);
+        descriptor.writeAsJson(eventLog).then((_) {
+          var stream = new _FileEventStream(eventLog, descriptor);
+          completer.complete(stream);
+        });
+      });
+    } else {
+      _logger.debug('loading existing event stream from file ${file}');
+      var descriptor = new _FileEventStreamDescriptor();
+      descriptor.loadFromJsonSync(file).then((File eventLog) {
+        return new _FileEventStream(eventLog, descriptor);
+      });
+    }
+  });
+  
+  return completer.future;
 }
 
 class _FileEventStreamDescriptor {
   _FileEventStreamDescriptor();
   
-  _FileEventStreamDescriptor.createNew(this.id, this.version, this.events);
+  _FileEventStreamDescriptor.createNew(this.id)
+    : version = -1,
+      events = [];
   
   // write this descriptor to a file as JSON
-  writeAsJsonSync(File jsonFile) {
+  Future<File> writeAsJson(File jsonFile) {
     var serialization = new Serialization()..addRuleFor(this);
     var jsonData = serialization.write(this);
     var jsonString = JSON.stringify(jsonData);
-    jsonFile.writeAsStringSync(jsonString, mode:FileMode.APPEND);
+    return jsonFile.writeAsString(jsonString, mode:FileMode.APPEND);
   }
   
   // load this descriptor from JSON
-  loadFromJsonSync(File jsonFile) {
-    var jsonString = jsonFile.readAsStringSync();
-    var jsonData = JSON.parse(jsonString);
-    var serialization = new Serialization()..addRuleFor(new _FileEventStreamDescriptor());
-    _FileEventStreamDescriptor descriptor = serialization.read(jsonData);
+  Future<File> loadFromJson(File jsonFile) {
+    var completer = new Completer<_FileEventStreamDescriptor>();
     
-    this.id = descriptor.id;
-    this.version = descriptor.version;
-    this.events = descriptor.events;
+    jsonFile.readAsString().then((String jsonString) {
+      var jsonData = JSON.parse(jsonString);
+      var serialization = new Serialization()..addRuleFor(new _FileEventStreamDescriptor());
+      _FileEventStreamDescriptor descriptor = serialization.read(jsonData);
+      this.id = descriptor.id;
+      this.version = descriptor.version;
+      this.events = descriptor.events;
+      
+      completer.complete(jsonFile);
+    });
+    
+    return completer.future;
   }
   
   Guid id;
   int version;
   List<DomainEvent> events;
 }
+
+Logger _logger = LoggerFactory.getLoggerFor(FileEventStore);
 
 
 

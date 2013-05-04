@@ -36,7 +36,7 @@ class DomainCommand extends Message {
   }
   
   /** Execute this command on [messageBus] */
-  Future executeOn(MessageBus messageBus) {
+  Future broadcastOn(MessageBus messageBus) {
     messageBus.fire(this);
     return _commandCompleter.future;
   }

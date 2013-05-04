@@ -13,16 +13,17 @@ class DomainRepository<T extends AggregateRoot>  {
   /** Save aggregate, return [true] when the aggregate had unsaved data otherwise [false]. */ 
   Future<bool> save(AggregateRoot aggregate, [int expectedVersion = -1]) {
     var completer = new Completer<bool>();
-    if(!aggregate.uncommitedChanges.isEmpty) {
-      _store.openStreamAsync(aggregate.id).then((stream) {
+    if(aggregate.uncommitedChanges.isEmpty) {
+      completer.complete(false);
+    } else {
+      _store.openStream(aggregate.id).then((stream) {
         _logger.debug("saving aggregate ${aggregate.id} with ${aggregate.uncommitedChanges.length} new events");
         stream.addAll(aggregate.uncommitedChanges);      
-        stream.commitChanges(commitListener:_messageBus.fire);
-        aggregate.uncommitedChanges.clear();
-        completer.complete(true);
+        stream.commitChanges(commitListener:_messageBus.fire).then((_) {
+          aggregate.uncommitedChanges.clear();
+          completer.complete(true);
+        });
       });
-    } else {
-      completer.complete(false);
     }
     return completer.future;
   }
@@ -30,7 +31,7 @@ class DomainRepository<T extends AggregateRoot>  {
   /** Load domain object for [id] */ 
   Future<T> load(Guid id) {
     var completer = new Completer<T>();
-    _store.openStreamAsync(id).then((stream) {
+    _store.openStream(id).then((stream) {
       var obj = _builder(id);
       _logger.debug("loading aggregate ${id} from ${stream.committedEvents.length} total events");
       obj.loadFromHistory(stream);

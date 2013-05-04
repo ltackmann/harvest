@@ -6,12 +6,7 @@ part of harvest_api;
 
 abstract class EventStore {
   /** Open an [EventStream] asynchronously for [id], fails if [EventStream] version does not match [expectedVersion]*/
-  Future<EventStream> openStreamAsync(Guid id, [int expectedVersion = -1]);
-  
-  // TODO remove sync version as its not implementable in all databases (i.e. indexed db)
-  
-  /** Open an [EventStream] for [id], fails if [EventStream] version does not match [expectedVersion]*/
-  EventStream openStream(Guid id, [int expectedVersion = -1]);
+  Future<EventStream> openStream(Guid id, [int expectedVersion = -1]);
 }
 
 /** Track a series of events and commit them to durable storage */
@@ -29,8 +24,8 @@ abstract class EventStream {
 
   // TODO make async Future<EventStream> commitChanges
   
-  /// Commits uncommitted events
-  commitChanges();
+  /// Commits uncommitted events, returns future with the number of events commited
+  Future<int> commitChanges();
 
   /// Clears the uncommitted changes.
   clearChanges();

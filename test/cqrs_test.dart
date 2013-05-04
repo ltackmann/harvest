@@ -24,8 +24,8 @@ class CqrsTest {
     
     // cqrs test on file based event store
     // TODO fix
-    //var fileEventStore = new FileEventStore("/tmp/harvest");
-    //new CqrsTester(new MessageBus(), fileEventStore);
+    var fileEventStore = new FileEventStore("/tmp/harvest");
+    new CqrsTester(new MessageBus(), fileEventStore);
   }
 }
 
