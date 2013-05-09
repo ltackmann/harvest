@@ -31,7 +31,7 @@ class _MemoryEventStream implements EventStream {
   Iterable<DomainEvent> get uncommittedEvents => _uncommittedEvents;
 
   @override
-  Future<int> commitChanges({commitListener(DomainEvent):null}) {
+  Future<int> commitChanges() {
     var numberOfEvents = _uncommittedEvents.length;
     
     _uncommittedEvents.forEach((DomainEvent event) {
@@ -40,9 +40,6 @@ class _MemoryEventStream implements EventStream {
       _committedEvents.add(event);
       _logger.debug("saving event ${event.runtimeType} for id ${id}");
     });
-    if(?commitListener) {
-      _uncommittedEvents.forEach(commitListener);
-    }
     clearChanges();
     return new Future.value(numberOfEvents);
   }

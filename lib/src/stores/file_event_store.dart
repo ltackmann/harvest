@@ -57,7 +57,7 @@ class _FileEventStream implements EventStream {
   Iterable<DomainEvent> get uncommittedEvents => _uncommittedEvents;
 
   @override
-  Future<int> commitChanges({commitListener(DomainEvent):null}) {
+  Future<int> commitChanges() {
     var completer = new Completer<int>();
     var numberOfEvents = _uncommittedEvents.length;
     
@@ -68,9 +68,6 @@ class _FileEventStream implements EventStream {
       _logger.debug("saving event ${event.runtimeType} for id ${id} in ${_eventLog}");
     });
     _descriptor.writeAsJson(_eventLog).then((_) {
-      if(?commitListener) {
-        _uncommittedEvents.forEach(commitListener);
-      }
       clearChanges();
       completer.complete(numberOfEvents);
     });
@@ -120,7 +117,7 @@ Future<EventStream> _getEventStream(Guid id, Path directory) {
     } else {
       _logger.debug('loading existing event stream from file ${file}');
       var descriptor = new _FileEventStreamDescriptor();
-      descriptor.loadFromJsonSync(file).then((File eventLog) {
+      descriptor.loadFromJson(file).then((File eventLog) {
         return new _FileEventStream(eventLog, descriptor);
       });
     }

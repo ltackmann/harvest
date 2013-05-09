@@ -22,24 +22,22 @@ abstract class EventStream {
   /// true if uncommited events exists
   bool get hasUncommittedEvents;
 
-  // TODO make async Future<EventStream> commitChanges
-  
   /// Commits uncommitted events, returns future with the number of events commited
   Future<int> commitChanges();
 
-  /// Clears the uncommitted changes.
+  /// Clears uncommitted changes.
   clearChanges();
   
   addAll(Iterable<DomainEvent> events);
   
   add(DomainEvent event);
   
-  /// the version of the last event stored in the stream
+  /// Version of the latest event stored in the stream
   int streamVersion;
 }
 
 /** Optimistic concurrency conflict between multiple writers. */
-class ConcurrencyError implements Exception {
+class ConcurrencyError implements Error {
   ConcurrencyError(this.message);
 
   String toString() => message;

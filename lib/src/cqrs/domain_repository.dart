@@ -17,10 +17,13 @@ class DomainRepository<T extends AggregateRoot>  {
       completer.complete(false);
     } else {
       _store.openStream(aggregate.id).then((stream) {
-        _logger.debug("saving aggregate ${aggregate.id} with ${aggregate.uncommitedChanges.length} new events");
-        stream.addAll(aggregate.uncommitedChanges);      
-        stream.commitChanges(commitListener:_messageBus.fire).then((_) {
+        var changes = new List.from(aggregate.uncommitedChanges);
+        _logger.debug("saving aggregate ${aggregate.id} with ${changes.length} new events");
+        stream.addAll(changes);      
+        stream.commitChanges().then((_) {
+          // clear aggregate prior to broadcast to avoid duplicate events
           aggregate.uncommitedChanges.clear();
+          changes.forEach(_messageBus.fire);
           completer.complete(true);
         });
       });
