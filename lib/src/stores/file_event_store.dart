@@ -7,14 +7,13 @@ part of harvest_file;
 /** File backed event store */
 class FileEventStore implements EventStore {
   /// create [EventStore] in  [directory] (directory is created if it does not exists)
-  FileEventStore(String directory): this.path(new Path(directory));
+  FileEventStore(String directory): this.path(new Directory(directory));
   
   /// create [EventStore] in  [_directory] (directory is created if it does not exists)
   FileEventStore.path(this._directory) {
-    var dir = new Directory.fromPath(_directory);
-    if(!dir.existsSync()) {
-      _logger.debug('creating file event store directory ${dir}');
-      dir.createSync();
+    if(!_directory.existsSync()) {
+      _logger.debug('creating file event store directory ${_directory.path}');
+      _directory.createSync();
     }
   }
   
@@ -43,7 +42,7 @@ class FileEventStore implements EventStore {
     }
   }
   
-  final Path _directory;
+  final Directory _directory;
   static final _store = new Map<Guid, EventStream>();
 }
 
@@ -96,14 +95,13 @@ class _FileEventStream implements EventStream {
   final _FileEventStreamDescriptor _descriptor;
   final File _eventLog;
   final _uncommittedEvents = new List<DomainEvent>();
- 
 }
 
-Future<EventStream> _getEventStream(Guid id, Path directory) {
+Future<EventStream> _getEventStream(Guid id, Directory directory) {
   var completer = new Completer<EventStream>();  
   
-  var filePath = directory.append('${id}.log');
-  var file = new File.fromPath(filePath);
+  var filePath = '${directory.path}/${id}.log';
+  var file = new File(filePath);
   file.exists().then((bool exists) {
     if(!exists) {
       _logger.debug('creating new event stream in file ${file}');

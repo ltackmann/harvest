@@ -33,7 +33,7 @@ abstract class EventStream {
   add(DomainEvent event);
   
   /// Version of the latest event stored in the stream
-  int streamVersion;
+  int get streamVersion;
 }
 
 /** Optimistic concurrency conflict between multiple writers. */
