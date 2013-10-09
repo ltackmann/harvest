@@ -5,9 +5,6 @@
 library harvest_example_app;
 
 import 'dart:html';
-import 'dart:math';
-
-import 'package:log4dart/log4dart.dart';
 
 import 'app/lib.dart';
 
@@ -16,10 +13,10 @@ part 'app/view.dart';
 
 main() {
   var messageBus = new MessageBus();
-  var eventStore = new MemoryEventStore(messageBus);
+  var eventStore = new MemoryEventStore();
   
   // create repository for domain models and set up command handler 
-  var itemRepo = new DomainRepository<Item>((Guid id) => new Item.fromId(id), eventStore);
+  var itemRepo = new DomainRepository<Item>((Guid id) => new Item(id), eventStore, messageBus);
   var commandHandler = new InventoryCommandHandler(messageBus, itemRepo);
   
   // create respositories for view models and set up event handler

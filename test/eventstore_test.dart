@@ -1,5 +1,5 @@
-// Copyright (c) 2013, the project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// file for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
 import 'package:harvest/harvest.dart';
@@ -17,12 +17,12 @@ class EventStoreTest {
       var messageBus = new MessageBus();
       
       test('listen to messages', () {
-        messageBus.stream(TestEvent).listen((e) {
-          expect(e.data, equals('test'));
+        messageBus.stream(TestEvent).listen((TestEvent message) {
+          expect(message.data, equals('test'));
           messageRecievedCount++;
         });
-        messageBus.everyMessage.listen((e) {
-          expect(e.data, equals('test'));
+        messageBus.everyMessage.listen((TestEvent message) {
+          expect(message.data, equals('test'));
           messageRecievedCount++;
         });
       });
@@ -77,16 +77,12 @@ class EventStoreTest {
         expect(stream.committedEvents, orderedEquals(stream2.committedEvents));
       }));
     });
-    
-    //test('fail opening stream if version is incorrect', () {
-      // TODO fix expect(() => eventStore.openStream(id, 0), throws);
-    //});
-    // https://github.com/joliver/EventStore/blob/master/doc/EventStore.Example/MainProgram.cs
   }
 }
 
 class TestEvent extends DomainEvent {
   TestEvent(this.data);
+  
   final String data;
 }
 

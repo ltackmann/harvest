@@ -1,5 +1,5 @@
-// Copyright (c) 2013, the project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// file for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
 part of harvest_api;
@@ -37,7 +37,7 @@ abstract class EventStream {
 }
 
 /** Optimistic concurrency conflict between multiple writers. */
-class ConcurrencyError implements Error {
+class ConcurrencyError extends Error {
   ConcurrencyError(this.message);
 
   String toString() => message;
