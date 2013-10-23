@@ -4,11 +4,11 @@ author: Lars Tackmann <lars@solvr.io>
 description: Event store for Dart with multiple backends
 homepage: https://github.com/ltackmann/harvest
 environment:
-  sdk: '>=0.8.1'
+  sdk: '>=0.8.5'
 dependencies:
-  log4dart: '>=1.4.9'
-  meta: '>=0.8.1'
-  serialization: '>=0.8.1'
+  log4dart: '>=1.4.10'
+  meta: '>=0.8.5'
+  serialization: '>=0.8.5'
   uuid: '>=0.1.6'
 dev_dependencies:
   unittest: any
