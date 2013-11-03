@@ -18,7 +18,7 @@ class IndexeddbEventStore implements EventStore {
       _checkStreamVersion(stream, expectedVersion);
       completer.complete(stream);
     } else {
-      _getEventStream(id, _directory).then((EventStream stream) {
+      _getEventStream(id, expectedVersion, _eventStoreName).then((EventStream stream) {
         _store[id] = stream;
         _checkStreamVersion(stream, expectedVersion);
         completer.complete(stream);
@@ -26,15 +26,6 @@ class IndexeddbEventStore implements EventStore {
     }
     
     return completer.future;
-  }
-  
-  _getEventStream(Guid id) {
-    Future open() {
-      return window.indexedDB.open('milestoneDB',
-          version: 1,
-          onUpgradeNeeded: _initializeDatabase)
-            .then(_loadFromDB);
-    }
   }
   
   _checkStreamVersion(EventStream stream, int expectedVersion) {
@@ -94,8 +85,15 @@ class _IndexeddbEventStream implements EventStream {
   static final _logger = LoggerFactory.getLoggerFor(MemoryEventStore);
 }
 
-Future<EventStream> _getEventStream(Guid id, Directory directory) {
+Future<EventStream> _getEventStream(Guid id, int databaseVersion, String databaseName) {
   var completer = new Completer<EventStream>();  
+  
+  Future open() {
+    return window.indexedDB.open(databaseName,
+        version: databaseVersion,
+        onUpgradeNeeded: _initializeDatabase)
+          .then(_loadFromDB);
+  }
   
   var filePath = '${directory.path}/${id}.log';
   var file = new File(filePath);
@@ -120,5 +118,7 @@ Future<EventStream> _getEventStream(Guid id, Directory directory) {
   
   return completer.future;
 }
+
+Logger _logger = LoggerFactory.getLoggerFor(IndexeddbEventStore);
 
 

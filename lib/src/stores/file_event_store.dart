@@ -135,7 +135,7 @@ class _FileEventStreamDescriptor {
   Future<File> writeAsJson(File jsonFile) {
     var serialization = new Serialization()..addRuleFor(this);
     var jsonData = serialization.write(this);
-    var jsonString = JSON.stringify(jsonData);
+    var jsonString = JSON.encode(jsonData);
     return jsonFile.writeAsString(jsonString, mode:FileMode.APPEND);
   }
   
@@ -144,7 +144,7 @@ class _FileEventStreamDescriptor {
     var completer = new Completer<_FileEventStreamDescriptor>();
     
     jsonFile.readAsString().then((String jsonString) {
-      var jsonData = JSON.parse(jsonString);
+      var jsonData = JSON.decode(jsonString);
       var serialization = new Serialization()..addRuleFor(new _FileEventStreamDescriptor());
       _FileEventStreamDescriptor descriptor = serialization.read(jsonData);
       this.id = descriptor.id;

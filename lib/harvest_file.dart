@@ -7,10 +7,9 @@ library harvest_file;
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:json' as JSON;
+import 'dart:convert' show JSON;
 
 import 'package:log4dart/log4dart.dart';
-import 'package:meta/meta.dart';
 import 'package:serialization/serialization.dart';
 
 import 'harvest.dart';

@@ -30,7 +30,7 @@ class DomainCommand extends Message {
   }
   
   /** Register function to be executed when command has been handled by all command handlers */
-  DomainCommand onSuccess(successHandler) {
+  DomainCommand onSuccess(CommandSuccessHandler successHandler) {
     _successHandler = successHandler;
     return this;
   }
@@ -42,6 +42,9 @@ class DomainCommand extends Message {
   }
       
   final _commandCompleter = new Completer();
-  var _successHandler;
+  final Map<String, Object> headers = <String, Object>{};
+  CommandSuccessHandler _successHandler;
 }
+
+typedef void CommandSuccessHandler(); 
 

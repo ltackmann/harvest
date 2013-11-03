@@ -6,6 +6,7 @@
 library harvest_indexeddb;
 
 import 'dart:async';
+import 'dart:html';
 import 'dart:indexed_db';
 
 import 'package:log4dart/log4dart.dart';
