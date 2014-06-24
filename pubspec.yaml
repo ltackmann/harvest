@@ -6,10 +6,10 @@ homepage: https://github.com/ltackmann/harvest
 environment:
   sdk: '>=0.8.10+6 <2.0.0'
 dependencies:
-  log4dart: '>=1.4.12'
+  log4dart: '>=1.4.12 <2.0.0'
 #  meta: '>=0.8.8'
   serialization: '>=0.9.0 < 0.10.0'
-  uuid: '>=0.3.2'
+  uuid: '>=0.3.2 <0.4.0'
 dev_dependencies:
   browser: any
   unittest: any
