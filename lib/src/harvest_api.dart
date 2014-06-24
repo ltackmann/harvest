@@ -1,4 +1,4 @@
-// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// Copyright (c) 2013-2014, the Harvest project authors. Please see the AUTHORS 
 // file for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
@@ -7,7 +7,7 @@ library harvest_api;
 
 import 'dart:async';
 
-import 'package:uuid/uuid.dart';
+import 'package:uuid/uuid_client.dart';
 
 part 'api/events.dart';
 part 'api/event_store.dart';

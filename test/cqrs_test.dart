@@ -1,4 +1,4 @@
-// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// Copyright (c) 2013-2014, the Harvest project authors. Please see the AUTHORS 
 // file for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
@@ -12,31 +12,19 @@ import '../example/web/app/lib.dart';
 part 'src/helpers.dart';
 
 main() {
-  new CqrsTest();
-}
-
-// test CQRS functionality using various event stores implementations
-class CqrsTest {
-  CqrsTest() {
-    // cqrs test on memory based event store
-    var memoryEventStore = new MemoryEventStore();
-    new CqrsTester(new MessageBus(), memoryEventStore);
-    
-    // cqrs test on file based event store
-    // TODO fix
-    var fileEventStore = new FileEventStore("/tmp/harvest");
-    new CqrsTester(new MessageBus(), fileEventStore);
-  }
+  // test memory based event store
+  var memoryEventStore = new MemoryEventStore();
+  new CqrsTester(new MessageBus(), memoryEventStore);
+     
+  // test file based event store
+  var fileEventStore = new FileEventStore("/tmp/harvest");
+  new CqrsTester(new MessageBus(), fileEventStore);
 }
 
 class CqrsTester {
   CqrsTester(this._messageBus, this._eventStore) {
     _init();
-    
-    // test that executing events causes app to behave as expected    
     _testExecutingEvents();
-    
-    // test that reloading all recorded events results in expected result  
     // TODO _testReloadingEvents();
   }
   
@@ -56,6 +44,7 @@ class CqrsTester {
     _presenter = new InventoryPresenter(_messageBus, _view, viewModelFacade);
   }
   
+  // test that executing events causes app to behave as expected  
   _testExecutingEvents() {
     // record all events
     var events = new List<DomainEvent>();
@@ -70,7 +59,7 @@ class CqrsTester {
       var item1Id, item1Version;
       
       test("creating item and display it", () {
-        _presenter.createItem(item1Name).then(expectAsync1((res) {
+        _presenter.createItem(item1Name).then(expectAsync((res) {
           expect(_view.displayedItems.length, equals(1));
           assertEvents(expectedEvents..add("ItemCreated"), events); 
           
@@ -89,7 +78,7 @@ class CqrsTester {
       });
       
       test("increase invetory of item 1", () {
-        _presenter.increaseInventory(item1Id, 2, item1Version).then(expectAsync1((res) {
+        _presenter.increaseInventory(item1Id, 2, item1Version).then(expectAsync((res) {
           expect(_view.displayedDetails.currentCount, equals(2));
           assertEvents(expectedEvents..add("InventoryIncreased"), events);   
           
@@ -100,7 +89,7 @@ class CqrsTester {
       
       test("rename item 1", () {
         item1Name = "$item1Name v2";
-        _presenter.renameItem(item1Id, item1Name, item1Version).then(expectAsync1((res) {
+        _presenter.renameItem(item1Id, item1Name, item1Version).then(expectAsync((res) {
           expect(item1Name, equals(_view.displayedDetails.name));
           assertEvents(expectedEvents..add("ItemRenamed"), events);
           
@@ -110,7 +99,7 @@ class CqrsTester {
       });
       
       test("decrease invetory of item 1", () {
-        _presenter.decreaseInventory(item1Id, 1, item1Version).then(expectAsync1((res) {
+        _presenter.decreaseInventory(item1Id, 1, item1Version).then(expectAsync((res) {
           expect(_view.displayedDetails.currentCount, equals(1));
           assertEvents(expectedEvents..add("InventoryDecreased"), events);   
           
@@ -127,6 +116,7 @@ class CqrsTester {
     });
   }
   
+  // test that reloading all recorded events gives same results as recieving them one by one
   _testReloadingEvents() {
     group("reloading events -", () {
       // save current view state

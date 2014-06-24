@@ -1,4 +1,4 @@
-// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// Copyright (c) 2013-2014, the Harvest project authors. Please see the AUTHORS 
 // file for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
@@ -6,8 +6,8 @@ part of harvest_indexeddb;
 
 /** indexed db backed event store */
 class IndexeddbEventStore implements EventStore {
-  /// create [EventStore] as Indexed DB name [_eventStoreName]
-  IndexeddbEventStore(this._eventStoreName);
+  /// create [EventStore] as Indexed DB name [_databaseName]
+  IndexeddbEventStore(this._databaseName);
   
   @override
   Future<EventStream> openStream(Guid id, [int expectedVersion = -1]) {
@@ -18,7 +18,7 @@ class IndexeddbEventStore implements EventStore {
       _checkStreamVersion(stream, expectedVersion);
       completer.complete(stream);
     } else {
-      _getEventStream(id, expectedVersion, _eventStoreName).then((EventStream stream) {
+      _getEventStream(id, _databaseName, expectedVersion).then((EventStream stream) {
         _store[id] = stream;
         _checkStreamVersion(stream, expectedVersion);
         completer.complete(stream);
@@ -34,7 +34,7 @@ class IndexeddbEventStore implements EventStore {
     }
   }
   
-  final String _eventStoreName;
+  final String _databaseName;
   static final _store = new Map<Guid, EventStream>();
 }
 
@@ -85,14 +85,15 @@ class _IndexeddbEventStream implements EventStream {
   static final _logger = LoggerFactory.getLoggerFor(MemoryEventStore);
 }
 
-Future<EventStream> _getEventStream(Guid id, int databaseVersion, String databaseName) {
+Future<EventStream> _getEventStream(Guid id, String databaseName, int databaseVersion) {
   var completer = new Completer<EventStream>();  
   
-  Future open() {
-    return window.indexedDB.open(databaseName,
-        version: databaseVersion,
-        onUpgradeNeeded: _initializeDatabase)
-          .then(_loadFromDB);
+  void _onUpgradeNeeded(VersionChangeEvent event) {
+    throw "unsupported"; 
+  }
+  
+  Future<Database> open() {
+    return window.indexedDB.open(databaseName, version: databaseVersion, onUpgradeNeeded: _onUpgradeNeeded).then(_loadFromDB);
   }
   
   var filePath = '${directory.path}/${id}.log';

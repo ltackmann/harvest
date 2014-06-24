@@ -1,4 +1,4 @@
-// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// Copyright (c) 2013-2014, the Harvest project authors. Please see the AUTHORS 
 // file for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
@@ -49,7 +49,7 @@ class EventStoreTest {
     EventStream stream;
     
     test('get stream', () {
-      eventStore.openStream(streamId).then(expectAsync1((EventStream s) {
+      eventStore.openStream(streamId).then(expectAsync((EventStream s) {
         stream = s;
         expect(stream, isNotNull);
       }));
@@ -63,7 +63,7 @@ class EventStoreTest {
     });
     
     test('commit events', () {
-      stream.commitChanges().then(expectAsync1((int committedEvents) {
+      stream.commitChanges().then(expectAsync((int committedEvents) {
         expect(committedEvents, greaterThan(0));
         expect(stream.hasUncommittedEvents, isFalse);
         expect(stream.committedEvents, isNot(isEmpty));
@@ -71,7 +71,7 @@ class EventStoreTest {
     });
     
     test('reload stream', () {
-      eventStore.openStream(streamId).then(expectAsync1((EventStream stream2) {
+      eventStore.openStream(streamId).then(expectAsync((EventStream stream2) {
         expect(stream.id, equals(stream2.id));
         expect(stream.streamVersion, equals(stream2.streamVersion));
         expect(stream.committedEvents, orderedEquals(stream2.committedEvents));

@@ -1,4 +1,4 @@
-// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// Copyright (c) 2013-2014, the Harvest project authors. Please see the AUTHORS 
 // file for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
@@ -8,7 +8,6 @@ library harvest_cqrs;
 import 'dart:async';
 
 import 'package:log4dart/log4dart.dart';
-import 'package:meta/meta.dart';
 
 import 'harvest.dart';
 export 'harvest.dart';
