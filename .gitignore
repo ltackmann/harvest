@@ -2,3 +2,4 @@ example/.buildlog
 example/web/out
 packages
 pubspec.lock
+.pub

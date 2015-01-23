@@ -1,10 +1,10 @@
-// Copyright (c) 2013-2014, the Harvest project authors. Please see the AUTHORS 
+// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
 // file for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
 part of harvest_indexeddb;
 
-/** indexed db backed event store */
+/** Indexed DB backed event store */
 class IndexeddbEventStore implements EventStore {
   /// create [EventStore] as Indexed DB name [_databaseName]
   IndexeddbEventStore(this._databaseName);
@@ -38,6 +38,7 @@ class IndexeddbEventStore implements EventStore {
   static final _store = new Map<Guid, EventStream>();
 }
 
+// EventStream backed by Indexed DB
 class _IndexeddbEventStream implements EventStream {
   _IndexeddbEventStream(this.id): _streamVersion = -1;
 
@@ -85,16 +86,21 @@ class _IndexeddbEventStream implements EventStream {
   static final _logger = LoggerFactory.getLoggerFor(MemoryEventStore);
 }
 
+// load [EventStream] from Indexed DB
 Future<EventStream> _getEventStream(Guid id, String databaseName, int databaseVersion) {
+  if(!IdbFactory.supported) {
+    throw new UnsupportedError("enviroment does not contain support for IndexedDb");
+  }
+  
   var completer = new Completer<EventStream>();  
   
-  void _onUpgradeNeeded(VersionChangeEvent event) {
-    throw "unsupported"; 
-  }
+  var initializeDatabase = _getVersionChangeEventHandler(databaseName);
   
   Future<Database> open() {
-    return window.indexedDB.open(databaseName, version: databaseVersion, onUpgradeNeeded: _onUpgradeNeeded).then(_loadFromDB);
+    return window.indexedDB.open(databaseName, version: databaseVersion, onUpgradeNeeded: initializeDatabase).then(_loadFromDb);
   }
+  
+
   
   var filePath = '${directory.path}/${id}.log';
   var file = new File(filePath);
@@ -118,6 +124,21 @@ Future<EventStream> _getEventStream(Guid id, String databaseName, int databaseVe
   });
   
   return completer.future;
+}
+
+typedef void VersionChangeEventHandler(VersionChangeEvent e);
+
+VersionChangeEventHandler _getVersionChangeEventHandler(String databaseName) {
+  return (VersionChangeEvent e) {
+    Database db = (e.target as Request).result;
+     
+    var objectStore = db.createObjectStore(databaseName, autoIncrement: true);
+    objectStore.createIndex("harvest_index", '$databaseName', unique: true);
+  };
+}
+
+Future _loadFromDb(Database db) {
+  
 }
 
 Logger _logger = LoggerFactory.getLoggerFor(IndexeddbEventStore);
