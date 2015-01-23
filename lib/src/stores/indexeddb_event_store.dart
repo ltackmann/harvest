@@ -100,29 +100,7 @@ Future<EventStream> _getEventStream(Guid id, String databaseName, int databaseVe
     return window.indexedDB.open(databaseName, version: databaseVersion, onUpgradeNeeded: initializeDatabase).then(_loadFromDb);
   }
   
-
-  
-  var filePath = '${directory.path}/${id}.log';
-  var file = new File(filePath);
-  file.exists().then((bool exists) {
-    if(!exists) {
-      _logger.debug('creating new event stream in file ${file}');
-      file.create().then((File eventLog) {
-        var descriptor = new _FileEventStreamDescriptor.createNew(id);
-        descriptor.writeAsJson(eventLog).then((_) {
-          var stream = new _FileEventStream(eventLog, descriptor);
-          completer.complete(stream);
-        });
-      });
-    } else {
-      _logger.debug('loading existing event stream from file ${file}');
-      var descriptor = new _FileEventStreamDescriptor();
-      descriptor.loadFromJson(file).then((File eventLog) {
-        return new _FileEventStream(eventLog, descriptor);
-      });
-    }
-  });
-  
+  // TODO https://www.dartlang.org/docs/tutorials/indexeddb/
   return completer.future;
 }
 
@@ -138,7 +116,22 @@ VersionChangeEventHandler _getVersionChangeEventHandler(String databaseName) {
 }
 
 Future _loadFromDb(Database db) {
-  
+  if(!exists) {
+     _logger.debug('creating new event stream in file ${file}');
+     file.create().then((File eventLog) {
+       var descriptor = new _FileEventStreamDescriptor.createNew(id);
+       descriptor.writeAsJson(eventLog).then((_) {
+         var stream = new _FileEventStream(eventLog, descriptor);
+         completer.complete(stream);
+       });
+     });
+   } else {
+     _logger.debug('loading existing event stream from file ${file}');
+     var descriptor = new _FileEventStreamDescriptor();
+     descriptor.loadFromJson(file).then((File eventLog) {
+       return new _FileEventStream(eventLog, descriptor);
+     });
+   }
 }
 
 Logger _logger = LoggerFactory.getLoggerFor(IndexeddbEventStore);
