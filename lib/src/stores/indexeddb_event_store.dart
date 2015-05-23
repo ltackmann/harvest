@@ -1,11 +1,14 @@
-// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
-// file for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013-2015, the project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
 part of harvest_indexeddb;
 
 /** Indexed DB backed event store */
 class IndexeddbEventStore implements EventStore {
+  static final _store = new Map<Guid, EventStream>();
+  final String _databaseName;
+  
   /// create [EventStore] as Indexed DB name [_databaseName]
   IndexeddbEventStore(this._databaseName);
   
@@ -33,9 +36,6 @@ class IndexeddbEventStore implements EventStore {
       new ConcurrencyError("unexpected version $expectedVersion");
     }
   }
-  
-  final String _databaseName;
-  static final _store = new Map<Guid, EventStream>();
 }
 
 // EventStream backed by Indexed DB

@@ -4,9 +4,8 @@
 
 library harvest_test;
 
-import 'package:unittest/unittest.dart';
-// import application in the same way to avoid library clashes 
-import '../lib/harvest_file.dart';
+import 'package:test/test.dart';
+import 'package:harvest/harvest_file.dart';
 import '../example/web/app/lib.dart';
 
 part 'src/helpers.dart';

@@ -1,5 +1,5 @@
-// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
-// file for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013-2015, the project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
 part of harvest_cqrs;
@@ -29,6 +29,6 @@ abstract class ModelRepository<T> {
  * Marker interface than can optionally be put on models to ensure they can 
  * be saved in the model repository.
  */
-abstract class IdModel {
+abstract class Identifiable {
   Guid get id;
 }

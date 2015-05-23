@@ -1,5 +1,5 @@
-// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
-// file for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013-2015, the project authors. Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
 part of harvest_file;
@@ -125,6 +125,10 @@ Future<EventStream> _getEventStream(Guid id, Directory directory) {
 }
 
 class _FileEventStreamDescriptor {
+  List<DomainEvent> events;
+  int version;
+  Guid id;
+  
   _FileEventStreamDescriptor();
   
   _FileEventStreamDescriptor.createNew(this.id)
@@ -156,10 +160,6 @@ class _FileEventStreamDescriptor {
     
     return completer.future;
   }
-  
-  Guid id;
-  int version;
-  List<DomainEvent> events;
 }
 
 Logger _logger = LoggerFactory.getLoggerFor(FileEventStore);

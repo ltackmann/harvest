@@ -4,7 +4,7 @@
 
 import 'package:harvest/harvest.dart';
 import 'package:harvest/harvest_file.dart';
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 main() {
   new EventStoreTest();
