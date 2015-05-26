@@ -1,5 +1,5 @@
 name: harvest
-version: 1.6.2
+version: 1.6.3
 author: Lars Tackmann <lars@solvr.io>
 description: Event store for Dart with multiple backends
 homepage: https://github.com/ltackmann/harvest
