@@ -31,4 +31,8 @@ abstract class ModelRepository<T> {
  */
 abstract class Identifiable {
   Guid get id;
+  
+  bool operator ==(o) => o is Identifiable && o.id == id;
+  
+  int get hashCode => id.hashCode;
 }

@@ -17,6 +17,6 @@ part 'src/cqrs/aggregate_root.dart';
 part 'src/cqrs/domain_repository.dart';
 part 'src/cqrs/events.dart';
 part 'src/cqrs/model_repository.dart';
-part 'src/cqrs/repositories/memory/memory_model_repository.dart';
+part 'src/cqrs/repositories/memory_model_repository.dart';
 
 

@@ -29,7 +29,7 @@ abstract class AggregateRoot {
   }
   
   /** Implemented in each concrete aggregate, responsible for extracting data from events and applying it itself */
-  apply(DomainEvent event);
+  apply(DomainEvent event); 
 
   /** Apply a new event to this aggregate */
   applyChange(DomainEvent event) => _applyChange(event, true);
