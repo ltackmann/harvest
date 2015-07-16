@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/ltackmann/log4dart.svg)](https://travis-ci.org/ltackmann/harvest)
-[![Coverage Status](https://coveralls.io/repos/ltackmann/log4dart/badge.svg)](https://coveralls.io/r/ltackmann/harvest)
+[![Build Status](https://travis-ci.org/ltackmann/harvest.svg)](https://travis-ci.org/ltackmann/harvest)
+[![Coverage Status](https://coveralls.io/repos/ltackmann/harvest/badge.svg)](https://coveralls.io/r/ltackmann/harvest)
 
 Harvest
 =======
@@ -82,6 +82,7 @@ Links
  
  TODO
 -----
+ * Document usage of message bus
  * Ensure message headers are not serialized
  * Create serilization configuration that
 
