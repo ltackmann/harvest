@@ -19,5 +19,5 @@ main() {
   group('MemoryEventStore CQRS test', () {
     var eventStore = new FileEventStore("/tmp/eventlog2");
     new CqrsTester(new MessageBus(), eventStore);
-  }, skip:true);
+  });
 }

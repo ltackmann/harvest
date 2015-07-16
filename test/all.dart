@@ -12,5 +12,5 @@ import 'harvest_message_test.dart' as harvest_message_test;
 main() {
   harvest_message_test.main();
   harvest_memory_test.main();
-  //harvest_file_test.main();
+  harvest_file_test.main();
 }

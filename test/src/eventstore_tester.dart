@@ -12,11 +12,9 @@ class EventStoreTester {
     Guid streamId = new Guid();
     EventStream stream;
     
-    test('get stream', () {
-      eventStore.openStream(streamId).then(expectAsync((EventStream s) {
-        stream = s;
-        expect(stream, isNotNull);
-      }));
+    test('get stream', () async {
+      stream = await eventStore.openStream(streamId);;
+      expect(stream, isNotNull);
     });
     
     test('add events', () {
@@ -26,20 +24,18 @@ class EventStoreTester {
       expect(stream.committedEvents, isEmpty);
     });
     
-    test('commit events', () {
-      stream.commitChanges().then(expectAsync((int committedEvents) {
-        expect(committedEvents, greaterThan(0));
-        expect(stream.hasUncommittedEvents, isFalse);
-        expect(stream.committedEvents, isNot(isEmpty));
-      })); 
+    test('commit events', () async {
+      var committedEvents = await stream.commitChanges(); 
+      expect(committedEvents, greaterThan(0));
+      expect(stream.hasUncommittedEvents, isFalse);
+      expect(stream.committedEvents, isNot(isEmpty));
     });
     
-    test('reload stream', () {
-      eventStore.openStream(streamId).then(expectAsync((EventStream stream2) {
-        expect(stream.id, equals(stream2.id));
-        expect(stream.streamVersion, equals(stream2.streamVersion));
-        expect(stream.committedEvents, orderedEquals(stream2.committedEvents));
-      }));
+    test('reload stream', () async {
+      var stream2 = await eventStore.openStream(streamId);
+      expect(stream.id, equals(stream2.id));
+      expect(stream.streamVersion, equals(stream2.streamVersion));
+      expect(stream.committedEvents, orderedEquals(stream2.committedEvents));
     });
   }
 }

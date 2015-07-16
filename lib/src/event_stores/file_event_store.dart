@@ -30,7 +30,7 @@ class FileEventStore implements EventStore {
     if(_store.containsKey(id)) {
       eventStream = _store[id];
     } else {
-      var eventStream = await _getEventStream(id, _directory);
+      eventStream = await _getEventStream(id, _directory);
       _store[id] = eventStream;
     }
     _checkStreamVersion(eventStream, expectedStreamVersion);

@@ -6,11 +6,13 @@
 
 @TestOn("dartium")
 import 'package:test/test.dart';
+import 'package:polymer/polymer.dart';
 
 import 'package:harvest/harvest_idb.dart';
 
 import 'src/harvest_test_helpers.dart';
 
+@whenPolymerReady
 main() {
   group('IdbEventStore test', () {
     var eventStore = new IdbEventStore("idb_test");
