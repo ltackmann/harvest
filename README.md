@@ -1,4 +1,5 @@
-[![Build Status](https://drone.io/github.com/ltackmann/harvest/status.png)](https://drone.io/github.com/ltackmann/harvest/latest)
+[![Build Status](https://travis-ci.org/ltackmann/log4dart.svg)](https://travis-ci.org/ltackmann/harvest)
+[![Coverage Status](https://coveralls.io/repos/ltackmann/log4dart/badge.svg)](https://coveralls.io/r/ltackmann/harvest)
 
 Harvest
 =======
