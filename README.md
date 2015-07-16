@@ -77,4 +77,10 @@ Harvest supports the following event stores.
 
 Links
 -----
-* https://github.com/joliver/EventStore
+ * https://github.com/NEventStore/NEventStore
+ 
+ TODO
+-----
+ * Ensure message headers are not serialized
+ * Create serilization configuration that
+

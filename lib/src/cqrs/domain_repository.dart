@@ -1,52 +1,47 @@
-// Copyright (c) 2013-2015, the project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
+// file for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
-part of harvest_cqrs;
+part of harvest;
 
 /** Repository that stores and retrieves domain objects (aggregates) by their events. */
 class DomainRepository<T extends AggregateRoot>  {
+  static final Logger _logger = LoggerFactory.getLoggerFor(DomainRepository);
+  String _typeName;
+  final AggregateBuilder _builder;
+  final EventStore _store;
+  final MessageBus _messageBus;
+  
   DomainRepository(this._builder, this._store, this._messageBus) {
     _typeName = genericTypeNameOf(this);
   }
   
   /** Save aggregate, return [true] when the aggregate had unsaved data otherwise [false]. */ 
-  Future<bool> save(AggregateRoot aggregate, [int expectedVersion = -1]) {
-    var completer = new Completer<bool>();
+  Future<bool> save(AggregateRoot aggregate, [int expectedVersion = -1]) async {
     if(aggregate.uncommitedChanges.isEmpty) {
-      completer.complete(false);
+      return false;
     } else {
-      _store.openStream(aggregate.id).then((stream) {
-        var changes = new List.from(aggregate.uncommitedChanges);
-        _logger.debug("saving aggregate ${aggregate.id} with ${changes.length} new events");
-        stream.addAll(changes);      
-        stream.commitChanges().then((_) {
-          // clear aggregate prior to broadcast to avoid duplicate events
-          aggregate.uncommitedChanges.clear();
-          changes.forEach(_messageBus.fire);
-          completer.complete(true);
-        });
-      });
+      var stream = await _store.openStream(aggregate.id);
+      var changes = new List.from(aggregate.uncommitedChanges);
+      _logger.debug("saving aggregate ${aggregate.id} with ${changes.length} new events");
+      stream.addAll(changes);      
+      var res = await stream.commitChanges();
+      if(res != changes.length) {
+        throw new ConcurrencyError("attempted to commit ${changes.length} but only $res was saved" );
+      }
+      // clear aggregate prior to broadcast to avoid duplicate events
+      aggregate.uncommitedChanges.clear();
+      changes.forEach(_messageBus.fire);
+      return true;
     }
-    return completer.future;
   }
   
   /** Load domain object for [id] */ 
-  Future<T> load(Guid id) {
-    var completer = new Completer<T>();
-    _store.openStream(id).then((stream) {
-      var obj = _builder(id);
-      _logger.debug("loading aggregate ${id} from ${stream.committedEvents.length} total events");
-      obj.loadFromHistory(stream);
-      completer.complete(obj);
-    });
-    return completer.future;
+  Future<T> load(Guid id) async {
+    var stream = await _store.openStream(id);
+    var obj = _builder(id);
+    _logger.debug("loading aggregate ${id} from ${stream.committedEvents.length} total events");
+    obj.loadFromHistory(stream);
+    return obj;
   }
-  
-  Logger get _logger => LoggerFactory.getLoggerFor(DomainRepository);
-  
-  String _typeName;
-  final AggregateBuilder _builder;
-  final EventStore _store;
-  final MessageBus _messageBus;
 }

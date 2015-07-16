@@ -1,8 +1,8 @@
-// Copyright (c) 2013-2015, the project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
+// file for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
-part of harvest_cqrs;
+part of harvest;
 
 /** Repository for working with read-models */ 
 abstract class ModelRepository<T> {
@@ -12,11 +12,9 @@ abstract class ModelRepository<T> {
   T getById(Guid id);
   
   /**
-   * Get single instance of T if any exists or use [builder] to make a new one. 
-   *
-   * Throws exception if more than one instance already exists
+   * Get instance of T for [id] if any exists or use [builder] to make a new one. 
    */
-  T getOrNew(T builder());
+  T getOrNew(Guid id, T builder());
   
   remove(T instance);
   

@@ -2,11 +2,12 @@
 // file for details. All rights reserved. Use of this source code is governed 
 // by a Apache license that can be found in the LICENSE file.
 
-/** Eventstore backed by a file system */ 
-library harvest_file;
+/** Eventstore backed by IndexedDB */ 
+library harvest_idb;
 
 import 'dart:async';
-import 'dart:io';
+import 'dart:html';
+import 'dart:indexed_db';
 
 import 'package:log4dart/log4dart.dart';
 
@@ -15,5 +16,6 @@ import 'src/harvest_json.dart';
 
 export 'harvest.dart';
 
-part 'src/event_stores/file_event_store.dart';
-part 'src/model_repositories/file_model_repository.dart';
+part 'src/event_stores/idb_event_store.dart';
+part 'src/model_repositories/idb_model_repository.dart';
+
