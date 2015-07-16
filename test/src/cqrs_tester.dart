@@ -47,7 +47,7 @@ class CqrsTester {
     String item1Name = "Book 1";
     var item1Id, item1Version;
     
-    test("create item and assert its displayed in list", () async {
+    test("create item and assert its displayed in item list", () async {
       await _presenter.createItem(item1Name);
       expect(_view.displayedItems.length, equals(1));
       assertEventNames(expectedMessages..addAll(["CreateItem","ItemCreated"]), _view.recordedMessages); 
@@ -99,7 +99,7 @@ class CqrsTester {
   }
   
   /**
-   * Test that reloading all recorded events gives same results as recieving them one by one
+   * Test reloading recorded events gives same result as recieving them one by one
    */
   reloadEventsTest() {
     // save current view state
@@ -132,7 +132,5 @@ class CqrsTester {
       expect(origDetails.currentCount, equals(replayedDetails.currentCount));
       expect(origDetails.version, equals(replayedDetails.version));
     }
-    
-    // TODO messages
   }
 }
