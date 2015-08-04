@@ -71,9 +71,9 @@ class Process {
     _subscriptions.add(_messageBus.stream(messageType).listen(handler) );
   }
   
-  /** Fire commands */
-  fire(DomainCommand command) {
-    _messageBus.fire(command);
+  /** Publish commands */
+  publish(DomainCommand command) {
+    _messageBus.publish(command);
   }
   
   /** Cancel subscriptions */ 

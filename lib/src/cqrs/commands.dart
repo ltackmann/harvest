@@ -47,7 +47,7 @@ class DomainCommand extends Message {
         onError();
       };
     }
-    messageBus.fire(this);
+    messageBus.publish(this);
     return completer.future;  
   }
 }

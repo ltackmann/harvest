@@ -7,14 +7,11 @@ part of harvest;
 /** Repository that stores and retrieves domain objects (aggregates) by their events. */
 class DomainRepository<T extends AggregateRoot>  {
   static final Logger _logger = LoggerFactory.getLoggerFor(DomainRepository);
-  String _typeName;
   final AggregateBuilder _builder;
   final EventStore _store;
   final MessageBus _messageBus;
   
-  DomainRepository(this._builder, this._store, this._messageBus) {
-    _typeName = genericTypeNameOf(this);
-  }
+  DomainRepository(this._builder, this._store, this._messageBus);
   
   /** Save aggregate, return [true] when the aggregate had unsaved data otherwise [false]. */ 
   Future<bool> save(AggregateRoot aggregate, [int expectedVersion = -1]) async {
@@ -31,7 +28,7 @@ class DomainRepository<T extends AggregateRoot>  {
       }
       // clear aggregate prior to broadcast to avoid duplicate events
       aggregate.uncommitedChanges.clear();
-      changes.forEach(_messageBus.fire);
+      changes.forEach(_messageBus.publish);
       return true;
     }
   }

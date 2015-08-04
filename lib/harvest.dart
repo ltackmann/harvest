@@ -36,12 +36,3 @@ part 'src/message_bus.dart';
 // Global Helper functions 
 String typeNameOf(Object obj) => obj.runtimeType.toString();
 
-String genericTypeNameOf(Object obj) {
-  // TODO change when typeArguments is implemented in dart:mirrors
-  var typeName = typeNameOf(obj);
-  var regex = new RegExp(r'(.*)<(.*)>');
-  if(!regex.hasMatch(typeName)) {
-    throw new ArgumentError('Non generic type $typeName passed');
-  }
-  return regex.firstMatch(typeName).group(2);
-}
