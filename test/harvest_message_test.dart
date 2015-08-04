@@ -13,71 +13,110 @@ main() {
 }
 
 class MessageBusTest {
-  MessageBusTest(bool sync) {
+  final bool sync;
+  
+  MessageBusTest(this.sync) {
     var testType = sync ? "synchronous" : "asynchronous";
     
-    group("$testType message bus API", () {
-      var messageBus = getMessageBus(sync);
-      var testMessageRecieved = 0;
-      var everyMessageRecieved = 0;
-      var deadEventRecived = 0;
-                     
-      // register two listeners for TestEvent
-      messageBus.subscribe(TestEvent, (_) {
-       testMessageRecieved++;
-      });
-      messageBus.subscribe(TestEvent, (_) {
-        testMessageRecieved++;
-      });
-      // listen to every message
-      var everySubscription = messageBus.everyMessage.listen((Message m) {
-        everyMessageRecieved++;
-        if(m is DeadEvent) {
-          deadEventRecived++;
-        }
-      });
-      
-      test('messages must be delivered to subscribers', () async {
-        var delivered = await messageBus.fire(new TestEvent('test1'));  
-        expect(delivered, equals(2), reason:"delivered to two test subscription");
-        expect(testMessageRecieved, equals(2), reason:"two subscribers on every message");
-        expect(deadEventRecived, equals(0), reason:"no dead events should be fored");
-        expect(everyMessageRecieved, equals(1));
+    group("$testType message bus -", () {
+      test("one message type subscriber, no every message subscriber", () async {
+        var messageBus = getMessageBus(); 
+        var messageRecieved = 0;
+        messageBus.subscribe(TestEvent, (_) {
+          messageRecieved++;
+        });
+        var delivered = await messageBus.publish(new TestEvent('test1'));  
+        expect(delivered, equals(1), reason:"delivered to one subscriber");
+        expect(messageRecieved, equals(1), reason:"subscriber recieved one message");
       });  
+     
+      test("no message type subscriber, one every message subscriber", () async {
+         var messageBus = getMessageBus(); 
+         var messageRecieved = 0;
+         messageBus.everyMessage.listen((_) {
+           messageRecieved++;
+         });
+         var delivered = await messageBus.publish(new TestEvent('test1'));  
+         expect(delivered, equals(1), reason:"delivered to one subscriber");
+         expect(messageRecieved, equals(1), reason:"subscriber recieved one message");
+      });
       
-      test("unsubscribing should stop delivering messages", () async {
-        await everySubscription.cancel();
-        var delivered = await messageBus.fire(new TestEvent('test3'));
-        expect(delivered, equals(4), reason:"delivered to two test subscription");
-        expect(testMessageRecieved, equals(4), reason:"two subscribers on every message");
-        expect(deadEventRecived, equals(0), reason:"no dead events should be fored");
-        expect(everyMessageRecieved, equals(1), reason:"we have cancelled subscription to every message");
-      }, skip:true);
+      test("one message type subscriber, one every message subscriber", () async {
+        var messageBus = getMessageBus(); 
+        var messageRecieved = 0;
+        messageBus.everyMessage.listen((_) {
+          messageRecieved++;
+        });
+        messageBus.subscribe(TestEvent, (_) {
+          messageRecieved++;
+        });
+        var delivered = await messageBus.publish(new TestEvent('test1'));  
+        expect(delivered, equals(2), reason:"delivered to two subscribers");
+        expect(messageRecieved, equals(2), reason:"two subscribers recieved one message");
+      });
+      
+      test("no message type subscriber, no every message subscriber", () async {
+        var messageBus = getMessageBus(); 
+        var messageRecieved = 0;
+        var deadEventsRecived = 0;
+        messageBus.deadEventHandler = (Message m) {
+          deadEventsRecived++;
+        };
+        var delivered = await messageBus.publish(new TestEvent('test1'));  
+        expect(delivered, equals(0), reason:"no subscribers recieved message");
+        expect(messageRecieved, equals(0), reason:"no subscribers recieved message");
+        expect(deadEventsRecived, equals(1), reason:"one dead events should be recieved");
+      });
+      
+      test("message unsubscribing", () async {
+        var messageBus = getMessageBus();
+        var testMessageRecieved = 0;
+                         
+        // register two subscribers for TestEvent
+        var subscription1 = messageBus.subscribe(TestEvent, (_) {
+         testMessageRecieved++;
+        });
+        var subscription2 = messageBus.subscribe(TestEvent, (_) {
+          testMessageRecieved++;
+        });
+        
+        // deliver to both subscribers
+        var delivered = await messageBus.publish(new TestEvent('test1'));  
+        expect(delivered, equals(2), reason:"delivered to two subscribers");
+        expect(testMessageRecieved, equals(2), reason:"delivered to two subscribers");
+        
+        // cancel one subscription and deliver
+        await subscription1.cancel();
+        expect(subscription2.isPaused, equals(false), reason:"second subscription should be unaffected");
+        delivered = await messageBus.publish(new TestEvent('test3'));
+        expect(delivered, equals(1), reason:"delivered to one subscriber");
+        expect(testMessageRecieved, equals(3), reason:"one subcriber active for second delivery (2 prior messages and 1 new)");
+      });
+      
       
       test("messages should be enriched", () async {
-        messageBus.unsubscribeAll();
-        // enricher that stores message type in headers
-        messageBus.enricher = (Message m) {
-          m.headers["messageType"] = m.runtimeType;    
-        };  
-        // listener that records message types stored by enricher
-        var messageTypes = <Type>[];
-        messageBus.everyMessage.listen((Message m) {
-          var messageType = m.headers["messageType"] as Type;
-          messageTypes.add(messageType); 
-        });
-            
-        var delivered = await messageBus.fire(new TestEvent("test 2"));
-        expect(delivered, equals(1));
-        expect(messageTypes, hasLength(1));
-        expect(messageTypes.first, equals(DeadEvent));
+        var messageBus = getMessageBus();
+         // enricher that stores message type in headers
+         messageBus.enricher = (Message m) {
+           m.headers["messageType"] = m.runtimeType;    
+         };  
+         // listener that records message types stored by enricher
+         var messageTypes = <Type>[];
+         messageBus.everyMessage.listen((Message m) {
+           var messageType = m.headers["messageType"] as Type;
+           messageTypes.add(messageType); 
+         });
+             
+         var delivered = await messageBus.publish(new TestEvent("test 2"));
+         expect(delivered, equals(1));
+         expect(messageTypes, hasLength(1));
+         expect(messageTypes.first, equals(TestEvent));
       });
-      
-      // TODO test unsubscribing for every body
     });
     
     // TODO test using stream API
+    // TODO ubsubscribe all
   }
   
-  MessageBus getMessageBus(bool sync) => sync ? new MessageBus() : new MessageBus.async();
+  MessageBus getMessageBus() => sync ? new MessageBus() : new MessageBus.async();
 }
