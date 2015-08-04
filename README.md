@@ -1,8 +1,7 @@
 [![Build Status](https://travis-ci.org/ltackmann/harvest.svg)](https://travis-ci.org/ltackmann/harvest)
 [![Coverage Status](https://coveralls.io/repos/ltackmann/harvest/badge.svg)](https://coveralls.io/r/ltackmann/harvest)
 
-Harvest
-=======
+# Harvest
 Harvest is a messagebus, CQRS frame work and event store for Dart with multiple backends. Features include
 
  * **Message bus**
@@ -17,8 +16,7 @@ Harvest is a messagebus, CQRS frame work and event store for Dart with multiple 
   * Simple API for supporting differnt storage backends for events
   * Supports file, IndexedDB and memory backends 
   * Support for event sourced entities
- * CQRS 
- * SAGA 
+ * CQRS and SAGA support 
 
 
 ## MessageBus
@@ -65,7 +63,7 @@ Harvest exposes a hook for intercepting messages that has no listeners
 
 You can also listen to all events regardless of types
 ```dart
-    messageBus.everyMessage.listen((Message msg) => print("message ${msg.runtimeType} published");
+  messageBus.everyMessage.listen((Message msg) => print("message ${msg.runtimeType} published");
 ```
 
 If you want to intercept all messages prior to delivery you can use Harvest message enricher API
