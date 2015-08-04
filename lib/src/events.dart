@@ -4,13 +4,6 @@
 
 part of harvest;
 
-/** The dead event is fired when a message is placed on the eventbus without any event listners associated with it. */
-class DeadEvent extends Message {
-  DeadEvent(this.deadMessage);
-  
-  final Message deadMessage;
-}
-
 /** Events that can be stored, ususally named in the past tense as they describe a event that has taken place */
 abstract class DomainEvent extends Message {
   int version;

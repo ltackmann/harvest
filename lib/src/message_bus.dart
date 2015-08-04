@@ -23,7 +23,7 @@ class MessageBus {
   /**
    * Set [MessageHandler] to be invoked if event is published with no active listeners 
     */
-  set deadEventHandler(MessageHandler handler) => _coordinator.deadEventHandler = handler;
+  set deadMessageHandler(MessageHandler handler) => _coordinator.deadMessageHandler = handler;
   
   /**
    * Set [enricher] to enrich [Message] before they are fired
@@ -102,7 +102,7 @@ class MessageCoordinator {
   // enricher to enhance message when comming through
   MessageEnricher _enricher;
   // handler to recieve dead events
-  MessageHandler deadEventHandler = (Message message) => print("no message handler registered for message type ${message.runtimeType}");
+  MessageHandler deadMessageHandler = (Message message) => print("no message handler registered for message type ${message.runtimeType}");
   
   /**
    * If [isSync] is true then the underlying messages stream are will block until delivered.
@@ -173,8 +173,8 @@ class MessageCoordinator {
     if(subscribers.isNotEmpty) {
       subscribers.forEach((s) => s.add(message));
     } else {
-      if(deadEventHandler != null) {
-        deadEventHandler(message);
+      if(deadMessageHandler != null) {
+        deadMessageHandler(message);
       }
       _complete(message, 0);
     }

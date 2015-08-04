@@ -59,7 +59,7 @@ class MessageBusTest {
         var messageBus = getMessageBus(); 
         var messageRecieved = 0;
         var deadEventsRecived = 0;
-        messageBus.deadEventHandler = (Message m) {
+        messageBus.deadMessageHandler = (Message m) {
           deadEventsRecived++;
         };
         var delivered = await messageBus.publish(new TestEvent('test1'));  
