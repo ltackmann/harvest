@@ -46,3 +46,9 @@ class TestEvent extends DomainEvent {
   
   TestEvent(this.data);
 }
+
+class TestCommand extends DomainCommand {
+  final String data;
+  
+  TestCommand(this.data);
+}

@@ -32,23 +32,5 @@ class DomainCommand extends Message {
       _onError();
     }
   }
-  
-  Future<DomainCommand> broadcastOn(MessageBus messageBus, {Function onSuccess, Function onError}) {
-    var completer = new Completer();
-    if(onSuccess != null) {
-      _onSuccess = () {
-        completer.complete(this);
-        onSuccess();
-      };
-    }
-    if(onError != null) {
-      _onError = () {
-        completer.complete(this);
-        onError();
-      };
-    }
-    messageBus.publish(this);
-    return completer.future;  
-  }
 }
 

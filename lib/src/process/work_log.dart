@@ -8,15 +8,15 @@ part of harvest;
  * Log of the work executed by a step
  */
 class WorkLog<T extends Step> {
-  final UnmodifiableMapView<String, Object> _headers;  
+  final UnmodifiableMapView<String, Object> _loggedWork;  
   T step;
   
-  WorkLog(this.step, Map<String, Object> headers): _headers = new UnmodifiableMapView(headers);
+  WorkLog(this.step, {Map<String, Object> loggedWork:const {}}): _loggedWork = new UnmodifiableMapView(loggedWork);
   
   /**
    * True if worklog contains values for [key]
    */
-  bool containsKey(String key) => _headers.containsKey(key);
+  bool containsKey(String key) => _loggedWork.containsKey(key);
   
   /**
    * Look up entry in work log
@@ -25,6 +25,10 @@ class WorkLog<T extends Step> {
     if(!containsKey(key)) {
       throw new ArgumentError("no log entry for $key in step ${step.runtimeType}");
     }
-    return _headers[key];
+    return _loggedWork[key];
   }
+  
+  String get loggedWork => _loggedWork.toString();
+  
+  String get workName => step.runtimeType.toString();
 }

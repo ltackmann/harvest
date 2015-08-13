@@ -22,6 +22,7 @@ part 'src/event_stores/memory_event_store.dart';
 part 'src/model_repositories/memory_model_repository.dart';
 // process support
 part 'src/process/process.dart';
+part 'src/process/process_prototype.dart';
 part 'src/process/process_manager.dart';
 part 'src/process/step.dart';
 part 'src/process/work_item.dart';

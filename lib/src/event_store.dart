@@ -4,9 +4,19 @@
 
 part of harvest;
 
+/**
+ * Facade for creating and accessing [EventStream]s 
+ */
 abstract class EventStore {
-  /** Open an [EventStream] asynchronously for [id], fails if [EventStream] version does not match [expectedVersion]*/
+  /**
+   * Open an [EventStream] asynchronously for [id], fails if [EventStream] version does not match [expectedVersion]
+   */
   Future<EventStream> openStream(Guid id, [int expectedVersion = -1]);
+  
+  /**
+   * True if the [EventStore] contains a stream for [id]
+   */
+  bool containsStream(Guid id);
 }
 
 /** Track a series of events and commit them to durable storage */

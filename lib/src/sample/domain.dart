@@ -5,8 +5,8 @@
 part of harvest_sample;
 
 class Item extends AggregateRoot {
-  factory Item.create(String name) {
-    var item = new Item(new Guid());
+  factory Item.create(String name, Guid id) {
+    var item = new Item(id);
     item.applyChange(new ItemCreated(item.id, name));
     return item;
   }

@@ -93,29 +93,29 @@ class MessageBusTest {
         expect(testMessageRecieved, equals(3), reason:"one subcriber active for second delivery (2 prior messages and 1 new)");
       });
       
-      
       test("messages should be enriched", () async {
         var messageBus = getMessageBus();
-         // enricher that stores message type in headers
-         messageBus.enricher = (Message m) {
-           m.headers["messageType"] = m.runtimeType;    
-         };  
-         // listener that records message types stored by enricher
-         var messageTypes = <Type>[];
-         messageBus.everyMessage.listen((Message m) {
-           var messageType = m.headers["messageType"] as Type;
-           messageTypes.add(messageType); 
-         });
+        // enricher that stores message type in headers
+        messageBus.enricher = (Message m) {
+          m.headers["messageType"] = m.runtimeType;    
+        };  
+        // listener that records message types stored by enricher
+        var messageTypes = <Type>[];
+        messageBus.everyMessage.listen((Message m) {
+          var messageType = m.headers["messageType"] as Type;
+          messageTypes.add(messageType); 
+        });
              
-         var delivered = await messageBus.publish(new TestEvent("test 2"));
-         expect(delivered, equals(1));
-         expect(messageTypes, hasLength(1));
-         expect(messageTypes.first, equals(TestEvent));
+        var delivered = await messageBus.publish(new TestEvent("test 2"));
+        expect(delivered, equals(1));
+        expect(messageTypes, hasLength(1));
+        expect(messageTypes.first, equals(TestEvent));
       });
     });
     
     // TODO test using stream API
     // TODO ubsubscribe all
+    // TODO look into coveralls report and test missing areas
   }
   
   MessageBus getMessageBus() => sync ? new MessageBus() : new MessageBus.async();

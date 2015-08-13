@@ -23,27 +23,27 @@ class InventoryPresenter {
 
   Future createItem(String name) {
     var cmd = new CreateItem(new Guid(), name);
-    return cmd.broadcastOn(_messageBus, onSuccess:showItems);
+    return _messageBus.publishCommand(cmd).whenComplete(showItems);
   }
   
   Future decreaseInventory(Guid itemId, int numberOfItems, int version) {
     var cmd = new DecreaseInventory(itemId, numberOfItems, version);
-    return cmd.broadcastOn(_messageBus, onSuccess: () => showItemDetails(itemId));
+    return _messageBus.publishCommand(cmd).whenComplete(() => showItemDetails(itemId));
   }
   
   Future increaseInventory(Guid itemId, int numberOfItems, int version) {
     var cmd = new IncreaseInventory(itemId, numberOfItems, version);
-    return cmd.broadcastOn(_messageBus, onSuccess: () => showItemDetails(itemId));
+    return _messageBus.publishCommand(cmd).whenComplete(() => showItemDetails(itemId));
   }
   
   Future removeItem(Guid itemId, int version) {
     var cmd = new RemoveItem(itemId, version);
-    return cmd.broadcastOn(_messageBus, onSuccess:showItems); 
+    return _messageBus.publishCommand(cmd).whenComplete(showItems);
   }
 
   Future renameItem(Guid itemId, String name, int version) {
     var cmd = new RenameItem(itemId, name, version);
-    return cmd.broadcastOn(_messageBus, onSuccess: () => showItemDetails(itemId));
+    return _messageBus.publishCommand(cmd).whenComplete(() => showItemDetails(itemId));
   }
   
   showItems() {

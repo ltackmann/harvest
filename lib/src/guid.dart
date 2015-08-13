@@ -8,6 +8,9 @@ part of harvest;
  * Wrap external Uuid library into own class, until Dart provides its own official implementation
  */
 class Guid {
+  static final _valueFactory = new Uuid();
+  final String value;
+  
   factory Guid() {
     var val = _valueFactory.v1();
     return new Guid._internal(val);
@@ -18,8 +21,5 @@ class Guid {
   int get hashCode => value.hashCode;
   
   String toString() => value;
-  
-  final String value;
-  static final _valueFactory = new Uuid();
 }
 

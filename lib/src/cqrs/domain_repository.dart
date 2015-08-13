@@ -33,8 +33,13 @@ class DomainRepository<T extends AggregateRoot>  {
     }
   }
   
-  /** Load domain object for [id] */ 
+  /**
+   * Load domain object for [id], returns null if no object exists
+   */
   Future<T> load(Guid id) async {
+    if(!_store.containsStream(id)) {
+      return new Future.value(null);  
+    }
     var stream = await _store.openStream(id);
     var obj = _builder(id);
     _logger.debug("loading aggregate ${id} from ${stream.committedEvents.length} total events");

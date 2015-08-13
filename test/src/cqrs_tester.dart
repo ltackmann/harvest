@@ -44,13 +44,14 @@ class CqrsTester {
    */
   eventsTest() {
     final expectedMessages = new List<String>();
-    String item1Name = "Book 1";
-    var item1Id, item1Version;
+    String item1Name = "Book";
+    String item2Name = "Car";
+    var item1Id, item1Version, item2Id;
     
     test("create item and assert its displayed in item list", () async {
       await _presenter.createItem(item1Name);
       expect(_view.displayedItems.length, equals(1));
-      assertEventNames(expectedMessages..addAll(["CreateItem","ItemCreated"]), _view.recordedMessages); 
+      assertEventNames(_view.recordedMessages, expectedMessages..addAll(["CreateItem","ItemCreated"])); 
       
       item1Id = _view.displayedItems[0].id;
       expect(item1Id, isNotNull);
@@ -68,7 +69,7 @@ class CqrsTester {
     test("increase invetory of item 1", () async {
       await _presenter.increaseInventory(item1Id, 2, item1Version);
       expect(_view.displayedDetails.currentCount, equals(2));
-      assertEventNames(expectedMessages..addAll(["IncreaseInventory","InventoryIncreased"]), _view.recordedMessages);   
+      assertEventNames(_view.recordedMessages, expectedMessages..addAll(["IncreaseInventory","InventoryIncreased"]));   
       
       expect(_view.displayedDetails.version, isNot(equals(item1Version)), reason: "version should be bumped");
       item1Version = _view.displayedDetails.version;
@@ -78,7 +79,7 @@ class CqrsTester {
       item1Name = "$item1Name v2";
       await _presenter.renameItem(item1Id, item1Name, item1Version);
       expect(item1Name, equals(_view.displayedDetails.name));
-      assertEventNames(expectedMessages..addAll(["RenameItem","ItemRenamed"]), _view.recordedMessages);
+      assertEventNames(_view.recordedMessages, expectedMessages..addAll(["RenameItem","ItemRenamed"]));
       
       expect(_view.displayedDetails.version, isNot(equals(item1Version)), reason: "version should be bumped");
       item1Version = _view.displayedDetails.version;
@@ -87,14 +88,29 @@ class CqrsTester {
     test("decrease invetory of item 1", () async {
       await _presenter.decreaseInventory(item1Id, 1, item1Version);
       expect(_view.displayedDetails.currentCount, equals(1));
-      assertEventNames(expectedMessages..addAll(["DecreaseInventory","InventoryDecreased"]), _view.recordedMessages);   
+      assertEventNames(_view.recordedMessages, expectedMessages..addAll(["DecreaseInventory","InventoryDecreased"]));   
       
       expect(_view.displayedDetails.version, isNot(equals(item1Version)), reason: "version should be bumped");
       item1Version = _view.displayedDetails.version;
     });
     
-    // TODO 2: create item 2
-    // TODO 2: check items 2 in
+    test("create inventory of item 2 using a process", () async {
+      var processManager = new ProcessManager(_messageBus);
+      var createItemWithInventory = processManager.createProcessPrototype([
+        new WorkItem<CreateItemStep>(() => new CreateItemStep()),
+        new WorkItem<IncreaseInventoryStep>(() => new IncreaseInventoryStep()),
+      ]);
+      var process = processManager.createProcess(createItemWithInventory, {"itemName":item2Name, "itemCount":2});
+      await processManager.startProcess(process);  
+      _presenter.showItems();
+      expect(_view.displayedItems.length, equals(2));
+      assertEventNames(_view.recordedMessages, expectedMessages..addAll(["CreateItem","ItemCreated","IncreaseInventory","InventoryIncreased"])); 
+           
+      item2Id = _view.displayedItems[1].id;
+      expect(item2Id, isNotNull);
+      expect(item1Id == item2Id, isFalse);
+    });
+    
     // TODO 2: deactivate item 1 (checks that we can corretly reload another view)
   }
   

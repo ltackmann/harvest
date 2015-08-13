@@ -19,6 +19,9 @@ class MemoryEventStore implements EventStore {
     }
     return stream;
   }
+  
+  @override
+  bool containsStream(Guid id) => _store.containsKey(id);
 }
 
 class _MemoryEventStream implements EventStream {

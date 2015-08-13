@@ -17,7 +17,7 @@ class InventoryCommandHandler {
   }
  
   _onCreateItem(CreateItem command) {
-    var item = new Item.create(command.name);
+    var item = new Item.create(command.name, command.itemId);
     _domainRepository.save(item).then(command.completed);
   }
   

@@ -8,20 +8,14 @@ part of harvest;
  * Create and manage life cycle of long running processes
  */
 class ProcessManager {
+  static final Logger _logger = LoggerFactory.getLoggerFor(ProcessManager);
+  
   final MessageBus _messageBus;
   
   ProcessManager(this._messageBus); 
   
-  /**
-   * Create a new process that executes each step in order
-   */
-  Process createProcess(List<WorkItem> steps) {
-    var process = new Process(_messageBus, steps);
-    return process;
-  }
-  
   /** 
-   * Start [process] and executes its steps in order, on failure try to compensate the executed steps
+   * Start [Process] and executes its steps in order, on failure try to compensate the executed steps
    */
   Future<bool> startProcess(Process process) async {
     if(process.isInProgress) {
@@ -35,8 +29,10 @@ class ProcessManager {
       }
     }
     if(!succeded) {
+      _logger.warn("process failed ${process.completedWork}");
       return undoProcess(process);
     } 
+    _logger.warn("process succeded with work: ${process.completedWork}");
     return new Future.value(succeded);
   }
   
@@ -55,6 +51,13 @@ class ProcessManager {
       }
     }
     return new Future.value(succeded);
+  }
+  
+  ProcessPrototype createProcessPrototype(List<WorkItem> steps) => new ProcessPrototype(steps);
+  
+  Process createProcess(ProcessPrototype prototype, Map<String,Object> arguments) {
+    var process = new Process(_messageBus, prototype.steps, arguments);
+    return process;
   }
 }
 

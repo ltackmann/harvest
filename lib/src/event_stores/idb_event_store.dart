@@ -34,6 +34,9 @@ class IdbEventStore implements EventStore {
     return eventStream;
   }
   
+  @override
+  bool containsStream(Guid id) => _store.containsKey(id);
+  
   _checkStreamVersion(EventStream stream, int expectedStreamVersion) {
     if(stream.streamVersion != expectedStreamVersion) {
       new ConcurrencyError("unexpected version $expectedStreamVersion");

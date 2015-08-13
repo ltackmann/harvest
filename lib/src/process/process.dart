@@ -21,9 +21,13 @@ class Process {
   final List<WorkLog> _completedWork = new List<WorkLog>();
   final Queue<WorkItem> _remainingWork = new Queue<WorkItem>();
   final MessageBus _messageBus;
+  final Map<String, Object> _arguments;
 
-  Process(this._messageBus, Iterable<WorkItem> work) {
-    _remainingWork.addAll(work);
+  Process(this._messageBus, Iterable<WorkItem> work, this._arguments) {
+    work.forEach((workItem) {
+      _remainingWork.add(workItem);
+      _arguments.addAll(workItem._args);
+    });
   }
     
   bool get isCompleted => _remainingWork.isEmpty;
@@ -46,6 +50,7 @@ class Process {
     
     if(workLog != null) {
       _completedWork.add(workLog);
+      _arguments.addAll(workLog._loggedWork);
       return new Future.value(true);
     }
     return new Future.value(false);
@@ -66,14 +71,14 @@ class Process {
     return result;
   }
   
-  /** Listen to messages of type [messageType] */
-  listenTo(Type messageType, MessageHandler handler) {
-    _subscriptions.add(_messageBus.stream(messageType).listen(handler) );
+  /** Subscribe to messages of type [messageType] */
+  subscribe(Type messageType, MessageHandler handler) {
+    _subscriptions.add(_messageBus.subscribe(messageType, handler));
   }
   
   /** Publish commands */
-  publish(DomainCommand command) {
-    _messageBus.publish(command);
+  Future<DomainCommand> publish(DomainCommand command) {
+    return _messageBus.publishCommand(command);
   }
   
   /** Cancel subscriptions */ 
@@ -84,10 +89,23 @@ class Process {
   
   /** Search work log */
   operator [](String key) {
-    if(!isInProgress) {
-      throw "No work completed";
+    if(!_arguments.containsKey(key)) {
+      throw new ArgumentError("no value for key $key");
     }
-    return _completedWork.firstWhere((worklog) => worklog.containsKey(key))[key];
+    return _arguments[key];
+  }
+  
+  /** Get description of completed work */
+  String get completedWork {
+    String s = "{";
+    _completedWork.forEach((WorkLog workLog) {
+      s += "${workLog.workName}:${workLog.loggedWork}";
+      if(!identical(_completedWork.last, workLog)) {
+        s += ",";
+      }
+    });
+    s += "}";
+    return s;
   }
 }
 

@@ -38,15 +38,24 @@ class MessageBus {
   /**
    * Publish message
    */
-  Future<int> publish(Message message) {
-    return _publishInternal(message);
-  }
-  
-  Future<int> _publishInternal(Message message) async {
+  Future<int> publish(Message message) async {
     var messageSink = sink(message.runtimeType) as MessageStreamSink;
     var messageCompleter = messageSink.add(message);
     int deliveredTo = await messageCompleter.future;
     return deliveredTo;
+  }
+  
+  Future<DomainCommand> publishCommand(DomainCommand cmd, {Function onSuccess, Function onError}) {
+    return publish(cmd).then((_) {
+      var completer = new Completer();
+       cmd._onSuccess = () {
+         completer.complete(cmd);
+       };
+       cmd._onError = () {
+         completer.complete(cmd);
+       };
+       return completer.future;  
+    });
   }
   
   /**

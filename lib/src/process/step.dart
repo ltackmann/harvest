@@ -34,9 +34,9 @@ abstract class Step {
   /**
    *  Create log of the work done
    */
-  Future<WorkLog> logWork(String message, [Map<String, Object> headers = const {}]) async {
-    print(message);
-    return new WorkLog(this, headers);
+  Future<WorkLog> logWork(String message, {Map<String, Object> workLog:const {}}) async {
+    logger.debug(message);
+    return new WorkLog(this, loggedWork:workLog);
   }
   
   /**
@@ -46,7 +46,7 @@ abstract class Step {
     if(message == null) {
       message = "sucessfully compensated step ${this.runtimeType.toString()}";
     }
-    logger.info(message);
+    logger.debug(message);
     return true;
   }
   

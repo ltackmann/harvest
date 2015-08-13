@@ -17,6 +17,7 @@ part 'src/sample/domain.dart';
 part 'src/sample/events.dart';
 part 'src/sample/event_handler.dart';
 part 'src/sample/presenter.dart';
+part 'src/sample/steps.dart';
 part 'src/sample/view_model.dart';
 part 'src/sample/view_model_facade.dart';
 
