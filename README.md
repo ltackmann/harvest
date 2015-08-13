@@ -142,7 +142,7 @@ Links
  
  TODO
 -----
- * Test and document usage of SAGAs (process manager)
+ * Document usage of SAGAs (process manager)
  * Ensure message headers are not serialized
  * Enable CQRS event reloading test
  * Create serilization interface that allows switching between mirror, transformation and manual serilizations 
