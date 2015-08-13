@@ -11,10 +11,12 @@ Harvest is a messagebus, CQRS frame work and event store for Dart with multiple 
  * Intercept dead messages (i.e. messages with no listeners)
  * Listen to all published events regardless of type
  * Enrich messages prior to their delivery
+ 
 ### Event store features
  * Create, persist and manipulate streams of events independently of the event storage type
  * Simple API for supporting differnt storage backends for events
  * Supports file, IndexedDB and memory backends 
+
 ### CQRS support
  * Support for creating event sourced entities and aggregate roots
  * Support SAGA patterns for long running business process including compensating actions
