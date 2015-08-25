@@ -36,34 +36,44 @@ class MessageBus {
   Stream<Message> get everyMessage => stream(null);
   
   /**
-   * Publish message
+   * Publish message, completes with future that contains the number of subscribers that have recieved the event.
+   * 
+   * Subscriber error handling may impact the number of delivery targets returned as cancelOnError will cause delivery 
+   * to cease on the first error.
    */
   Future<int> publish(Message message) async {
+    if(message is CallbackCompleted) {
+      var callbackCompletedMessage = message as CallbackCompleted;
+      // TODO move to messageCompleter
+      var completer = new Completer();
+      callbackCompletedMessage._onSuccess = (callbackData) {
+        completer.complete(callbackData);
+      };
+      callbackCompletedMessage._onError = (errorData) {
+        completer.completeError(errorData);
+     };
+     _publishInternal(callbackCompletedMessage);
+     return completer.future;  
+    } 
+    return _publishInternal(message);
+  }
+  
+  Future<int> _publishInternal(Message message) async {
     var messageSink = sink(message.runtimeType) as MessageStreamSink;
     var messageCompleter = messageSink.add(message);
     int deliveredTo = await messageCompleter.future;
     return deliveredTo;
   }
   
-  Future<DomainCommand> publishCommand(DomainCommand cmd, {Function onSuccess, Function onError}) {
-    return publish(cmd).then((_) {
-      var completer = new Completer();
-       cmd._onSuccess = () {
-         completer.complete(cmd);
-       };
-       cmd._onError = () {
-         completer.complete(cmd);
-       };
-       return completer.future;  
-    });
-  }
-  
   /**
-   * Subscribe to [messageType]
+   * Subscribe to [messageType]. 
+   * 
+   * [errorHandler] is invoked with any exception thrown by a failed subscriber function. If [cancelOnError] is true then delivery
+   * stops after a subscribers fails.
    */
-  StreamSubscription<Message> subscribe(Type messageType, MessageHandler handler) {
+  StreamSubscription<Message> subscribe(Type messageType, MessageHandler handler, {MessageErrorHandler errorHandler, bool cancelOnError:false}) {
     var messageStream = stream(messageType);
-    var subscription = messageStream.listen(handler);
+    var subscription = messageStream.listen(handler, onError:errorHandler, cancelOnError:cancelOnError);
     return subscription;
   }
   
@@ -127,12 +137,34 @@ class MessageCoordinator {
    
   /**
    * Add a subscription for messages of type [messageType]
+   * 
+   * [onError] is invoked with any exception thrown by a failed subscriber function. If [cancelOnError] is true then delivery
+   * stops when a subscriber fails.
    */
-  MessageStreamSubscription listen(Type messageType, StreamController<Message> controller, void onData(Message message)) {
-    var subscription = controller.stream.listen((Message message) {
-      // called each time message is put on the [MessageStreamSink] belonging to this [MessageStream]
-      onData(message);
-      _notifyDelivery(message);
+  MessageStreamSubscription listen(Type messageType, 
+                                   StreamController<Message> controller, 
+                                   void onData(Message message), MessageErrorHandler onError, bool cancelOnError) {
+    StreamSubscription<Message> subscription; 
+    subscription = controller.stream.listen((Message message) {
+      // check if subscription is still active before each delivery as cancelOnError can remove all
+      if(_isMessageDeliverable(message)) {
+        // called each time message is put on the [MessageStreamSink] belonging to this [MessageStream]
+        var errorOccurred = false;
+        cancelOnError = (cancelOnError == null) ? false : cancelOnError;
+        try{
+          onData(message);
+        } catch(e) {
+          errorOccurred = true;
+          if(onError != null) {
+            onError(e);   
+          }
+        }
+        if(errorOccurred && cancelOnError) {
+          _notifyError(message);
+        } else {
+          _notifyDelivery(message);  
+        }
+      }
     });
     var messageSubscribers = _subscribers.putIfAbsent(messageType, () => new List<MessageStreamSubscription>());
     var wrapped = new MessageStreamSubscription(subscription, this, controller.sink, messageType);
@@ -155,13 +187,13 @@ class MessageCoordinator {
    * Close subscription
    */
   closeSubscription(MessageStreamSubscription subscriber) {
-     var messageSubscribers = _subscribers[subscriber.messageType];
-     messageSubscribers.remove(subscriber);
-     if(messageSubscribers.isEmpty) {
-       _subscribers.remove(subscriber.messageType);
-       _handlers.remove(subscriber.messageType);
-     }
-   }
+    var messageSubscribers = _subscribers[subscriber.messageType];
+    messageSubscribers.remove(subscriber);
+    if(messageSubscribers.isEmpty) {
+      _subscribers.remove(subscriber.messageType);
+      _handlers.remove(subscriber.messageType);
+    }
+  }
   
   /**
    * Close subscriptions for message type 
@@ -180,7 +212,9 @@ class MessageCoordinator {
     final completer = _registerMessage(message);
     final subscribers = _getSubscribers(message.runtimeType);
     if(subscribers.isNotEmpty) {
-      subscribers.forEach((s) => s.add(message));
+      subscribers.forEach((s) {
+        s.add(message);       
+      });
     } else {
       if(deadMessageHandler != null) {
         deadMessageHandler(message);
@@ -227,13 +261,28 @@ class MessageCoordinator {
     return messageSubscribers;
   }
   
+  int _incrementDelivery(Message message) {
+    int deliveredTo = (message.headers["messageDeliveredTo"] as int) + 1;
+    message.headers["messageDeliveredTo"] = deliveredTo;
+    return deliveredTo;
+  }
+  
+  bool _isMessageDeliverable(Message message) {
+    return message.headers["messageDeliverable"] as bool;
+  }
+  
   _notifyDelivery(Message message) {
-     int deliveredTo = (message.headers["deliveredTo"] as int) + 1;
-     message.headers["deliveredTo"] = deliveredTo;
-     if(deliveredTo >= _numberOfSubscribers(message)) {
+    int deliveredTo = _incrementDelivery(message);
+    if(deliveredTo >= _numberOfSubscribers(message)) {
        _complete(message, deliveredTo);
-     }
-   }
+    }
+  }
+  
+  _notifyError(Message message) {
+    int deliveredTo = _incrementDelivery(message);
+    message.headers["messageDeliverable"] = false;
+    _complete(message, deliveredTo);
+  }
   
   int _numberOfSubscribers(Message message) {
     int numSub = 0;
@@ -256,8 +305,9 @@ class MessageCoordinator {
     Guid messageId = _getMessageId(message);
     if(messageId == null) {
       messageId = new Guid();
-      message.headers["messageId"] = messageId;
-      message.headers["deliveredTo"] = 0;
+      message.headers["messageId"] = messageId;     // id of message
+      message.headers["messageDeliverable"] = true; // true if message can still be deliverd 
+      message.headers["messageDeliveredTo"] = 0;    // number of subscribers that have recived message
       var completer = new Completer();
       _messageCompleters[messageId] = completer;
     } 
@@ -280,7 +330,7 @@ class MessageStream extends Stream<Message> {
                                  void onDone(),
                                  bool cancelOnError}) {
    
-    return _coordinator.listen(messageType, _wrapped, onData);
+    return _coordinator.listen(messageType, _wrapped, onData, onError, cancelOnError);
   }
 }
 

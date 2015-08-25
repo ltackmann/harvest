@@ -32,7 +32,7 @@ class ProcessManager {
       _logger.warn("process failed ${process.completedWork}");
       return undoProcess(process);
     } 
-    _logger.warn("process succeded with work: ${process.completedWork}");
+    _logger.debug("process succeded with work: ${process.completedWork}");
     return new Future.value(succeded);
   }
   

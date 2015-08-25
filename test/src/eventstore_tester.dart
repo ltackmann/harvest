@@ -47,7 +47,7 @@ class TestEvent extends DomainEvent {
   TestEvent(this.data);
 }
 
-class TestCommand extends DomainCommand {
+class TestCommand extends DomainCommand with CallbackCompleted {
   final String data;
   
   TestCommand(this.data);

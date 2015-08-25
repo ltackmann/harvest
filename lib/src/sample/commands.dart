@@ -4,28 +4,28 @@
 
 part of harvest_sample;
 
-class CreateItem extends DomainCommand {
+class CreateItem extends DomainCommand with CallbackCompleted {
   final Guid itemId;
   final String name;
 
   CreateItem(this.itemId, this.name); 
 }
 
-class DecreaseInventory extends DomainCommand {
+class DecreaseInventory extends DomainCommand with CallbackCompleted {
   final Guid itemId;
   final int count, originalVersion;
   
   DecreaseInventory(this.itemId, this.count, this.originalVersion); 
 }
 	
-class IncreaseInventory extends DomainCommand {
+class IncreaseInventory extends DomainCommand with CallbackCompleted {
   final Guid itemId;
   final int count, originalVersion;
   
   IncreaseInventory(this.itemId, this.count, this.originalVersion); 
 }
 	
-class RenameItem extends DomainCommand {
+class RenameItem extends DomainCommand with CallbackCompleted {
   final Guid itemId;
   final String newName;
   final int originalVersion;
@@ -33,7 +33,7 @@ class RenameItem extends DomainCommand {
   RenameItem(this.itemId, this.newName, this.originalVersion); 
 }
 
-class RemoveItem extends DomainCommand {
+class RemoveItem extends DomainCommand with CallbackCompleted{
   final Guid itemId;
   final int originalVersion;
   

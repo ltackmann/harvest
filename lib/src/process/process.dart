@@ -77,8 +77,8 @@ class Process {
   }
   
   /** Publish commands */
-  Future<DomainCommand> publish(DomainCommand command) {
-    return _messageBus.publishCommand(command);
+  Future<int> publish(DomainCommand command) {
+    return _messageBus.publish(command);
   }
   
   /** Cancel subscriptions */ 

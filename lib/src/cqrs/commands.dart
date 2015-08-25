@@ -22,15 +22,7 @@ class ApplicationCommand extends Message { }
  * Since commands are not persisted they can contain arbitraly complex types 
  */
 class DomainCommand extends Message { 
-  Function _onError;
-  Function _onSuccess;
-  
-  completed(bool success) {
-    if(success && _onSuccess != null) {
-      _onSuccess();
-    } else if(!success && _onError != null) {
-      _onError();
-    }
-  }
+ 
 }
+
 
