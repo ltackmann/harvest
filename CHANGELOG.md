@@ -1,5 +1,8 @@
 
 #### 2.0.6
+* Correct coverage status URL
+
+#### 2.0.6
 * New version as pub upload failed
 
 #### 2.0.5
