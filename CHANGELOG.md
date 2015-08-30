@@ -1,9 +1,12 @@
 
-#### 2.0.6
+#### 2.0.8
+* Fix changelog
+
+#### 2.0.7
 * Correct coverage status URL
 
 #### 2.0.6
-* New version as pub upload failed
+* Publish new version as pub upload of 2.0.5 failed
 
 #### 2.0.5
 * MessageBus **publish** return type changed to **Future** to signify that error and callback handling may return different data
