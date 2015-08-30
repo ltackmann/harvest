@@ -1,4 +1,7 @@
 
+#### 2.0.6
+* New version as pub upload failed
+
 #### 2.0.5
 * MessageBus **publish** return type changed to **Future** to signify that error and callback handling may return different data
 * MessageBus Dart Stream interface now also supports **CallbackCompleted** messages
