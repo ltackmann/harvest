@@ -8,8 +8,11 @@ part of harvest_test_helpers;
  * Test CQRS sample model against different [EventStore] implementations
  */
 class CqrsTester {
+  final expectedMessages = new List<String>();
   InventoryPresenter _presenter;
   InventoryViewMock _view;
+  ProcessManager _processManager;
+  ProcessPrototype _createItemWithInventory;
   final EventStore _eventStore;
   final MessageBus _messageBus;
   
@@ -24,6 +27,11 @@ class CqrsTester {
    * model
    */
   init() {
+    _processManager = new ProcessManager(_messageBus);
+    _createItemWithInventory = _processManager.createProcessPrototype([
+      new WorkItem<CreateItemStep>(() => new CreateItemStep()),
+      new WorkItem<IncreaseInventoryStep>(() => new IncreaseInventoryStep()),
+    ]);
     // create repository for domain models and set up command handler 
     var itemRepo = new DomainRepository<Item>((Guid id) => new Item(id), _eventStore, _messageBus);
     var commandHandler = new InventoryCommandHandler(_messageBus, itemRepo);
@@ -43,74 +51,102 @@ class CqrsTester {
    * Test executing events causes app to behave as expected  
    */
   eventsTest() {
-    final expectedMessages = new List<String>();
+    
     String item1Name = "Book";
     String item2Name = "Car";
     var item1Id, item1Version, item2Id;
     
     test("create item and assert its displayed in item list", () async {
       await _presenter.createItem(item1Name);
-      expect(_view.displayedItems.length, equals(1));
-      assertEventNames(_view.recordedMessages, expectedMessages..addAll(["CreateItem","ItemCreated"])); 
       
+      assertNoErrors();
+      assertEventsAdded(["CreateItem","ItemCreated"]);
+      expect(_view.displayedItems.length, equals(1));
       item1Id = _view.displayedItems[0].id;
       expect(item1Id, isNotNull);
     });
     
     test("show details for item 1", () async {
       _presenter.showItemDetails(item1Id);
+      
+      assertNoErrors();
       expect(item1Id, equals(_view.displayedDetails.id));
       expect(item1Name, equals(_view.displayedDetails.name));
-      
       item1Version = _view.displayedDetails.version;
       expect(item1Version, equals(0), reason:"initial version should be zero");
     });
     
+    /*
+    test("negative inventory of item 1 failes", () async {
+       await _presenter.increaseInventory(item1Id, -2, item1Version);
+       
+       assertErrors();
+       assertEventsAdded(["IncreaseInventory","InventoryIncreased"]); 
+       expect(_view.displayedErrors, isNotNull);
+     });
+      */
+    
     test("increase invetory of item 1", () async {
       await _presenter.increaseInventory(item1Id, 2, item1Version);
-      expect(_view.displayedDetails.currentCount, equals(2));
-      assertEventNames(_view.recordedMessages, expectedMessages..addAll(["IncreaseInventory","InventoryIncreased"]));   
       
+      assertNoErrors();
+      assertEventsAdded(["IncreaseInventory","InventoryIncreased"]);   
+      expect(_view.displayedDetails.currentCount, equals(2));
       expect(_view.displayedDetails.version, isNot(equals(item1Version)), reason: "version should be bumped");
       item1Version = _view.displayedDetails.version;
     });
     
+    
     test("rename item 1", () async {
       item1Name = "$item1Name v2";
       await _presenter.renameItem(item1Id, item1Name, item1Version);
-      expect(item1Name, equals(_view.displayedDetails.name));
-      assertEventNames(_view.recordedMessages, expectedMessages..addAll(["RenameItem","ItemRenamed"]));
       
+      assertNoErrors();
+      assertEventsAdded(["RenameItem","ItemRenamed"]);
+      expect(item1Name, equals(_view.displayedDetails.name));
       expect(_view.displayedDetails.version, isNot(equals(item1Version)), reason: "version should be bumped");
       item1Version = _view.displayedDetails.version;
     });
     
     test("decrease invetory of item 1", () async {
       await _presenter.decreaseInventory(item1Id, 1, item1Version);
-      expect(_view.displayedDetails.currentCount, equals(1));
-      assertEventNames(_view.recordedMessages, expectedMessages..addAll(["DecreaseInventory","InventoryDecreased"]));   
       
+      assertNoErrors();
+      assertEventsAdded(["DecreaseInventory","InventoryDecreased"]);  
+      expect(_view.displayedDetails.currentCount, equals(1));
       expect(_view.displayedDetails.version, isNot(equals(item1Version)), reason: "version should be bumped");
       item1Version = _view.displayedDetails.version;
     });
     
     test("create inventory of item 2 using a process", () async {
-      var processManager = new ProcessManager(_messageBus);
-      var createItemWithInventory = processManager.createProcessPrototype([
-        new WorkItem<CreateItemStep>(() => new CreateItemStep()),
-        new WorkItem<IncreaseInventoryStep>(() => new IncreaseInventoryStep()),
-      ]);
-      var process = processManager.createProcess(createItemWithInventory, {"itemName":item2Name, "itemCount":2});
-      await processManager.startProcess(process);  
+      var process = _processManager.createProcess(_createItemWithInventory, {"itemName":item2Name, "itemCount":2});
+      var processCompleted = await _processManager.startProcess(process);  
+      
+      expect(processCompleted, isTrue);
+      assertNoErrors();
+      assertEventsAdded(["CreateItem","ItemCreated","IncreaseInventory","InventoryIncreased"]); 
       _presenter.showItems();
       expect(_view.displayedItems.length, equals(2));
-      assertEventNames(_view.recordedMessages, expectedMessages..addAll(["CreateItem","ItemCreated","IncreaseInventory","InventoryIncreased"])); 
-           
       item2Id = _view.displayedItems[1].id;
       expect(item2Id, isNotNull);
       expect(item1Id == item2Id, isFalse);
     });
     
+    test("fail creating duplicated item 2 with same name using a process", () async {
+       var process = _processManager.createProcess(_createItemWithInventory, {"itemName":item2Name, "itemCount":2});
+       var processCompleted = await _processManager.startProcess(process);  
+       expect(processCompleted, isFalse);
+       //_presenter.showItems();
+       //expect(_view.displayedItems.length, equals(2), reason:"duplicated item should not be created");
+       //assertEventNames(_view.recordedMessages, expectedMessages..addAll(["CreateItem","ItemCreated","IncreaseInventory","InventoryIncreased"])); 
+            
+       //item2Id = _view.displayedItems[1].id;
+       //expect(item2Id, isNotNull);
+       //expect(item1Id == item2Id, isFalse);
+    });
+    
+    // TODO remove item 2
+    // TODO event sourced entity
     // TODO 2: deactivate item 1 (checks that we can corretly reload another view)
   }
   
@@ -148,5 +184,18 @@ class CqrsTester {
       expect(origDetails.currentCount, equals(replayedDetails.currentCount));
       expect(origDetails.version, equals(replayedDetails.version));
     }
+  }
+  
+  assertNoErrors() {
+    expect(_view.displayedErrors, isNull);
+  }
+  
+  assertErrors() {
+    expect(_view.displayedErrors, isNotNull);
+  }
+  
+  assertEventsAdded(List<String> extraEvents) {
+    expectedMessages.addAll(extraEvents);
+    expect(_view.recordedMessages, orderedEquals(expectedMessages));
   }
 }

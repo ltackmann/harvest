@@ -42,29 +42,31 @@ class InventoryViewMock implements InventoryView {
   List<ItemEntry> displayedItems;
   ItemDetails displayedDetails;
   List<String> recordedMessages = [];
+  Object displayedErrors;
+  
+  clearErrors() {
+    displayedErrors = null;
+  }
   
   set presenter(InventoryPresenter p) {
   }
   
-  showItems(List<ItemEntry> items) {
-    displayedItems = items;
-  }
+  recordMessage(String messageType, String messageName, DateTime time) {
+     recordedMessages.add(messageName);
+   }
   
   showDetails(ItemDetails details) {
     displayedDetails = details;
   }
   
-  recordMessage(String messageType, String messageName, DateTime time) {
-    recordedMessages.add(messageName);
+  showErrors(Object errors) {
+    displayedErrors = errors;
+  }
+  
+  showItems(List<ItemEntry> items) {
+    displayedItems = items;
   }
 }
 
-/** Assert that event are in correct order */
-assertEvents(List<String> actualEvents, List<DomainEvent> expectedEvents) {
-  assertEventNames(actualEvents, expectedEvents.map(typeNameOf).toList());
-}
 
-assertEventNames(List<String> actualEvents, List<String> expectedEvents) {
-  expect(actualEvents, orderedEquals(expectedEvents));
-}
 

@@ -12,7 +12,13 @@ class MemoryModelRepository<T extends Identifiable> implements ModelRepository<T
   List<T> get all => new List.from(_store.values);    
   
   @override
-  T getById(Guid id) => _store[id];
+  T getById(Guid id) {
+    if(!_store.containsKey(id)) {
+      var type = _store.isEmpty ? "unknown" : _store.values.first.runtimeType;
+      throw "no model stored for id $id with type $type";  
+    }
+    return _store[id];
+  }
 
   @override
   T getOrNew(Guid id, T builder()) {

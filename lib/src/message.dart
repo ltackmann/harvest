@@ -12,17 +12,24 @@ abstract class Message {
 /**
  * Mixin for messages that are completed manually by their subscribers
  */
-abstract class CallbackCompleted {
+abstract class CallbackCompleted implements Message, StatusCallback {
   MessageErrorHandler _onError;
   Function _onSuccess;
-   
-  completed(bool success, [Object callbackData]) {
-    if(success) {
-      _onSuccess(callbackData);
-    } else {
-      _onError(callbackData);
-    }
-  }
+  
+  @override
+  failed([Object errorData = null]) => _onError(errorData);
+  
+  @override
+  succeeded([Object callbackData = null]) => _onSuccess(callbackData);
+}
+
+/**
+ * Generic callback to communicate success or failure
+ */
+abstract class StatusCallback {
+  failed([Object errorData = null]);
+  
+  succeeded([Object callbackData = null]);
 }
 
 /**

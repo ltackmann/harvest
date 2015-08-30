@@ -36,33 +36,18 @@ class MessageBus {
   Stream<Message> get everyMessage => stream(null);
   
   /**
-   * Publish message, completes with future that contains the number of subscribers that have recieved the event.
+   * Publish messages on the message bus. Completes with future that contains the number of subscribers that 
+   * have recieved the event. Note if the message uses the [CallbackCompleted] mixin then the future contains 
+   * data returned by the message handlers complete function. 
    * 
    * Subscriber error handling may impact the number of delivery targets returned as cancelOnError will cause delivery 
    * to cease on the first error.
    */
-  Future<int> publish(Message message) async {
-    if(message is CallbackCompleted) {
-      var callbackCompletedMessage = message as CallbackCompleted;
-      // TODO move to messageCompleter
-      var completer = new Completer();
-      callbackCompletedMessage._onSuccess = (callbackData) {
-        completer.complete(callbackData);
-      };
-      callbackCompletedMessage._onError = (errorData) {
-        completer.completeError(errorData);
-     };
-     _publishInternal(callbackCompletedMessage);
-     return completer.future;  
-    } 
-    return _publishInternal(message);
-  }
-  
-  Future<int> _publishInternal(Message message) async {
+  Future<Object> publish(Message message) async {
     var messageSink = sink(message.runtimeType) as MessageStreamSink;
     var messageCompleter = messageSink.add(message);
-    int deliveredTo = await messageCompleter.future;
-    return deliveredTo;
+    var result = await messageCompleter.future;
+    return result;
   }
   
   /**
@@ -146,7 +131,7 @@ class MessageCoordinator {
                                    void onData(Message message), MessageErrorHandler onError, bool cancelOnError) {
     StreamSubscription<Message> subscription; 
     subscription = controller.stream.listen((Message message) {
-      // check if subscription is still active before each delivery as cancelOnError can remove all
+      // check if subscription is still active before each delivery to satiesfy cancelOnError 
       if(_isMessageDeliverable(message)) {
         // called each time message is put on the [MessageStreamSink] belonging to this [MessageStream]
         var errorOccurred = false;
@@ -155,9 +140,10 @@ class MessageCoordinator {
           onData(message);
         } catch(e) {
           errorOccurred = true;
+          (message.headers["messageFailures"] as List).add(e);
           if(onError != null) {
             onError(e);   
-          }
+          } 
         }
         if(errorOccurred && cancelOnError) {
           _notifyError(message);
@@ -205,6 +191,9 @@ class MessageCoordinator {
     }
   }
   
+  /**
+   * Deliver [message] to subscribers
+   */
   Completer deliver(Message message) {
     if(_enricher != null) {
       _enricher(message);
@@ -219,22 +208,33 @@ class MessageCoordinator {
       if(deadMessageHandler != null) {
         deadMessageHandler(message);
       }
-      _complete(message, 0);
+      _completeSuccess(message, 0);
     }
     return completer;
   }
   
   set enricher(MessageEnricher enricher) => _enricher = enricher;
   
-  _complete(Message message, int deliveredTo) {
+  _completeSuccess(Message message, Object successData) {
     Guid messageId = _getMessageId(message);
     var completer = _messageCompleters[messageId];
-    // notify completer of delivery
-    completer.complete(deliveredTo);
-    // cleanup
-    _messageCompleters.remove(messageId);
+    // notify completer of successful delivery
+    completer.complete(successData);
+    _unregisterMessage(messageId);
   }
   
+  _completeError(Message message) {
+    Guid messageId = _getMessageId(message);
+    var completer = _messageCompleters[messageId];
+    // notify completer of delivery error
+    var errorData = (message.headers["messageFailures"] as List);
+    if(errorData.isEmpty) {
+      throw new StateError("message $message cannot fail without errors");
+    }
+    completer.completeError(errorData);
+    _unregisterMessage(messageId);
+  }
+
   StreamSink<Message> _getDeliverySink(Type messageType) {
     StreamSink<Message> targetSink = null;
     if(_subscribers.containsKey(messageType)) {
@@ -267,21 +267,30 @@ class MessageCoordinator {
     return deliveredTo;
   }
   
+  bool _isMessageFailed(Message message) {
+    return (message.headers["messageFailures"] as List).isNotEmpty;
+  }
+  
   bool _isMessageDeliverable(Message message) {
     return message.headers["messageDeliverable"] as bool;
   }
   
   _notifyDelivery(Message message) {
     int deliveredTo = _incrementDelivery(message);
-    if(deliveredTo >= _numberOfSubscribers(message)) {
-       _complete(message, deliveredTo);
+    int numberOfSubscribers = _numberOfSubscribers(message);
+    if(deliveredTo >= numberOfSubscribers) {
+      if(_isMessageFailed(message)) {
+        _completeError(message);
+      } else {
+        _completeSuccess(message, deliveredTo);
+      }
     }
   }
   
   _notifyError(Message message) {
-    int deliveredTo = _incrementDelivery(message);
+   _incrementDelivery(message);
     message.headers["messageDeliverable"] = false;
-    _complete(message, deliveredTo);
+    _completeError(message);
   }
   
   int _numberOfSubscribers(Message message) {
@@ -301,17 +310,28 @@ class MessageCoordinator {
     return _subscribers[messageType].where((ms) => !ms.isPaused).toList().length;
   }
   
+  /**
+   * Register message in coordinators pipelines, creates notifcation completer and message id
+   */
   Completer _registerMessage(Message message) {
     Guid messageId = _getMessageId(message);
     if(messageId == null) {
       messageId = new Guid();
       message.headers["messageId"] = messageId;     // id of message
       message.headers["messageDeliverable"] = true; // true if message can still be deliverd 
+      message.headers["messageFailures"] = [];      // list of failures emitted by message handlers for this message 
       message.headers["messageDeliveredTo"] = 0;    // number of subscribers that have recived message
       var completer = new Completer();
       _messageCompleters[messageId] = completer;
     } 
     return _messageCompleters[messageId];
+  }
+  
+  /**
+   * Unregister [Message] with [messageId] from coordinator, removes used completers
+   */
+  _unregisterMessage(Guid messageId) {
+    _messageCompleters.remove(messageId);
   }
 }
 
@@ -373,7 +393,22 @@ class MessageStreamSink implements EventSink<Message> {
   
   @override
   Completer add(Message message) {
-    return _coordinator.deliver(message);
+    Completer completer;
+    if(message is CallbackCompleted) {
+      // completes when custom code calls the messages succeded or failed handlers
+      completer = new Completer();
+      message._onSuccess = (callbackData) {
+        completer.complete(callbackData);
+      };
+      message._onError = (errorData) {
+        completer.completeError(errorData);
+      };
+      _coordinator.deliver(message);
+    } else {
+      // completes when message is delivered
+      completer =  _coordinator.deliver(message);;
+    }
+    return completer;
   }
   
   @override

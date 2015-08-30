@@ -7,8 +7,8 @@ Harvest is a messagebus, CQRS frame work and event store for Dart with multiple 
 ### Message bus features
  * Synchronous and asynchronous delivery 
  * Support for both "fire-and-forget" as well as delivery notication 
- * Support custom message callsbacks allowing subscribers to notify publishers when a message is handled
- * Optional Dart Stream/Sink interface 
+ * Custom message callsbacks allowing subscribers to notify publishers of message status
+ * Simple message bus API including standard Dart Stream/Sink interface 
  * Extensive error handling support
  * Intercept dead messages (i.e. messages with no listeners)
  * Listen to all published events regardless of type
@@ -191,6 +191,7 @@ Links
  
  TODO
 -----
+ * Rewrite example GUI app in Polymer
  * Document usage of SAGAs (process manager)
  * Ensure message headers are not serialized
  * Enable CQRS event reloading test

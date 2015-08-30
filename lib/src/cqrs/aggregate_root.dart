@@ -58,7 +58,7 @@ abstract class AggregateRoot {
   static final _logger = LoggerFactory.getLoggerFor(AggregateRoot);
 }
 
-/** Function that returns a bare aggregate root for the supplied id */ 
+/** Function that returns a bare aggregate root for the supplied [aggregateId] */ 
 typedef AggregateRoot AggregateBuilder(Guid aggregateId);
 
 /** Represents an attempt to retrieve a nonexistent aggregate */

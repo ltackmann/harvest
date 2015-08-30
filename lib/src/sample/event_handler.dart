@@ -35,14 +35,18 @@ class InventoryEventHandler {
 
   _onInventoryDecreased(InventoryDecreased message) {
     ItemDetails details = _itemDetailsRepository.getById(message.id);
-    details.currentCount -= message.count;
+    int newItemCount = details.currentCount - message.count;
+    _assertItemCount(newItemCount);
+    details.currentCount = newItemCount;
     details.version = message.version;
     _itemDetailsRepository.save(details);
   }
 
   _onInventoryIncreased(InventoryIncreased message) {
     ItemDetails details = _itemDetailsRepository.getById(message.id);
-    details.currentCount += message.count;
+    int newItemCount = details.currentCount + message.count;
+    _assertItemCount(newItemCount);
+    details.currentCount = newItemCount;
     details.version = message.version;
     _itemDetailsRepository.save(details);
   }
@@ -50,5 +54,11 @@ class InventoryEventHandler {
   _onItemRemoved(ItemRemoved message) {
     _itemDetailsRepository.removeById(message.id);
     _itemEntryRepository.removeById(message.id);
+  }
+  
+  _assertItemCount(int itemCount) {
+    if(itemCount < 0) {
+      throw new ArgumentError("item count cannot be nagative");
+    }
   }
 }

@@ -7,6 +7,18 @@ part of harvest_example_app;
 class _InventoryView implements InventoryView {
   _InventoryView(this._container);
   
+  clearErrors() {
+    var errorContainer = _container.query("#errors");
+    errorContainer.style.visibility = "hidden"; 
+    errorContainer.text = "";
+  }
+  
+  showErrors(Object errors) {
+    var errorContainer = _container.query("#errors");
+    errorContainer.style.visibility = "visible"; 
+    errorContainer.text = errors.toString();
+  }
+  
   showItems(List<ItemEntry> itemEntries){
     Element elm = new Element.html("""
     <section> 

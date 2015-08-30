@@ -23,35 +23,41 @@ class InventoryPresenter {
 
   Future createItem(String name) {
     var cmd = new CreateItem(new Guid(), name);
-    return _messageBus.publish(cmd).whenComplete(showItems);
+    return _messageBus.publish(cmd).then((_) => showItems(), onError: (e) => showErrors(e));
   }
   
   Future decreaseInventory(Guid itemId, int numberOfItems, int version) {
     var cmd = new DecreaseInventory(itemId, numberOfItems, version);
-    return _messageBus.publish(cmd).whenComplete(() => showItemDetails(itemId));
+    return _messageBus.publish(cmd).then((_) => showItemDetails(itemId), onError: (e) => showErrors(e));
   }
   
   Future increaseInventory(Guid itemId, int numberOfItems, int version) {
     var cmd = new IncreaseInventory(itemId, numberOfItems, version);
-    return _messageBus.publish(cmd).whenComplete(() => showItemDetails(itemId));
+    return _messageBus.publish(cmd).then((_) => showItemDetails(itemId), onError: (e) => showErrors(e));
   }
   
   Future removeItem(Guid itemId, int version) {
     var cmd = new RemoveItem(itemId, version);
-    return _messageBus.publish(cmd).whenComplete(showItems);
+    return _messageBus.publish(cmd).then((_) => showItems(), onError: (e) => showErrors(e));
   }
 
   Future renameItem(Guid itemId, String name, int version) {
     var cmd = new RenameItem(itemId, name, version);
-    return _messageBus.publish(cmd).whenComplete(() => showItemDetails(itemId));
+    return _messageBus.publish(cmd).then((_) => showItemDetails(itemId), onError: (e) => showErrors(e));
+  }
+  
+  showErrors(Object errors) {
+    _view.showErrors(errors);  
   }
   
   showItems() {
+    _view.clearErrors();
     var inventoryItems = _viewModelFacade.getItems();
     _view.showItems(inventoryItems);
   }
 
   showItemDetails(Guid itemId) {
+    _view.clearErrors();
     var details = _viewModelFacade.getItemDetails(itemId);
     _view.showDetails(details);
   }
@@ -60,9 +66,13 @@ class InventoryPresenter {
 abstract class InventoryView {
   set presenter(InventoryPresenter p);
   
-  showItems(List<ItemEntry> itemEntries);
+  clearErrors();
+  
+  recordMessage(String messageType, String messageName, DateTime time);
   
   showDetails(ItemDetails details);
   
-  recordMessage(String messageType, String messageName, DateTime time);
+  showErrors(Object errors);
+  
+  showItems(List<ItemEntry> itemEntries);
 }

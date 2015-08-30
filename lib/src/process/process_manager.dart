@@ -15,7 +15,8 @@ class ProcessManager {
   ProcessManager(this._messageBus); 
   
   /** 
-   * Start [Process] and executes its steps in order, on failure try to compensate the executed steps
+   * Start [Process] and executes its steps in order, on failure try to compensate the executed steps, returns 
+   * **true** if process completed successfully and **false** if it failed but was successfully undone
    */
   Future<bool> startProcess(Process process) async {
     if(process.isInProgress) {
@@ -30,27 +31,28 @@ class ProcessManager {
     }
     if(!succeded) {
       _logger.warn("process failed ${process.completedWork}");
-      return undoProcess(process);
+      var successfullyUndone = await undoProcess(process);
+      return !successfullyUndone;
     } 
     _logger.debug("process succeded with work: ${process.completedWork}");
     return new Future.value(succeded);
   }
   
   /**
-   * Undo the steps in [process]
+   * Undo the steps in [process], returns true if process sucessfully undone, returns 
+   * **true** if entire process was successfully undone
    */
   Future<bool> undoProcess(Process process) async {
     if(process.isCompleted) {
       throw new StateError("Process already completed sucessfully");
     }
-    bool succeded = false;
-    while(!process.isInProgress) {
-      succeded = await process.undoLast();
-      if(!succeded) {
+    while(process.isInProgress) {
+      var undoSucceded = await process.undoLast();
+      if(!undoSucceded) {
         throw new StateError("unable to undo work");
       }
     }
-    return new Future.value(succeded);
+    return new Future.value(true);
   }
   
   ProcessPrototype createProcessPrototype(List<WorkItem> steps) => new ProcessPrototype(steps);

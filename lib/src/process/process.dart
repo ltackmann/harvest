@@ -34,7 +34,10 @@ class Process {
     
   bool get isInProgress => _completedWork.isNotEmpty;
     
-  /** Execute the next step in the process */
+  /** */
+  /**
+   * Execute the next step in the process, returns **true** if the step was successfully executed
+   */
   Future<bool> next() async {
     if(isCompleted) {
       throw "Work is completed";
@@ -43,20 +46,22 @@ class Process {
     // execute step 
     var currentWork = _remainingWork.removeFirst();
     var step = currentWork.step;
-    WorkLog workLog = await step.doWork(currentWork, this);
-    
-    // work is done cancel subscriptions so following steps are not impacted by earlier event handlers 
-    cancelSubscriptions();
-    
-    if(workLog != null) {
+    try {
+      WorkLog workLog = await step.doWork(currentWork, this);
       _completedWork.add(workLog);
       _arguments.addAll(workLog._loggedWork);
       return new Future.value(true);
+    } catch(e) {
+      return new Future.value(false);
+    } finally {
+      // work is done cancel subscriptions so following steps are not impacted by earlier event handlers 
+      cancelSubscriptions();
     }
-    return new Future.value(false);
   }
    
-  /** Undo the previous step in the process */
+  /**
+   * Undo the previous step in the process, returns **true** if the step was successfully undone
+   */
   Future<bool> undoLast() {
     if(!isInProgress) {
       throw "No work completed";

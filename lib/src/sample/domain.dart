@@ -33,7 +33,6 @@ class Item extends AggregateRoot {
   }
 
   increaseInventory(int count) {
-    assert(count > 0);
     applyChange(new InventoryIncreased(id, count));
   }
 
