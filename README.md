@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/ltackmann/harvest.svg)](https://travis-ci.org/ltackmann/harvest)
-[![Coverage Status](https://coveralls.io/repos/ltackmann/harvest/badge.svg)](https://coveralls.io/r/ltackmann/harvest)
+[![Coverage Status](https://coveralls.io/repos/ltackmann/harvest/badge.svg?branch=master&service=github)](https://coveralls.io/github/ltackmann/harvest?branch=master)
 
 # Harvest
 Harvest is a messagebus, CQRS frame work and event store for Dart with multiple backends. Features include
