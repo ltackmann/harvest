@@ -17,7 +17,7 @@ class CreateItemStep extends Step {
   Future<bool> compensate(WorkLog log, Process process) async {
     Guid itemId = log["itemId"];
     await process.publish(new RemoveItem(itemId, 0));
-    return compensationSucceded("removing item [${log["itemName"]}] with id $itemId");
+    return compensationSucceded("removing item [${process["itemName"]}] with id $itemId");
   }
 }
 

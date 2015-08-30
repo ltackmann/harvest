@@ -51,9 +51,9 @@ class CqrsTester {
    * Test executing events causes app to behave as expected  
    */
   eventsTest() {
-    
-    String item1Name = "Book";
-    String item2Name = "Car";
+    var item1Name = "Book";
+    var item2Name = "Car";
+    var item3Name = "Boat";
     var item1Id, item1Version, item2Id;
     
     test("create item and assert its displayed in item list", () async {
@@ -133,16 +133,22 @@ class CqrsTester {
     });
     
     test("fail creating duplicated item 2 with same name using a process", () async {
-       var process = _processManager.createProcess(_createItemWithInventory, {"itemName":item2Name, "itemCount":2});
-       var processCompleted = await _processManager.startProcess(process);  
-       expect(processCompleted, isFalse);
-       //_presenter.showItems();
-       //expect(_view.displayedItems.length, equals(2), reason:"duplicated item should not be created");
+      var process = _processManager.createProcess(_createItemWithInventory, {"itemName":item2Name, "itemCount":2});
+      var processCompleted = await _processManager.startProcess(process);  
+      
+      expect(processCompleted, isFalse);
+      _presenter.showItems();
+      expect(_view.displayedItems.length, equals(2), reason:"duplicated item should not be created");
        //assertEventNames(_view.recordedMessages, expectedMessages..addAll(["CreateItem","ItemCreated","IncreaseInventory","InventoryIncreased"])); 
-            
-       //item2Id = _view.displayedItems[1].id;
-       //expect(item2Id, isNotNull);
-       //expect(item1Id == item2Id, isFalse);
+    });
+    
+    test("fail creating new item with negative inventory using a process", () async {
+      var process = _processManager.createProcess(_createItemWithInventory, {"itemName":item3Name, "itemCount":-2});
+      var processCompleted = await _processManager.startProcess(process);  
+          
+      expect(processCompleted, isFalse);
+      _presenter.showItems();
+      expect(_view.displayedItems.length, equals(2), reason:"new item with negative inventory should not be created");
     });
     
     // TODO remove item 2

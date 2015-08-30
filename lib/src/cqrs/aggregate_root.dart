@@ -61,15 +61,6 @@ abstract class AggregateRoot {
 /** Function that returns a bare aggregate root for the supplied [aggregateId] */ 
 typedef AggregateRoot AggregateBuilder(Guid aggregateId);
 
-/** Represents an attempt to retrieve a nonexistent aggregate */
-class AggregateNotFoundError extends Error {
-  AggregateNotFoundError(this.aggregateId);
-  
-  String toString() => "No aggregate for id: $aggregateId";
-  
-  final Guid aggregateId;
-}
-
 /**
  * Event sourced entity that is part of a aggregate (but not the root)
  * 

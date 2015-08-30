@@ -43,9 +43,6 @@ class ProcessManager {
    * **true** if entire process was successfully undone
    */
   Future<bool> undoProcess(Process process) async {
-    if(process.isCompleted) {
-      throw new StateError("Process already completed sucessfully");
-    }
     while(process.isInProgress) {
       var undoSucceded = await process.undoLast();
       if(!undoSucceded) {
