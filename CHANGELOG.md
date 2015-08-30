@@ -2,6 +2,7 @@
  * MessageBus **publish** return type changed to **Future<Object>** to signify that error/callback handling may return different data
  * MessageBus Dart Stream interface now also supports **CallbackCompleted** messages
  * CQRS add **saveAggregate** and **emit** methods to the **DomainRepository** for fine-grained controll when saving aggregates as event streams.
+ * CQRS change error handling semantics to better allow SAGA failure compensation
  
 #### 2.0.4 
  * Messagebus now correctly propagates errors in message handlers
