@@ -1,3 +1,8 @@
+#### 2.0.9
+* Bump polymer dependencies
+
+#### 2.0.8
+* Fix changelog
 
 #### 2.0.8
 * Fix changelog
@@ -14,7 +19,7 @@
 * CQRS add **saveAggregate** and **emit** methods to the **DomainRepository** for fine-grained controll when saving aggregates as event streams.
 * CQRS change error handling semantics to better allow SAGA failure compensation
 
-#### 2.0.4 
+#### 2.0.4
 * Messagebus now correctly propagates errors in message handlers
 * MessageBus supports **cancelOnError** flag and **onError** callback
 * Moved **DomainCommands** support for handler callback in to **CallbackCompleted** mixin allowing all message types to provide handler callbacks

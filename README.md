@@ -2,7 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/ltackmann/harvest/badge.svg?branch=master&service=github)](https://coveralls.io/github/ltackmann/harvest?branch=master)
 
 # Harvest
-Harvest is a messagebus, CQRS frame work and event store for Dart with multiple backends. Features include
+Harvest is a messagebus, CQRS framework and eventstore for Dart with multiple backends. Features include
 
 ### Message bus features
  * Synchronous and asynchronous delivery 
