@@ -4,7 +4,7 @@
 
 /** Test IndexedDB backed stores and repositories in Harvest */
 
-@TestOn("dartium")
+@TestOn("browser")
 import 'package:test/test.dart';
 import 'package:polymer/polymer.dart';
 

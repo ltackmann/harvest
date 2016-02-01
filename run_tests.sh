@@ -2,7 +2,8 @@
 set -e
 
 # TODO figure out how to test GUI code on Travis
-pub run test --platform=dartium test/harvest_idb_test.dart 
+#pub run test --platform=dartium test/harvest_idb_test.dart 
+pub run test --platform=content-shell test/harvest_idb_test.dart
 
 if [ "$COVERALLS_TOKEN" ]; then
   # run tests on travis and publish code coverage
