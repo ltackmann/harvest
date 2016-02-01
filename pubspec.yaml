@@ -1,5 +1,5 @@
 name: harvest
-version: 2.0.10
+version: 2.0.11
 author: Lars Tackmann <lars@solvr.io>
 description: Messagebus, CQRS framework and eventstore for Dart with multiple backends
 homepage: https://github.com/ltackmann/harvest

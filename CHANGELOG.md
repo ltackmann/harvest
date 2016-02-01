@@ -1,3 +1,6 @@
+#### 2.0.11
+* Minor improvements to tests
+
 #### 2.0.10
 * Enable GUI tests of IndexedDB using content shell
 
