@@ -1,3 +1,6 @@
+# atom
+*.atom
+
 # dart
 *\.packages
 build

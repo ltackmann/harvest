@@ -1,8 +1,8 @@
-// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
-// file for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// file for details. All rights reserved. Use of this source code is governed
 // by a Apache license that can be found in the LICENSE file.
 
-/** Eventstore backed by IndexedDB */ 
+/** Eventstore backed by IndexedDB */
 library harvest_idb;
 
 import 'dart:async';
@@ -18,4 +18,3 @@ export 'harvest.dart';
 
 part 'src/event_stores/idb_event_store.dart';
 part 'src/model_repositories/idb_model_repository.dart';
-

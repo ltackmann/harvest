@@ -1,8 +1,8 @@
-// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
-// file for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// file for details. All rights reserved. Use of this source code is governed
 // by a Apache license that can be found in the LICENSE file.
 
-/** Harvest event store and CQRS API */ 
+/** Harvest event store and CQRS API */
 library harvest;
 
 import 'dart:async';
@@ -34,6 +34,5 @@ part 'src/guid.dart';
 part 'src/message.dart';
 part 'src/message_bus.dart';
 
-// Global Helper functions 
+// Global Helper functions
 String typeNameOf(Object obj) => obj.runtimeType.toString();
-

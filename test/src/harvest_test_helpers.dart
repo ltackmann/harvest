@@ -1,5 +1,5 @@
-// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
-// file for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// file for details. All rights reserved. Use of this source code is governed
 // by a Apache license that can be found in the LICENSE file.
 
 library harvest_test_helpers;
@@ -12,18 +12,18 @@ part 'eventstore_tester.dart';
 part 'cqrs_tester.dart';
 
 /**
- * Helper class that retrieves the entire current view state. Useful for comparing 
- * view state as events are fired/replayed. 
+ * Helper class that retrieves the entire current view state. Useful for comparing
+ * view state as events are fired/replayed.
  */
 class ViewModelState {
   final List<ItemEntry> itemEntryList;
   final List<ItemDetails> itemDetailsList;
-  
+
   factory ViewModelState(InventoryPresenter presenter, InventoryViewMock view) {
     // get inventory list state
     presenter.showItems();
     var itemList = view.displayedItems;
-    
+
     // save details for each item in the list
     var itemDetailsList = new List<ItemDetails>();
     itemList.forEach((var item) {
@@ -32,7 +32,7 @@ class ViewModelState {
     });
     return new ViewModelState._internal(itemList, itemDetailsList);
   }
-  
+
   ViewModelState._internal(this.itemEntryList, this.itemDetailsList);
 }
 
@@ -43,30 +43,27 @@ class InventoryViewMock implements InventoryView {
   ItemDetails displayedDetails;
   List<String> recordedMessages = [];
   Object displayedErrors;
-  
+
   clearErrors() {
     displayedErrors = null;
   }
-  
+
   set presenter(InventoryPresenter p) {
   }
-  
+
   recordMessage(String messageType, String messageName, DateTime time) {
      recordedMessages.add(messageName);
    }
-  
+
   showDetails(ItemDetails details) {
     displayedDetails = details;
   }
-  
+
   showErrors(Object errors) {
     displayedErrors = errors;
   }
-  
+
   showItems(List<ItemEntry> items) {
     displayedItems = items;
   }
 }
-
-
-

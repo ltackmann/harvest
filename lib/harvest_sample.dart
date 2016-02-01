@@ -1,9 +1,9 @@
-// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
-// file for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// file for details. All rights reserved. Use of this source code is governed
 // by a Apache license that can be found in the LICENSE file.
 
 /**
- * Sample application data used in the bundled example app and tests, usefull for 
+ * Sample application data used in the bundled example app and tests, usefull for
  * getting to know how Harvest works
  */
 library harvest_sample;
@@ -20,5 +20,3 @@ part 'src/sample/presenter.dart';
 part 'src/sample/steps.dart';
 part 'src/sample/view_model.dart';
 part 'src/sample/view_model_facade.dart';
-
-

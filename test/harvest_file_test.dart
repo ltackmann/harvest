@@ -1,5 +1,5 @@
-// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
-// file for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// file for details. All rights reserved. Use of this source code is governed
 // by a Apache license that can be found in the LICENSE file.
 
 /** Test file system backed stores and repositories in Harvest */
@@ -15,7 +15,7 @@ main() {
     var eventStore = new FileEventStore("/tmp/eventlog");
     new EventStoreTester(eventStore);
   });
-   
+
   group('MemoryEventStore CQRS test', () {
     var eventStore = new FileEventStore("/tmp/eventlog2");
     new CqrsTester(new MessageBus(), eventStore);

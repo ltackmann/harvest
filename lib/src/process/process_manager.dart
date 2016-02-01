@@ -1,5 +1,5 @@
-// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
-// file for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// file for details. All rights reserved. Use of this source code is governed
 // by a Apache license that can be found in the LICENSE file.
 
 part of harvest;
@@ -9,13 +9,13 @@ part of harvest;
  */
 class ProcessManager {
   static final Logger _logger = LoggerFactory.getLoggerFor(ProcessManager);
-  
+
   final MessageBus _messageBus;
-  
-  ProcessManager(this._messageBus); 
-  
-  /** 
-   * Start [Process] and executes its steps in order, on failure try to compensate the executed steps, returns 
+
+  ProcessManager(this._messageBus);
+
+  /**
+   * Start [Process] and executes its steps in order, on failure try to compensate the executed steps, returns
    * **true** if process completed successfully and **false** if it failed but was successfully undone
    */
   Future<bool> startProcess(Process process) async {
@@ -33,13 +33,13 @@ class ProcessManager {
       _logger.warn("process failed ${process.completedWork}");
       var successfullyUndone = await undoProcess(process);
       return !successfullyUndone;
-    } 
+    }
     _logger.debug("process succeded with work: ${process.completedWork}");
     return new Future.value(succeded);
   }
-  
+
   /**
-   * Undo the steps in [process], returns true if process sucessfully undone, returns 
+   * Undo the steps in [process], returns true if process sucessfully undone, returns
    * **true** if entire process was successfully undone
    */
   Future<bool> undoProcess(Process process) async {
@@ -51,9 +51,9 @@ class ProcessManager {
     }
     return new Future.value(true);
   }
-  
+
   ProcessPrototype createProcessPrototype(List<WorkItem> steps) => new ProcessPrototype(steps);
-  
+
   Process createProcess(ProcessPrototype prototype, Map<String,Object> arguments) {
     var process = new Process(_messageBus, prototype.steps, arguments);
     return process;
@@ -61,4 +61,4 @@ class ProcessManager {
 }
 
 /** Create processes running on [messageBus] */
-typedef Process ProcessCreator(MessageBus messageBus); 
+typedef Process ProcessCreator(MessageBus messageBus);

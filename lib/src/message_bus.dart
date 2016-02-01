@@ -1,5 +1,5 @@
-// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
-// file for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// file for details. All rights reserved. Use of this source code is governed
 // by a Apache license that can be found in the LICENSE file.
 
 part of harvest;
@@ -7,40 +7,40 @@ part of harvest;
 /** Message bus for registrering and routing [Message]'s to their [MessageHandler] */
 class MessageBus {
   MessageCoordinator _coordinator;
-  
+
   /**
    * Message bus that delivers messages syncronously
    */
-  MessageBus(): 
+  MessageBus():
     _coordinator = new MessageCoordinator(isSync:true);
-  
+
   /**
    * Message bus that delivers messages asyncronously
    */
-  MessageBus.async(): 
+  MessageBus.async():
     _coordinator = new MessageCoordinator(isSync:false);
-  
+
   /**
-   * Set [MessageHandler] to be invoked if event is published with no active listeners 
+   * Set [MessageHandler] to be invoked if event is published with no active listeners
     */
   set deadMessageHandler(MessageHandler handler) => _coordinator.deadMessageHandler = handler;
-  
+
   /**
    * Set [enricher] to enrich [Message] before they are fired
    */
   set enricher(MessageEnricher enricher) => _coordinator.enricher = enricher;
-  
+
   /**
    * Stream that recieves every message regardless of type
    */
   Stream<Message> get everyMessage => stream(null);
-  
+
   /**
-   * Publish messages on the message bus. Completes with future that contains the number of subscribers that 
-   * have recieved the event. Note if the message uses the [CallbackCompleted] mixin then the future contains 
-   * data returned by the message handlers complete function. 
-   * 
-   * Subscriber error handling may impact the number of delivery targets returned as cancelOnError will cause delivery 
+   * Publish messages on the message bus. Completes with future that contains the number of subscribers that
+   * have recieved the event. Note if the message uses the [CallbackCompleted] mixin then the future contains
+   * data returned by the message handlers complete function.
+   *
+   * Subscriber error handling may impact the number of delivery targets returned as cancelOnError will cause delivery
    * to cease on the first error.
    */
   Future<Object> publish(Message message) async {
@@ -49,10 +49,10 @@ class MessageBus {
     var result = await messageCompleter.future;
     return result;
   }
-  
+
   /**
-   * Subscribe to [messageType]. 
-   * 
+   * Subscribe to [messageType].
+   *
    * [errorHandler] is invoked with any exception thrown by a failed subscriber function. If [cancelOnError] is true then delivery
    * stops after a subscribers fails.
    */
@@ -61,12 +61,12 @@ class MessageBus {
     var subscription = messageStream.listen(handler, onError:errorHandler, cancelOnError:cancelOnError);
     return subscription;
   }
-  
+
   /**
    * Unsubscribe from [messageType]
    */
   unsubscribe(Type messageType) => _coordinator.closeSubscriptionsForMessageType(messageType);
-  
+
   /**
    * Unsubscribe message bus from all message type
    */
@@ -78,15 +78,15 @@ class MessageBus {
     _coordinator = null;
     _coordinator = new MessageCoordinator(isSync:sync);
   }
-  
+
   /**
    * Get [EventSink] for [messageType]
    */
   EventSink<Message> sink(Type messageType) => _coordinator[messageType].sink;
-  
+
   /**
-   * Get a message [Stream] for [messageType]. 
-   * 
+   * Get a message [Stream] for [messageType].
+   *
    * A Stream is a source of messages with subscribed listeners that recieves the added messages
    */
   Stream<Message> stream(Type messageType) => _coordinator[messageType].stream;
@@ -107,31 +107,31 @@ class MessageCoordinator {
   MessageEnricher _enricher;
   // handler to recieve dead events
   MessageHandler deadMessageHandler = (Message message) => print("no message handler registered for message type ${message.runtimeType}");
-  
+
   /**
    * If [isSync] is true then the underlying messages stream are will block until delivered.
    */
   MessageCoordinator({this.isSync});
-  
+
   /**
    * Get a [MessageStreamController] for [messageType]
    */
   MessageStreamController operator [](Type messageType) {
     return _handlers.putIfAbsent(messageType, () => new MessageStreamController(this, messageType));
   }
-   
+
   /**
    * Add a subscription for messages of type [messageType]
-   * 
+   *
    * [onError] is invoked with any exception thrown by a failed subscriber function. If [cancelOnError] is true then delivery
    * stops when a subscriber fails.
    */
-  MessageStreamSubscription listen(Type messageType, 
-                                   StreamController<Message> controller, 
+  MessageStreamSubscription listen(Type messageType,
+                                   StreamController<Message> controller,
                                    void onData(Message message), MessageErrorHandler onError, bool cancelOnError) {
-    StreamSubscription<Message> subscription; 
+    StreamSubscription<Message> subscription;
     subscription = controller.stream.listen((Message message) {
-      // check if subscription is still active before each delivery to satiesfy cancelOnError 
+      // check if subscription is still active before each delivery to satiesfy cancelOnError
       if(_isMessageDeliverable(message)) {
         // called each time message is put on the [MessageStreamSink] belonging to this [MessageStream]
         var errorOccurred = false;
@@ -142,13 +142,13 @@ class MessageCoordinator {
           errorOccurred = true;
           (message.headers["messageFailures"] as List).add(e);
           if(onError != null) {
-            onError(e);   
-          } 
+            onError(e);
+          }
         }
         if(errorOccurred && cancelOnError) {
           _notifyError(message);
         } else {
-          _notifyDelivery(message);  
+          _notifyDelivery(message);
         }
       }
     });
@@ -157,7 +157,7 @@ class MessageCoordinator {
     messageSubscribers.add(wrapped);
     return wrapped;
   }
-  
+
   /**
    * Close message sink and any subsriptions
    */
@@ -168,7 +168,7 @@ class MessageCoordinator {
       closeSubscription(messageSubscription);
     }
   }
-  
+
   /**
    * Close subscription
    */
@@ -180,17 +180,17 @@ class MessageCoordinator {
       _handlers.remove(subscriber.messageType);
     }
   }
-  
+
   /**
-   * Close subscriptions for message type 
+   * Close subscriptions for message type
    */
   closeSubscriptionsForMessageType(Type messageType) {
-    var messageSubscribers = _subscribers[messageType];  
+    var messageSubscribers = _subscribers[messageType];
     for(int i=0; i<messageSubscribers.length; i++) {
       closeSubscription(messageSubscribers[i]);
     }
   }
-  
+
   /**
    * Deliver [message] to subscribers
    */
@@ -202,7 +202,7 @@ class MessageCoordinator {
     final subscribers = _getSubscribers(message.runtimeType);
     if(subscribers.isNotEmpty) {
       subscribers.forEach((s) {
-        s.add(message);       
+        s.add(message);
       });
     } else {
       if(deadMessageHandler != null) {
@@ -212,9 +212,9 @@ class MessageCoordinator {
     }
     return completer;
   }
-  
+
   set enricher(MessageEnricher enricher) => _enricher = enricher;
-  
+
   _completeSuccess(Message message, Object successData) {
     Guid messageId = _getMessageId(message);
     var completer = _messageCompleters[messageId];
@@ -222,7 +222,7 @@ class MessageCoordinator {
     completer.complete(successData);
     _unregisterMessage(messageId);
   }
-  
+
   _completeError(Message message) {
     Guid messageId = _getMessageId(message);
     var completer = _messageCompleters[messageId];
@@ -238,14 +238,14 @@ class MessageCoordinator {
   StreamSink<Message> _getDeliverySink(Type messageType) {
     StreamSink<Message> targetSink = null;
     if(_subscribers.containsKey(messageType)) {
-      // only return one sink for each message type as sinks are shared between identical types 
+      // only return one sink for each message type as sinks are shared between identical types
       targetSink = _subscribers[messageType].firstWhere((ms) => !ms.isPaused, orElse:() => null).messageSink;
     }
     return targetSink;
   }
-  
+
   Guid _getMessageId(Message message) => message.headers["messageId"] as Guid;
-  
+
   Iterable<StreamSink<Message>> _getSubscribers(Type messageType) {
     var messageSubscribers = new List<StreamSink<Message>>();
     // message type subscribers
@@ -260,21 +260,21 @@ class MessageCoordinator {
     }
     return messageSubscribers;
   }
-  
+
   int _incrementDelivery(Message message) {
     int deliveredTo = (message.headers["messageDeliveredTo"] as int) + 1;
     message.headers["messageDeliveredTo"] = deliveredTo;
     return deliveredTo;
   }
-  
+
   bool _isMessageFailed(Message message) {
     return (message.headers["messageFailures"] as List).isNotEmpty;
   }
-  
+
   bool _isMessageDeliverable(Message message) {
     return message.headers["messageDeliverable"] as bool;
   }
-  
+
   _notifyDelivery(Message message) {
     int deliveredTo = _incrementDelivery(message);
     int numberOfSubscribers = _numberOfSubscribers(message);
@@ -286,13 +286,13 @@ class MessageCoordinator {
       }
     }
   }
-  
+
   _notifyError(Message message) {
    _incrementDelivery(message);
     message.headers["messageDeliverable"] = false;
     _completeError(message);
   }
-  
+
   int _numberOfSubscribers(Message message) {
     int numSub = 0;
     // message type subscribers
@@ -305,11 +305,11 @@ class MessageCoordinator {
     }
     return numSub;
   }
-  
+
   int _subscribersFor(Type messageType) {
     return _subscribers[messageType].where((ms) => !ms.isPaused).toList().length;
   }
-  
+
   /**
    * Register message in coordinators pipelines, creates notifcation completer and message id
    */
@@ -318,15 +318,15 @@ class MessageCoordinator {
     if(messageId == null) {
       messageId = new Guid();
       message.headers["messageId"] = messageId;     // id of message
-      message.headers["messageDeliverable"] = true; // true if message can still be deliverd 
-      message.headers["messageFailures"] = [];      // list of failures emitted by message handlers for this message 
+      message.headers["messageDeliverable"] = true; // true if message can still be deliverd
+      message.headers["messageFailures"] = [];      // list of failures emitted by message handlers for this message
       message.headers["messageDeliveredTo"] = 0;    // number of subscribers that have recived message
       var completer = new Completer();
       _messageCompleters[messageId] = completer;
-    } 
+    }
     return _messageCompleters[messageId];
   }
-  
+
   /**
    * Unregister [Message] with [messageId] from coordinator, removes used completers
    */
@@ -342,14 +342,14 @@ class MessageStream extends Stream<Message> {
   final MessageCoordinator _coordinator;
   final StreamController<Message> _wrapped;
   final Type messageType;
-  
+
   MessageStream(this._wrapped, this._coordinator, this.messageType);
-  
+
   StreamSubscription<Message> listen(void onData(Message event),
                                { Function onError,
                                  void onDone(),
                                  bool cancelOnError}) {
-   
+
     return _coordinator.listen(messageType, _wrapped, onData, onError, cancelOnError);
   }
 }
@@ -363,21 +363,21 @@ class MessageStreamController {
   final MessageCoordinator _coordinator;
   final Type messageType;
 
-  factory MessageStreamController(MessageCoordinator coordinator, Type messageType) 
+  factory MessageStreamController(MessageCoordinator coordinator, Type messageType)
   {
     var wrappedController = new StreamController<Message>.broadcast(sync:coordinator.isSync);
-   
+
     var messageSink = new MessageStreamSink(wrappedController, coordinator, messageType);
     var messageStream = new MessageStream(wrappedController, coordinator, messageType);
     return new MessageStreamController._internal(messageSink, messageStream, coordinator, messageType);
   }
-  
+
   MessageStreamController._internal(this._sink, this._stream, this._coordinator, this.messageType);
-  
+
   EventSink<Message> get sink => _sink;
-  
+
   Stream<Message> get stream => _stream;
-  
+
   close() => sink.close();
 }
 
@@ -388,9 +388,9 @@ class MessageStreamSink implements EventSink<Message> {
   final MessageCoordinator _coordinator;
   final StreamController<Message> _wrapped;
   final Type messageType;
-  
+
   MessageStreamSink(this._wrapped, this._coordinator, this.messageType);
-  
+
   @override
   Completer add(Message message) {
     Completer completer;
@@ -410,16 +410,16 @@ class MessageStreamSink implements EventSink<Message> {
     }
     return completer;
   }
-  
+
   @override
   void addError(error, [StackTrace stackTrace]) {
     _wrapped.addError(error, stackTrace);
   }
 
   @override
-  close() { 
+  close() {
     _coordinator.closeSink(this);
-  } 
+  }
 }
 
 class MessageStreamSubscription implements StreamSubscription<Message> {
@@ -427,12 +427,12 @@ class MessageStreamSubscription implements StreamSubscription<Message> {
   final MessageCoordinator _coordinator;
   final StreamSink<Message> messageSink;
   final Type messageType;
- 
+
   MessageStreamSubscription(this._wrapped, this._coordinator, this.messageSink, this.messageType);
-  
+
   @override
   Future cancel() {
-    _coordinator.closeSubscription(this); 
+    _coordinator.closeSubscription(this);
     return _wrapped.cancel();
   }
 
@@ -457,4 +457,3 @@ class MessageStreamSubscription implements StreamSubscription<Message> {
   @override
   Future asFuture([var futureValue]) => _wrapped.asFuture(futureValue);
 }
-

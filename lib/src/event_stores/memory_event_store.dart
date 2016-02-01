@@ -1,5 +1,5 @@
-// Copyright (c) 2013-2015, the Harvest project authors. Please see the AUTHORS 
-// file for details. All rights reserved. Use of this source code is governed 
+// Copyright (c) 2013, the Harvest project authors. Please see the AUTHORS 
+// file for details. All rights reserved. Use of this source code is governed
 // by a Apache license that can be found in the LICENSE file.
 
 part of harvest;
@@ -7,7 +7,7 @@ part of harvest;
 /** Memory backed event store */
 class MemoryEventStore implements EventStore {
   static final _store = new Map<Guid, EventStream>();
-  
+
   @override
   Future<EventStream> openStream(Guid id, [int expectedVersion = -1]) async {
     if(!_store.containsKey(id)) {
@@ -19,7 +19,7 @@ class MemoryEventStore implements EventStore {
     }
     return stream;
   }
-  
+
   @override
   bool containsStream(Guid id) => _store.containsKey(id);
 }
@@ -29,7 +29,7 @@ class _MemoryEventStream implements EventStream {
   final _uncommittedEvents = new List<DomainEvent>();
   final _committedEvents = new List<DomainEvent>();
   int _streamVersion;
-  
+
   _MemoryEventStream(this.id): _streamVersion = -1;
 
   @override
@@ -41,7 +41,7 @@ class _MemoryEventStream implements EventStream {
   @override
   Future<int> commitChanges() async {
     var numberOfEvents = _uncommittedEvents.length;
-    
+
     _uncommittedEvents.forEach((DomainEvent event) {
       _streamVersion++;
       event.version = streamVersion;
@@ -54,19 +54,19 @@ class _MemoryEventStream implements EventStream {
 
   @override
   clearChanges() => _uncommittedEvents.clear();
-  
+
   @override
   bool get hasUncommittedEvents => _uncommittedEvents.length > 0;
 
   @override
   addAll(Iterable<DomainEvent> events) => events.forEach(add);
-  
+
   @override
   add(DomainEvent event) => _uncommittedEvents.add(event);
-  
+
   @override
   final Guid id;
-  
+
   @override
   int get streamVersion => _streamVersion;
 }
