@@ -1,3 +1,6 @@
+#### 2.0.10
+* Enable GUI tests of IndexedDB using content shell
+
 #### 2.0.9
 * Bump polymer dependencies
 

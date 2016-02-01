@@ -192,7 +192,8 @@ Links
  TODO
 -----
  * Rewrite example GUI app in Polymer
+ * Create serialization interface that allows switching between mirror, transformation and manual serializations 
  * Document usage of SAGAs (process manager)
  * Ensure message headers are not serialized
  * Enable CQRS event reloading test
- * Create serialization interface that allows switching between mirror, transformation and manual serializations 
+ * Create serialization interface that allows switching between mirror, transformation and manual serializations
