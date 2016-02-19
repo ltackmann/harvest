@@ -2,8 +2,6 @@
 // file for details. All rights reserved. Use of this source code is governed
 // by a Apache license that can be found in the LICENSE file.
 
-/** Test IndexedDB backed stores and repositories in Harvest */
-
 @TestOn("browser")
 import 'package:test/test.dart';
 import 'package:polymer/polymer.dart';
@@ -12,6 +10,7 @@ import 'package:harvest/harvest_idb.dart';
 
 import 'src/harvest_test_helpers.dart';
 
+/** Test IndexedDB backed stores and repositories in Harvest */
 main() async {
   await initPolymer();
 
