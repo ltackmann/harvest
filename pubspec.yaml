@@ -1,14 +1,14 @@
 name: harvest
-version: 2.0.12
+version: 2.0.13
 author: Lars Tackmann <lars@solvr.io>
 description: Messagebus, CQRS framework and eventstore for Dart with multiple backends
 homepage: https://github.com/ltackmann/harvest
 environment:
   sdk: '>=1.9.0 <2.0.0'
 dependencies:
-  log4dart: "^1.4.18"
+  log4dart: "^1.4.19"
   serialization: "^0.10.4+4"
-  uuid: "^0.5.0"
+  uuid: "^0.5.2"
 dev_dependencies:
   # begin polymer dependency section
   polymer: "^0.16.4+1"
